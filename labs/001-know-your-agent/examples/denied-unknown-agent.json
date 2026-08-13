@@ -1,0 +1,11 @@
+{
+  "agent_id": "unknown-bot",
+  "action": "propose_paper_order",
+  "order": {
+    "ticker": "BRICK",
+    "side": "buy",
+    "quantity": 10,
+    "limit_price": 42.5,
+    "account_id": "paper-desk-alpha"
+  }
+}

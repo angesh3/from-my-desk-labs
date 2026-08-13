@@ -1,0 +1,24 @@
+# Fictional agent registry for Cedar Quill Desk.
+# Names, owners, and accounts are invented for the lab.
+
+desk: Cedar Quill Desk
+bundle_id: cedar-quill-registry-v1
+
+agents:
+  - id: kya-agent-001
+    display_name: Quill Research Agent
+    owner: desk.ops@cedar-quill.example
+    status: active
+    capabilities:
+      - propose_paper_order
+    accounts:
+      - paper-desk-alpha
+
+  - id: kya-agent-dormant
+    display_name: Archived Sketch Agent
+    owner: desk.ops@cedar-quill.example
+    status: inactive
+    capabilities:
+      - propose_paper_order
+    accounts:
+      - paper-desk-beta

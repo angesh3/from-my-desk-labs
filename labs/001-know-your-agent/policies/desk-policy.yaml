@@ -1,0 +1,16 @@
+# Fictional desk policy for Cedar Quill Desk.
+# Tickers, caps, and restrictions are invented. This is not investment guidance.
+
+bundle_id: cedar-quill-desk-v1
+desk: Cedar Quill Desk
+max_notional_per_order: 25000
+allowed_tickers:
+  - BRICK
+  - WILLO
+  - AURORA
+  - MAPLE
+restricted_tickers:
+  - MAPLE
+notes: >
+  MAPLE is listed so the allow-list and restricted-list intersection can be
+  demonstrated. All symbols are fictional.

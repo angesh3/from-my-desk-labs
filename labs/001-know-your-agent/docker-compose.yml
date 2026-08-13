@@ -1,0 +1,11 @@
+services:
+  know-your-agent:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./policies:/policies:ro
+    environment:
+      POLICY_DIR: /policies
