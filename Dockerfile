@@ -15,9 +15,11 @@ COPY labs/001-know-your-agent/static /srv/labs/001-know-your-agent/static
 
 RUN pip install --no-cache-dir .
 
-ENV POLICY_DIR=/srv/labs/001-know-your-agent/policies
-ENV CATALOG_PATH=/srv/website/catalog/labs.yaml
+ENV WEBSITE_TEMPLATE_DIR=/srv/website/app/templates
+ENV WEBSITE_STATIC_DIR=/srv/website/app/static
 ENV LAB_STATIC_DIR=/srv/labs/001-know-your-agent/static
+ENV CATALOG_PATH=/srv/website/catalog/labs.yaml
+ENV POLICY_DIR=/srv/labs/001-know-your-agent/policies
 ENV APP_VERSION=0.3.0
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
