@@ -5,7 +5,6 @@ from __future__ import annotations
 import mimetypes
 import os
 from contextlib import asynccontextmanager
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException, Request
@@ -15,9 +14,15 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.routing import Mount
 
 from from_my_desk.catalog import CatalogError, LabEntry, featured_lab, load_catalog
-from from_my_desk.config import APP_VERSION, get_settings
+from from_my_desk.config import (
+    APP_VERSION,
+    ResourceConfigError,
+    get_settings,
+    validate_runtime_resources,
+)
 from from_my_desk.telemetry import public_telemetry_config
 from know_your_agent.gateway import get_bundle, router as lab_router
 from know_your_agent.loader import PolicyConfigError
@@ -26,11 +31,8 @@ from know_your_agent.rate_limit import SlidingWindowLimiter
 mimetypes.add_type("image/webp", ".webp")
 mimetypes.add_type("image/svg+xml", ".svg")
 
-WEBSITE_DIR = Path(__file__).resolve().parent
-TEMPLATES = Jinja2Templates(directory=str(WEBSITE_DIR / "templates"))
-LAB_001_STATIC = Path(
-    os.environ.get("LAB_STATIC_DIR") or str(get_settings().lab_static_dir)
-)
+_settings = get_settings()
+TEMPLATES = Jinja2Templates(directory=str(_settings.website_template_dir))
 
 SECURITY_HEADERS = {
     "X-Content-Type-Options": "nosniff",
@@ -70,11 +72,14 @@ async def lifespan(app: FastAPI):
     global _limiter
     settings = get_settings()
     try:
+        validate_runtime_resources(settings)
         get_catalog()
         os.environ.setdefault("POLICY_DIR", str(settings.policy_dir))
         get_bundle()
-    except (CatalogError, PolicyConfigError) as exc:
-        raise RuntimeError("Refusing to start with unsafe catalog or policy configuration.") from exc
+    except (CatalogError, PolicyConfigError, ResourceConfigError) as exc:
+        raise RuntimeError(
+            "Refusing to start with unsafe catalog, policy, or missing website resources."
+        ) from exc
     _limiter = SlidingWindowLimiter(settings.rate_limit_per_minute)
     yield
 
@@ -88,10 +93,6 @@ app = FastAPI(
     version=APP_VERSION,
     lifespan=lifespan,
 )
-
-app.mount("/static/labs/001", StaticFiles(directory=str(LAB_001_STATIC)), name="lab001-static")
-app.mount("/static", StaticFiles(directory=str(WEBSITE_DIR / "static")), name="static")
-app.include_router(lab_router)
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
@@ -182,6 +183,10 @@ async def unhandled_handler(request: Request, exc: Exception):
     )
 
 
+# API / health routes first so mounts cannot shadow them.
+app.include_router(lab_router)
+
+
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request) -> HTMLResponse:
     return TEMPLATES.TemplateResponse(request, "home.html", _page_context(request))
@@ -217,3 +222,28 @@ def lab_page(request: Request, slug: str) -> HTMLResponse:
             step_up_max=str(policy.step_up_max),
         ),
     )
+
+
+# Static mounts last: specific lab assets, then global site assets.
+app.mount(
+    "/static/labs/001",
+    StaticFiles(directory=str(_settings.lab_static_dir)),
+    name="lab001-static",
+)
+app.mount(
+    "/static",
+    StaticFiles(directory=str(_settings.website_static_dir)),
+    name="static",
+)
+
+
+def iter_route_table():
+    """Yield route metadata in matching order for diagnostics and tests."""
+    for route in app.routes:
+        yield {
+            "type": type(route).__name__,
+            "path": getattr(route, "path", None),
+            "name": getattr(route, "name", None),
+            "methods": sorted(getattr(route, "methods", None) or []),
+            "is_mount": isinstance(route, Mount),
+        }
