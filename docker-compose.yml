@@ -1,0 +1,27 @@
+services:
+  from-my-desk:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      POLICY_DIR: /srv/labs/001-know-your-agent/policies
+      CATALOG_PATH: /srv/website/catalog/labs.yaml
+      LAB_STATIC_DIR: /srv/labs/001-know-your-agent/static
+      PORT: "8080"
+      POSTHOG_ENABLED: "false"
+      REGISTRY_PUBLIC: sanitized
+      APP_VERSION: "0.3.0"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=4)",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

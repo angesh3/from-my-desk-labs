@@ -1,16 +1,28 @@
-# Fictional desk policy for Cedar Quill Desk.
-# Tickers, caps, and restrictions are invented. This is not investment guidance.
+# Fictional desk policy for Cedar Quill Markets.
+# Tickers, thresholds, and confirmation rules are invented.
+# This is not investment guidance and does not execute orders.
+#
+# Side (buy/sell) is validated and displayed only. It does not change
+# the authorization decision in this educational spike.
 
-bundle_id: cedar-quill-desk-v1
-desk: Cedar Quill Desk
-max_notional_per_order: 25000
+policy_id: cedar-quill-desk-v2
+organization: Cedar Quill Markets
+
 allowed_tickers:
   - BRICK
   - WILLO
   - AURORA
   - MAPLE
+
 restricted_tickers:
   - MAPLE
+
+thresholds:
+  allow_max: "5000.00"
+  confirm_max: "10000.00"
+  step_up_max: "15000.00"
+
 notes: >
-  MAPLE is listed so the allow-list and restricted-list intersection can be
-  demonstrated. All symbols are fictional.
+  MAPLE remains on the allow-list so restricted-list intersection can be
+  demonstrated. Amount bands: <= 5000 ALLOW; <= 10000 CONFIRM unless
+  confirmed; <= 15000 STEP_UP unless confirmed and MFA; above 15000 DENY.

@@ -1,0 +1,19 @@
+labs:
+  - id: "001"
+    edition_number: 1
+    slug: know-your-agent
+    title: "Know Your Agent: Identity Is Only the Beginning"
+    subtitle: "Identity can establish which agent is acting. Authority, scope, limits, and context determine whether its requested action should proceed."
+    summary: "Identity can establish which agent is acting. Authority, scope, limits, and context determine whether its requested action should proceed."
+    status: published
+    tags:
+      - AI Agents
+      - Identity
+      - Authorization
+      - Digital Trust
+    lab_url: /labs/know-your-agent
+    newsletter_url: https://www.linkedin.com/newsletters/from-my-desk-7492634647890341890/
+    github_url: https://github.com/angesh3/from-my-desk-labs
+    interactive: true
+    featured: true
+    disclaimer: "Educational simulation with fictional companies, agents, accounts, tickers, and thresholds. Not investment advice. No order is executed."

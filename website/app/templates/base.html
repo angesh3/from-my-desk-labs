@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}From My Desk{% endblock %}</title>
+  <meta name="description" content="{% block description %}Perspectives shaped by experience. Articles, field notes, visual explanations, and occasional interactive labs from Angesh Vikram.{% endblock %}">
+  <link rel="icon" type="image/png" href="/static/brand/favicon.png">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/" aria-label="From My Desk home">
+        <img
+          class="brand-logo"
+          src="/static/brand/from-my-desk-logo.webp"
+          width="46"
+          height="46"
+          alt="">
+        <span class="brand-name">From My Desk</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/" {% if current_path == "/" %}aria-current="page"{% endif %}>Home</a>
+        <a href="/labs" {% if current_path == "/labs" %}aria-current="page"{% endif %}>Labs</a>
+        {% if featured %}
+        <a href="{{ featured.lab_url }}" {% if current_path == featured.lab_url %}aria-current="page"{% endif %}>{{ featured.title.split(":")[0] }}</a>
+        {% endif %}
+        <a href="{{ github_url }}" rel="noopener noreferrer">GitHub</a>
+        <a href="{{ newsletter_url }}" rel="noopener noreferrer">Newsletter</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site-footer">
+    <div class="wrap">
+      <p class="footer-meta">{{ footer_note }}</p>
+    </div>
+  </footer>
+  <script id="telemetry-config" type="application/json">{{ telemetry | tojson }}</script>
+  <script src="/static/js/site.js" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

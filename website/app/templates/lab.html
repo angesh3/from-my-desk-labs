@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block title %}{{ lab.title }} — From My Desk{% endblock %}
+{% block description %}{{ lab.summary }}{% endblock %}
+{% block content %}
+<section class="wrap page-intro lab-intro">
+  <p class="eyebrow">{{ lab.edition_label }}</p>
+  <h1>{{ lab.title }}</h1>
+  <p class="lede">{{ lab.subtitle }}</p>
+  <p class="disclaimer" role="note">{{ disclaimer }}</p>
+</section>
+
+<section class="wrap workflow" aria-labelledby="workflow-heading">
+  <h2 id="workflow-heading">From identity to decision</h2>
+  <figure class="workflow-figure">
+    <img
+      class="workflow-gif"
+      src="/static/labs/001/know-your-agent-trust-workflow.gif"
+      width="800"
+      height="600"
+      alt="Animated workflow: an agent presents identity, then authority, scope, limits, and context are checked before the trust gateway returns allow, confirm, step-up, or deny.">
+    <img
+      class="workflow-static"
+      src="/static/labs/001/architecture.svg"
+      width="960"
+      height="1180"
+      alt="Two-panel architecture: a runtime request path from reader to evaluation API to trust gateway, and the policy evaluation inside the gateway with allow, confirm, step-up, and deny outcomes.">
+    <figcaption>
+      The agent trust flow: identity establishes who is acting. Authority, scope,
+      limits, and context determine whether the request is allowed, challenged, or
+      denied. Every outcome remains traceable.
+    </figcaption>
+  </figure>
+</section>
+
+<section class="wrap" aria-labelledby="presets-heading">
+  <h2 id="presets-heading">Scenario presets</h2>
+  <p>Try a complete request in one click. Amounts are fictional notionals.</p>
+  <div class="preset-row" role="group" aria-label="Amount presets">
+    <button type="button" class="preset" data-preset="allow-4k">4K — Allow</button>
+    <button type="button" class="preset" data-preset="confirm-8k">8K — Confirm</button>
+    <button type="button" class="preset" data-preset="step-up-12k">12K — Step-up</button>
+    <button type="button" class="preset" data-preset="deny-18k">18K — Deny</button>
+  </div>
+  <div class="preset-row" role="group" aria-label="Edge-case presets">
+    <button type="button" class="preset preset-quiet" data-preset="unknown-agent">Unknown agent</button>
+    <button type="button" class="preset preset-quiet" data-preset="revoked">Revoked authority</button>
+    <button type="button" class="preset preset-quiet" data-preset="expired">Expired authority</button>
+    <button type="button" class="preset preset-quiet" data-preset="wrong-principal">Wrong principal</button>
+    <button type="button" class="preset preset-quiet" data-preset="restricted">Restricted ticker</button>
+    <button type="button" class="preset preset-quiet" data-preset="unassigned">Unassigned account</button>
+  </div>
+</section>
+
+<section class="wrap" aria-labelledby="builder-heading">
+  <h2 id="builder-heading">Request builder</h2>
+  <p>Fictional identifiers only. Do not enter real names, accounts, or credentials.</p>
+  <form id="evaluate-form" class="builder" novalidate>
+    <div class="grid-2">
+      <label>Principal
+        <input id="principal_id" name="principal_id" value="principal-demo-001" autocomplete="off" spellcheck="false">
+      </label>
+      <label>Agent
+        <input id="agent_id" name="agent_id" value="kya-agent-001" autocomplete="off" spellcheck="false">
+      </label>
+      <label>Account
+        <input id="account_id" name="account_id" value="paper-desk-alpha" autocomplete="off" spellcheck="false">
+      </label>
+      <label>Fictional ticker
+        <select id="ticker" name="ticker">
+          <option value="BRICK">BRICK</option>
+          <option value="WILLO">WILLO</option>
+          <option value="AURORA">AURORA</option>
+          <option value="MAPLE">MAPLE (restricted)</option>
+        </select>
+      </label>
+      <label>Side
+        <select id="side" name="side">
+          <option value="buy">buy (display only)</option>
+          <option value="sell">sell (display only)</option>
+        </select>
+      </label>
+      <label>Quantity
+        <input id="quantity" name="quantity" type="number" min="1" step="1" value="100">
+      </label>
+      <label>Limit price
+        <input id="limit_price" name="limit_price" inputmode="decimal" value="40.00">
+      </label>
+    </div>
+    <fieldset>
+      <legend>Authorization context</legend>
+      <label class="check">
+        <input id="customer_confirmed" name="customer_confirmed" type="checkbox">
+        Customer confirmed
+      </label>
+      <label class="check">
+        <input id="mfa_verified" name="mfa_verified" type="checkbox">
+        MFA verified
+      </label>
+      <p class="hint">These flags cannot override a hard denial (unknown agent, restricted ticker, revoked authority, and similar).</p>
+    </fieldset>
+    <button type="submit" class="button">Evaluate policy</button>
+  </form>
+</section>
+
+<section class="wrap" aria-labelledby="result-heading">
+  <h2 id="result-heading">Evaluation result</h2>
+  <div id="result" class="result" aria-live="polite">
+    <p>Submit a request or choose a preset. The service returns a decision only — it does not execute an order.</p>
+  </div>
+</section>
+
+<section class="wrap explain" aria-labelledby="explain-heading">
+  <h2 id="explain-heading">How to read the decision</h2>
+  <ul>
+    <li><strong>Identity</strong> establishes which agent is acting.</li>
+    <li><strong>Authority</strong> establishes what it can do, for whom, on which accounts and tickers, and until when.</li>
+    <li><strong>Context</strong> determines whether confirmation or stronger authentication is required for the amount.</li>
+    <li><strong>Audit</strong> preserves a decision identifier and explanations. Nothing is executed.</li>
+  </ul>
+</section>
+
+<section class="wrap architecture" id="architecture" aria-labelledby="arch-heading">
+  <h2 id="arch-heading">How it works</h2>
+  <p>
+    This lab separates four responsibilities that are often treated as one.
+    Identity establishes which agent is acting. Delegated authority defines what
+    it may do and for whom. Policy evaluates the requested action against scope,
+    limits, and current context. The result is an explainable decision and audit record—not an executed transaction.
+  </p>
+  <figure>
+    <img
+      src="/static/labs/001/architecture.svg"
+      width="960"
+      height="1180"
+      alt="Panel A shows the runtime path: reader, interactive scenario builder, POST /api/evaluate, Trust Gateway, decision response returned to the reader, then explanation and audit ID. Panel B shows identity registry, delegated authority, policy rules, and request context feeding policy evaluation, then ALLOW, CONFIRM, STEP_UP, or DENY. CONFIRM and STEP_UP resubmit after context is satisfied. ALLOW and DENY end at explanation and audit. No order is executed.">
+    <figcaption>
+      Panel A is the request path through this website. Panel B is the policy
+      lifecycle inside the Trust Gateway. Confirmation and MFA cannot override a
+      hard authorization denial. An ALLOW decision is policy approval only.
+    </figcaption>
+  </figure>
+  <p class="execution-boundary" role="note">
+    This spike ends at an explainable policy decision. ALLOW does not place an
+    order, move money, or call a brokerage. A production execution system would
+    be a separate, independently controlled component.
+  </p>
+</section>
+
+<section class="wrap policy-details" aria-labelledby="policy-heading">
+  <h2 id="policy-heading">Technical policy details</h2>
+  <p>Policy ID in this demo: <code>{{ policy_id }}</code>. All values below are fictional.</p>
+  <table class="policy-bands">
+    <caption>Fictional notional bands after hard authorization checks pass</caption>
+    <thead>
+      <tr>
+        <th scope="col">Notional (fictional)</th>
+        <th scope="col">Decision</th>
+        <th scope="col">How context can satisfy it</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Up to 5,000</td>
+        <td>ALLOW</td>
+        <td>No extra context required</td>
+      </tr>
+      <tr>
+        <td>Above 5,000 through 10,000</td>
+        <td>CONFIRM</td>
+        <td>Customer confirmation can satisfy CONFIRM</td>
+      </tr>
+      <tr>
+        <td>Above 10,000 through 15,000</td>
+        <td>STEP_UP</td>
+        <td>Confirmation plus MFA can satisfy STEP_UP</td>
+      </tr>
+      <tr>
+        <td>Above 15,000</td>
+        <td>DENY</td>
+        <td>Amount cap; flags cannot override</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    Hard authorization checks run first. Neither confirmation nor MFA can override
+    an unknown, inactive, expired, revoked, mismatched, unassigned, unsupported,
+    or restricted request. Amount bands use decimal arithmetic. The service never
+    places a trade (<code>execution: not_performed</code>).
+  </p>
+</section>
+
+<section class="wrap resources" aria-labelledby="resources-heading">
+  <h2 id="resources-heading">Sources</h2>
+  <p class="actions">
+    <a class="button button-quiet" href="{{ lab.github_url }}" rel="noopener noreferrer">View source on GitHub</a>
+    <a class="button button-quiet" href="{{ lab.newsletter_url }}" rel="noopener noreferrer">Read the newsletter</a>
+  </p>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="/static/labs/001/lab.js" defer></script>
+{% endblock %}
