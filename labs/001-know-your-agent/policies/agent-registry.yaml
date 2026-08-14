@@ -1,24 +1,72 @@
-# Fictional agent registry for Cedar Quill Desk.
-# Names, owners, and accounts are invented for the lab.
+# Fictional agent registry for Cedar Quill Markets.
+# Names, principals, accounts, and dates are invented for the lab.
+# This is not a real identity provider or delegation record.
 
-desk: Cedar Quill Desk
-bundle_id: cedar-quill-registry-v1
+organization: Cedar Quill Markets
+policy_id: cedar-quill-desk-v2
 
 agents:
-  - id: kya-agent-001
+  - agent_id: kya-agent-001
     display_name: Quill Research Agent
-    owner: desk.ops@cedar-quill.example
     status: active
+    principal_id: principal-demo-001
     capabilities:
       - propose_paper_order
     accounts:
       - paper-desk-alpha
+    valid_from: "2020-01-01T00:00:00+00:00"
+    valid_until: "2099-12-31T23:59:59+00:00"
+    revoked: false
+    policy_id: cedar-quill-desk-v2
 
-  - id: kya-agent-dormant
+  - agent_id: kya-agent-dormant
     display_name: Archived Sketch Agent
-    owner: desk.ops@cedar-quill.example
     status: inactive
+    principal_id: principal-demo-001
     capabilities:
       - propose_paper_order
     accounts:
       - paper-desk-beta
+    valid_from: "2020-01-01T00:00:00+00:00"
+    valid_until: "2099-12-31T23:59:59+00:00"
+    revoked: false
+    policy_id: cedar-quill-desk-v2
+
+  - agent_id: kya-agent-revoked
+    display_name: Recalled Desk Agent
+    status: active
+    principal_id: principal-demo-001
+    capabilities:
+      - propose_paper_order
+    accounts:
+      - paper-desk-alpha
+    valid_from: "2020-01-01T00:00:00+00:00"
+    valid_until: "2099-12-31T23:59:59+00:00"
+    revoked: true
+    policy_id: cedar-quill-desk-v2
+
+  - agent_id: kya-agent-expired
+    display_name: Lapsed Mandate Agent
+    status: active
+    principal_id: principal-demo-001
+    capabilities:
+      - propose_paper_order
+    accounts:
+      - paper-desk-alpha
+    valid_from: "2020-01-01T00:00:00+00:00"
+    valid_until: "2021-06-30T00:00:00+00:00"
+    revoked: false
+    policy_id: cedar-quill-desk-v2
+
+  - agent_id: kya-agent-observer
+    display_name: Notes-Only Observer
+    status: active
+    principal_id: principal-demo-001
+    capabilities:
+      - read_desk_notes
+    accounts:
+      - paper-desk-alpha
+    valid_from: "2020-01-01T00:00:00+00:00"
+    valid_until: "2099-12-31T23:59:59+00:00"
+    revoked: false
+    policy_id: cedar-quill-desk-v2

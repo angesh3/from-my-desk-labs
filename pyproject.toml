@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "from-my-desk-labs"
+version = "0.3.0"
+description = "From My Desk publication and interactive labs"
+requires-python = ">=3.11"
+
+[tool.setuptools]
+packages = ["from_my_desk", "know_your_agent"]
+include-package-data = true
+
+[tool.setuptools.package-dir]
+from_my_desk = "website/app"
+know_your_agent = "labs/001-know-your-agent/src/know_your_agent"
+
+[tool.setuptools.package-data]
+from_my_desk = [
+    "templates/*.html",
+    "static/brand/*",
+    "static/css/*",
+    "static/js/*",
+]

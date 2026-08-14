@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 1180" role="img" aria-labelledby="title desc">
+  <title id="title">Know Your Agent architecture</title>
+  <desc id="desc">
+    Panel A, runtime request path: Reader to Interactive scenario builder to POST /api/evaluate to Trust Gateway.
+    The Decision response returns to the scenario builder and reader, with explanation and audit ID. No order is executed.
+    Panel B, inside the Trust Gateway: Identity registry, delegated authority, policy rules, and request context feed Policy Evaluation.
+    Policy Evaluation feeds a Decision. ALLOW is within authority. CONFIRM requires explicit consent, then resubmits.
+    STEP_UP requires stronger authentication, then resubmits. DENY is outside authority or policy.
+    ALLOW and DENY go to explanation and audit ID. Confirmation or MFA cannot override a hard authorization denial.
+    ALLOW is policy approval only. No brokerage call, order execution, or money movement occurs.
+  </desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto">
+      <polygon points="0 0, 12 5, 0 10" fill="#14213d"/>
+    </marker>
+    <marker id="arrow-gold" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto">
+      <polygon points="0 0, 12 5, 0 10" fill="#b08d57"/>
+    </marker>
+  </defs>
+  <rect width="960" height="1180" fill="#f7f4ec"/>
+
+  <!-- Panel A -->
+  <rect x="16" y="16" width="928" height="360" fill="#ffffff" stroke="#14213d"/>
+  <text x="36" y="48" font-family="Georgia, serif" font-size="18" fill="#14213d">Panel A — Runtime request path</text>
+  <text x="36" y="72" font-family="Georgia, serif" font-size="13" fill="#5c5a54">The decision is returned to the reader. Nothing is executed.</text>
+
+  <g font-family="Georgia, serif" font-size="14" fill="#14213d">
+    <rect x="36" y="96" width="140" height="58" fill="#ffffff" stroke="#14213d"/>
+    <text x="106" y="131" text-anchor="middle">Reader</text>
+
+    <rect x="216" y="96" width="190" height="58" fill="#ffffff" stroke="#14213d"/>
+    <text x="311" y="122" text-anchor="middle">Interactive</text>
+    <text x="311" y="142" text-anchor="middle">scenario builder</text>
+
+    <rect x="446" y="96" width="180" height="58" fill="#ffffff" stroke="#14213d"/>
+    <text x="536" y="131" text-anchor="middle">POST /api/evaluate</text>
+
+    <rect x="666" y="88" width="258" height="74" fill="#14213d"/>
+    <text x="795" y="131" text-anchor="middle" fill="#f7f4ec">Trust Gateway</text>
+
+    <path d="M176 125 H216" stroke="#14213d" fill="none" marker-end="url(#arrow)"/>
+    <path d="M406 125 H446" stroke="#14213d" fill="none" marker-end="url(#arrow)"/>
+    <path d="M626 125 H666" stroke="#14213d" fill="none" marker-end="url(#arrow)"/>
+
+    <path d="M795 162 V200" stroke="#14213d" fill="none" marker-end="url(#arrow)"/>
+
+    <rect x="666" y="204" width="258" height="58" fill="#ffffff" stroke="#b08d57" stroke-width="2"/>
+    <text x="795" y="239" text-anchor="middle">Decision response</text>
+
+    <rect x="216" y="204" width="300" height="58" fill="#ffffff" stroke="#14213d"/>
+    <text x="366" y="230" text-anchor="middle">Explanation and audit ID</text>
+    <text x="366" y="248" text-anchor="middle" font-size="12" fill="#5c5a54">returned to the builder and reader</text>
+
+    <path d="M666 233 H516" stroke="#14213d" fill="none" marker-end="url(#arrow)"/>
+    <path d="M311 204 V154" stroke="#b08d57" fill="none" marker-end="url(#arrow-gold)"/>
+    <text x="328" y="186" font-size="12" fill="#b08d57">response</text>
+  </g>
+  <text x="36" y="300" font-family="Georgia, serif" font-size="13" fill="#5c5a54">No brokerage call. No order. No money movement. The path ends at an explainable decision.</text>
+  <text x="36" y="348" font-family="Georgia, serif" font-size="13" fill="#14213d">Reader → builder → API → Trust Gateway → decision response → explanation and audit ID</text>
+
+  <!-- Panel B -->
+  <rect x="16" y="392" width="928" height="768" fill="#ffffff" stroke="#14213d"/>
+  <text x="36" y="424" font-family="Georgia, serif" font-size="18" fill="#14213d">Panel B — Inside the Trust Gateway</text>
+  <text x="36" y="448" font-family="Georgia, serif" font-size="13" fill="#5c5a54">Four inputs feed Policy Evaluation. The decision can be challenged and resubmitted.</text>
+
+  <g font-family="Georgia, serif" font-size="13" fill="#14213d">
+    <rect x="36" y="468" width="210" height="50" fill="#f7f4ec" stroke="#14213d"/>
+    <text x="141" y="498" text-anchor="middle">Identity registry</text>
+    <rect x="262" y="468" width="210" height="50" fill="#f7f4ec" stroke="#14213d"/>
+    <text x="367" y="498" text-anchor="middle">Delegated authority</text>
+    <rect x="488" y="468" width="210" height="50" fill="#f7f4ec" stroke="#14213d"/>
+    <text x="593" y="498" text-anchor="middle">Policy rules</text>
+    <rect x="714" y="468" width="210" height="50" fill="#f7f4ec" stroke="#14213d"/>
+    <text x="819" y="498" text-anchor="middle">Request context</text>
+
+    <path d="M141 518 V560" stroke="#14213d" fill="none" marker-end="url(#arrow)"/>
+    <path d="M367 518 V560" stroke="#14213d" fill="none" marker-end="url(#arrow)"/>
+    <path d="M593 518 V560" stroke="#14213d" fill="none" marker-end="url(#arrow)"/>
+    <path d="M819 518 V560" stroke="#14213d" fill="none" marker-end="url(#arrow)"/>
+
+    <rect x="300" y="564" width="360" height="54" fill="#14213d"/>
+    <text x="480" y="597" text-anchor="middle" fill="#f7f4ec" font-size="16">Policy Evaluation</text>
+
+    <path d="M480 618 V650" stroke="#14213d" fill="none" marker-end="url(#arrow)"/>
+
+    <polygon points="480,654 560,710 480,766 400,710" fill="#ffffff" stroke="#14213d" stroke-width="2"/>
+    <text x="480" y="706" text-anchor="middle" font-size="14">Decision</text>
+    <text x="480" y="724" text-anchor="middle" font-size="12" fill="#5c5a54">four-way</text>
+
+    <path d="M400 710 H141 V760" stroke="#14213d" fill="none" marker-end="url(#arrow)"/>
+    <path d="M430 740 L262 760" stroke="#14213d" fill="none" marker-end="url(#arrow)"/>
+    <path d="M530 740 L698 760" stroke="#14213d" fill="none" marker-end="url(#arrow)"/>
+    <path d="M560 710 H819 V760" stroke="#14213d" fill="none" marker-end="url(#arrow)"/>
+
+    <rect x="36" y="764" width="210" height="70" fill="#ffffff" stroke="#1f7a4d" stroke-width="2"/>
+    <text x="141" y="792" text-anchor="middle" fill="#1f7a4d" font-size="15">ALLOW</text>
+    <text x="141" y="814" text-anchor="middle" font-size="12">within authority</text>
+
+    <rect x="262" y="764" width="210" height="70" fill="#ffffff" stroke="#9a7b24" stroke-width="2"/>
+    <text x="367" y="792" text-anchor="middle" fill="#9a7b24" font-size="15">CONFIRM</text>
+    <text x="367" y="814" text-anchor="middle" font-size="12">explicit consent required</text>
+
+    <rect x="488" y="764" width="210" height="70" fill="#ffffff" stroke="#c45c12" stroke-width="2"/>
+    <text x="593" y="792" text-anchor="middle" fill="#c45c12" font-size="15">STEP_UP</text>
+    <text x="593" y="814" text-anchor="middle" font-size="12">stronger authentication</text>
+
+    <rect x="714" y="764" width="210" height="70" fill="#ffffff" stroke="#a31f1f" stroke-width="2"/>
+    <text x="819" y="792" text-anchor="middle" fill="#a31f1f" font-size="15">DENY</text>
+    <text x="819" y="814" text-anchor="middle" font-size="12">outside authority or policy</text>
+
+    <rect x="262" y="860" width="210" height="54" fill="#f7f4ec" stroke="#9a7b24"/>
+    <text x="367" y="882" text-anchor="middle" font-size="12">add customer confirmation</text>
+    <text x="367" y="900" text-anchor="middle" font-size="12">then resubmit</text>
+    <path d="M367 834 V860" stroke="#9a7b24" fill="none" marker-end="url(#arrow-gold)"/>
+
+    <rect x="488" y="860" width="210" height="54" fill="#f7f4ec" stroke="#c45c12"/>
+    <text x="593" y="882" text-anchor="middle" font-size="12">complete MFA</text>
+    <text x="593" y="900" text-anchor="middle" font-size="12">then resubmit</text>
+    <path d="M593 834 V860" stroke="#c45c12" fill="none" marker-end="url(#arrow-gold)"/>
+
+    <path d="M367 914 V930 H480 V618" stroke="#b08d57" fill="none" stroke-dasharray="6 4" marker-end="url(#arrow-gold)"/>
+    <path d="M593 914 V940 H620 V618" stroke="#b08d57" fill="none" stroke-dasharray="6 4" marker-end="url(#arrow-gold)"/>
+    <text x="500" y="952" font-size="12" fill="#b08d57">resubmit for evaluation</text>
+
+    <path d="M141 834 V980" stroke="#1f7a4d" fill="none" marker-end="url(#arrow)"/>
+    <path d="M819 834 V980" stroke="#a31f1f" fill="none" marker-end="url(#arrow)"/>
+
+    <rect x="36" y="984" width="888" height="54" fill="#ffffff" stroke="#14213d"/>
+    <text x="480" y="1006" text-anchor="middle" font-size="14">Explanation and audit ID</text>
+    <text x="480" y="1026" text-anchor="middle" font-size="12" fill="#5c5a54">ALLOW is policy approval only. DENY is also explained. No order is placed.</text>
+
+    <text x="36" y="1070" font-size="13">Hard denials first: unknown, inactive, expired, revoked, mismatched, unassigned, unsupported, or restricted.</text>
+    <text x="36" y="1092" font-size="13">Confirmation or MFA cannot override a hard authorization denial.</text>
+    <text x="36" y="1114" font-size="13">ALLOW does not place an order, move money, or call a brokerage.</text>
+    <text x="36" y="1136" font-size="13" fill="#5c5a54">Fictional Cedar Quill Markets demonstration. Execution is a separate future component.</text>
+  </g>
+</svg>

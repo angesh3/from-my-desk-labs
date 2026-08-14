@@ -1,0 +1,16 @@
+{
+  "principal_id": "principal-demo-001",
+  "agent_id": "kya-agent-001",
+  "action": "propose_paper_order",
+  "order": {
+    "ticker": "BRICK",
+    "side": "buy",
+    "quantity": 200,
+    "limit_price": "40.00",
+    "account_id": "paper-desk-alpha"
+  },
+  "authorization_context": {
+    "customer_confirmed": true,
+    "mfa_verified": false
+  }
+}
