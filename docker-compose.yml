@@ -13,6 +13,8 @@ services:
       POLICY_DIR: /srv/labs/001-know-your-agent/policies
       PORT: "8080"
       POSTHOG_ENABLED: "false"
+      POSTHOG_KEY: ""
+      POSTHOG_HOST: https://us.i.posthog.com
       REGISTRY_PUBLIC: sanitized
       APP_VERSION: "0.3.0"
     healthcheck:

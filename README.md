@@ -81,6 +81,54 @@ docker compose up --build
 
 Production image: non-root user `appuser` (uid 10001), non-editable `pip install .`, `uvicorn from_my_desk.main:app` with no `--reload`, health check on `GET /health`, `POSTHOG_ENABLED=false` by default. Bind `PORT` (Render sets this). Do not copy a `.env` with secrets into the image.
 
+## Analytics (PostHog)
+
+Product analytics are **off by default**. Localhost, `127.0.0.1`, and test hosts never load the PostHog browser SDK.
+
+`POSTHOG_KEY` is a **public client project token** (`phc_…`) used by the browser SDK. It is **not** a Personal API key. Do not put a Personal API key in this repository, Docker image, or Render service.
+
+### Configuration
+
+Copy `.env.example` to `.env` for local development. Keep analytics disabled locally:
+
+```
+POSTHOG_ENABLED=false
+POSTHOG_KEY=
+POSTHOG_HOST=https://us.i.posthog.com
+```
+
+On Render (do not apply from this change), add the same names as **environment variables** on the Web Service. To collect production analytics after privacy review:
+
+1. Create a PostHog project and copy the **Project API Key** shown for client-side use (`phc_…`).
+2. Set `POSTHOG_ENABLED=true`.
+3. Set `POSTHOG_KEY` to that public project token.
+4. Set `POSTHOG_HOST=https://us.i.posthog.com` unless you use a different PostHog region or proxy.
+5. Redeploy the Render service so the new env vars are available to the container.
+
+Leave `POSTHOG_ENABLED=false` and `POSTHOG_KEY` empty until you intend to collect production analytics.
+
+### Runtime behavior
+
+The official PostHog browser SDK (`array.js` from the PostHog assets host) is loaded only when all of the following are true:
+
+- `POSTHOG_ENABLED` is true
+- `POSTHOG_KEY` is non-empty
+- the request hostname is not `localhost`, `127.0.0.1`, `::1`, or a test host
+
+Initialization uses `capture_pageview` and `capture_pageleave`, with `autocapture` off, session recording disabled, `person_profiles: identified_only`, `persistence: localStorage+cookie`, and `respect_dnt: true`. The site never calls `posthog.identify()`. Visitors remain anonymous.
+
+Analytics failures are non-blocking. Pages, Lab 001, and `POST /api/evaluate` do not depend on PostHog. Visitors are never shown analytics errors.
+
+### Events
+
+Custom events are privacy-safe. They never include principal, agent, or account IDs; tickers; quantities; prices or notionals; audit IDs; request or response JSON; form values; credentials; explicit IP addresses; newsletter subscriber information; or raw href URLs.
+
+| Event | Properties |
+| --- | --- |
+| `lab_preset_selected` | `lab_id` (`001`), `preset_category` (`allow`, `confirm`, `step_up`, or `deny`) |
+| `policy_evaluation_completed` | `lab_id` (`001`), `decision` (`allow`, `confirm`, `step_up`, or `deny`), `reason_category` (generalized only: `ok`, `confirmation_required`, `step_up_required`, `amount_limit`, `identity`, `authority`, `scope`, `invalid_request`, or `other`) |
+| `outbound_link_clicked` | `destination` (`github`, `linkedin_newsletter`, or `architecture`), `page_type` (`home`, `labs_index`, or `lab`) |
+
 ## Adding Lab 002
 
 1. Create `labs/002-short-name/` with a uniquely named package such as `labs/002-short-name/src/short_name/` (not `models.py` or `gateway.py` at the top level).
@@ -106,7 +154,7 @@ Configure a **Web Service** that builds this repository with Docker:
 | Build context | repository root |
 | Health check | `GET /health` |
 | Start command | image `CMD` (uvicorn, no `--reload`) |
-| Environment | `PORT` from the platform; `POSTHOG_ENABLED=false`; leave `POSTHOG_PROJECT_TOKEN` empty until a privacy review |
+| Environment | `PORT` from the platform; `POSTHOG_ENABLED=false`; `POSTHOG_HOST=https://us.i.posthog.com`; leave `POSTHOG_KEY` empty until a privacy review. `POSTHOG_KEY` is a public client project token, not a Personal API key. |
 
 Optional public links: `PUBLIC_GITHUB_URL`, `PUBLIC_NEWSLETTER_URL`. Do not put production secrets in the image.
 

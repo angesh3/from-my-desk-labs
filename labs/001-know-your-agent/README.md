@@ -159,11 +159,11 @@ See the repository-root `.env.example`. Copy to `.env` locally; `.env` is gitign
 | `PUBLIC_GITHUB_URL` | this GitHub repo | Footer / home link |
 | `PUBLIC_NEWSLETTER_URL` | [From My Desk on LinkedIn](https://www.linkedin.com/newsletters/from-my-desk-7492634647890341890/) | Override if the newsletter URL changes |
 | `POSTHOG_ENABLED` | false | Product telemetry off unless true |
-| `POSTHOG_PROJECT_TOKEN` | empty | Public ingestion token only |
+| `POSTHOG_KEY` | empty | Public PostHog **project** token (`phc_…`). Not a Personal API key. |
 | `POSTHOG_HOST` | `https://us.i.posthog.com` | Analytics host |
 | `RATE_LIMIT_PER_MINUTE` | 60 | In-memory POST /evaluate limit |
 
-Telemetry is **off** unless explicitly enabled, and it stays off on localhost and during pytest. It never sends request/response JSON, principal, agent, account, or audit IDs. Analytics failure must not block evaluation. There is no custom `/admin` app; use the authenticated PostHog dashboard if you enable analytics.
+Telemetry is **off** unless explicitly enabled, and it stays off on localhost and during tests against `testserver`. It never sends request/response JSON, principal, agent, account, ticker, amount, or audit IDs. Analytics failure must not block evaluation. There is no custom `/admin` app; use the authenticated PostHog dashboard if you enable analytics. `POSTHOG_KEY` is a public client token, not a Personal API key.
 
 Recommended PostHog dashboard (private): unique visitors, lab opens, evaluations submitted, visitor-to-evaluation conversion, decision distribution, most-used scenarios, architecture views, GitHub clicks, newsletter clicks, referrer/UTM, country/device summaries from the platform, evaluation errors, coarse response-time buckets.
 

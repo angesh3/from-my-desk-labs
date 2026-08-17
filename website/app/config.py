@@ -93,7 +93,11 @@ class Settings:
         )
         self.public_base_url = os.environ.get("PUBLIC_BASE_URL", "").rstrip("/")
         self.posthog_enabled = _bool_env("POSTHOG_ENABLED", False)
-        self.posthog_project_token = os.environ.get("POSTHOG_PROJECT_TOKEN", "").strip()
+        # POSTHOG_KEY is the public client project token, not a Personal API key.
+        self.posthog_key = (
+            os.environ.get("POSTHOG_KEY", "").strip()
+            or os.environ.get("POSTHOG_PROJECT_TOKEN", "").strip()
+        )
         self.posthog_host = os.environ.get(
             "POSTHOG_HOST", "https://us.i.posthog.com"
         ).rstrip("/")

@@ -114,6 +114,36 @@
     }
   };
 
+  var PRESET_CATEGORY = {
+    "allow-4k": "allow",
+    "confirm-8k": "confirm",
+    "step-up-12k": "step_up",
+    "deny-18k": "deny",
+    "unknown-agent": "deny",
+    revoked: "deny",
+    expired: "deny",
+    "wrong-principal": "deny",
+    restricted: "deny",
+    unassigned: "deny"
+  };
+
+  var REASON_CATEGORY = {
+    ok: "ok",
+    confirmation_required: "confirmation_required",
+    step_up_required: "step_up_required",
+    amount_exceeds_limit: "amount_limit",
+    unknown_agent: "identity",
+    inactive_agent: "identity",
+    authority_expired: "authority",
+    authority_revoked: "authority",
+    principal_mismatch: "identity",
+    capability_denied: "scope",
+    account_not_assigned: "scope",
+    ticker_not_allowed: "scope",
+    ticker_restricted: "scope",
+    invalid_request: "invalid_request"
+  };
+
   function $(id) {
     return document.getElementById(id);
   }
@@ -151,7 +181,10 @@
     $("customer_confirmed").checked = preset.customer_confirmed;
     $("mfa_verified").checked = preset.mfa_verified;
     markSelected(name);
-    track("scenario_selected", { preset_name: name });
+    var category = PRESET_CATEGORY[name];
+    if (category) {
+      track("lab_preset_selected", { lab_id: "001", preset_category: category });
+    }
   }
 
   function readForm() {
@@ -240,21 +273,8 @@
       "</pre></details>";
   }
 
-  function bandFromNotional(raw) {
-    var amount = Number(raw);
-    if (!(amount >= 0)) {
-      return "unknown";
-    }
-    if (amount <= 5000) {
-      return "0_to_5k";
-    }
-    if (amount <= 10000) {
-      return "5k_to_10k";
-    }
-    if (amount <= 15000) {
-      return "10k_to_15k";
-    }
-    return "above_15k";
+  function reasonCategory(code) {
+    return REASON_CATEGORY[code] || "other";
   }
 
   async function submitEvaluation(event) {
@@ -262,8 +282,6 @@
       event.preventDefault();
     }
     var body = readForm();
-    track("evaluation_submitted", { amount_band: bandFromNotional(Number(body.order.quantity) * Number(body.order.limit_price)) });
-    var started = Date.now();
     try {
       var response = await fetch("/api/evaluate", {
         method: "POST",
@@ -273,27 +291,20 @@
       var payload = await response.json();
       renderResult(body, payload, response.status);
       if (payload && payload.decision) {
-        track("decision_returned", {
-          decision: payload.decision,
-          reason_category: payload.reason_code === "ok" ? payload.decision : "deny_or_challenge",
-          amount_band: bandFromNotional(payload.notional),
-          response_time_bucket: Date.now() - started < 200 ? "under_200ms" : "200ms_plus"
-        });
-      } else {
-        track("evaluation_failed", { response_time_bucket: "n/a" });
+        try {
+          track("policy_evaluation_completed", {
+            lab_id: "001",
+            decision: payload.decision,
+            reason_category: reasonCategory(payload.reason_code)
+          });
+        } catch (ignore) {}
       }
     } catch (err) {
       renderResult(body, { reason: "The evaluation request failed in the browser." }, 0);
-      track("evaluation_failed", { response_time_bucket: "n/a" });
     }
   }
 
   function init() {
-    var path = window.location.pathname;
-    if (path === "/labs/know-your-agent") {
-      track("lab_opened", { page_path: path });
-    }
-
     document.querySelectorAll("[data-preset]").forEach(function (button) {
       button.setAttribute("aria-pressed", "false");
       button.addEventListener("click", function () {
@@ -305,35 +316,6 @@
     if (form) {
       form.addEventListener("submit", submitEvaluation);
     }
-
-    var arch = document.getElementById("architecture");
-    if (arch && "IntersectionObserver" in window) {
-      var seen = false;
-      var observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (!seen && entry.isIntersecting) {
-            seen = true;
-            track("architecture_viewed", { page_path: path });
-          }
-        });
-      });
-      observer.observe(arch);
-    }
-
-    document.addEventListener("toggle", function (event) {
-      var target = event.target;
-      if (!(target && target.id)) {
-        return;
-      }
-      if (target.id === "request-json" || target.id === "response-json") {
-        if (target.open) {
-          track("json_expanded", { page_path: path });
-        }
-      }
-      if (target.id === "checks-list" && target.open) {
-        track("checks_expanded", { page_path: path });
-      }
-    }, true);
   }
 
   if (document.readyState === "loading") {
