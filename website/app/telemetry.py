@@ -1,37 +1,108 @@
-"""Optional privacy-conscious product telemetry. Disabled unless configured."""
+"""Optional privacy-conscious PostHog analytics. Disabled unless configured."""
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any, Dict, FrozenSet
+from urllib.parse import urlparse
 
 from from_my_desk.config import Settings
 
+BLOCKED_HOSTS: FrozenSet[str] = frozenset(
+    {
+        "localhost",
+        "127.0.0.1",
+        "::1",
+        "testserver",
+        "0.0.0.0",
+    }
+)
 
-def telemetry_enabled_for_request(settings: Settings, host: str, is_test: bool) -> bool:
-    if is_test:
-        return False
+BASE_SECURITY_HEADERS = {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+}
+
+
+def posthog_assets_origin(api_host: str) -> str:
+    """Official JS is served from the PostHog assets host derived from api_host."""
+    origin = (api_host or "").strip().rstrip("/")
+    if ".i.posthog.com" in origin:
+        return origin.replace(".i.posthog.com", "-assets.i.posthog.com")
+    return origin
+
+
+def posthog_sdk_src(api_host: str) -> str:
+    return posthog_assets_origin(api_host) + "/static/array.js"
+
+
+def hostname_is_blocked(host: str) -> bool:
+    hostname = (host or "").split(":")[0].lower().strip("[]")
+    return hostname in BLOCKED_HOSTS
+
+
+def telemetry_enabled_for_request(settings: Settings, host: str) -> bool:
     if not settings.posthog_enabled:
         return False
-    if not settings.posthog_project_token:
+    if not settings.posthog_key:
         return False
-    hostname = (host or "").split(":")[0].lower()
-    if hostname in {"localhost", "127.0.0.1", "::1", "testserver"}:
+    if hostname_is_blocked(host):
         return False
     return True
 
 
-def public_telemetry_config(
-    settings: Settings, host: str, is_test: bool = False
-) -> Dict[str, Any]:
-    enabled = telemetry_enabled_for_request(settings, host, is_test)
-    if not enabled:
+def public_telemetry_config(settings: Settings, host: str) -> Dict[str, Any]:
+    """JSON passed to pages. Token is the public client project token only."""
+    if not telemetry_enabled_for_request(settings, host):
         return {"enabled": False}
+    api_host = settings.posthog_host
     return {
         "enabled": True,
-        "token": settings.posthog_project_token,
-        "host": settings.posthog_host,
-        "cookieless": True,
-        "disable_session_recording": True,
+        "key": settings.posthog_key,
+        "host": api_host,
+        "sdk_src": posthog_sdk_src(api_host),
+        "capture_pageview": True,
+        "capture_pageleave": True,
         "autocapture": False,
-        "person_profiles": "never",
+        "disable_session_recording": True,
+        "person_profiles": "identified_only",
+        "persistence": "localStorage+cookie",
+        "respect_dnt": True,
     }
+
+
+def _origin(url: str) -> str:
+    parsed = urlparse(url)
+    if parsed.scheme and parsed.netloc:
+        return "{0}://{1}".format(parsed.scheme, parsed.netloc)
+    return url.rstrip("/")
+
+
+def content_security_policy(settings: Settings, host: str) -> str:
+    script_src = ["'self'"]
+    connect_src = ["'self'"]
+    if telemetry_enabled_for_request(settings, host):
+        api = _origin(settings.posthog_host)
+        assets = _origin(posthog_assets_origin(settings.posthog_host))
+        for origin in (api, assets):
+            if origin not in script_src:
+                script_src.append(origin)
+            if origin not in connect_src:
+                connect_src.append(origin)
+    return (
+        "default-src 'self'; "
+        "script-src {0}; "
+        "style-src 'self'; "
+        "img-src 'self' data:; "
+        "font-src 'self'; "
+        "connect-src {1}; "
+        "base-uri 'self'; "
+        "form-action 'self'".format(" ".join(script_src), " ".join(connect_src))
+    )
+
+
+def security_headers_for_request(settings: Settings, host: str) -> Dict[str, str]:
+    headers = dict(BASE_SECURITY_HEADERS)
+    headers["Content-Security-Policy"] = content_security_policy(settings, host)
+    return headers

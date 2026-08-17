@@ -23,7 +23,7 @@ from from_my_desk.config import (
     get_settings,
     validate_runtime_resources,
 )
-from from_my_desk.telemetry import public_telemetry_config
+from from_my_desk.telemetry import public_telemetry_config, security_headers_for_request
 from know_your_agent.gateway import get_bundle, router as lab_router
 from know_your_agent.loader import PolicyConfigError
 from know_your_agent.rate_limit import SlidingWindowLimiter
@@ -34,22 +34,9 @@ mimetypes.add_type("image/svg+xml", ".svg")
 _settings = get_settings()
 TEMPLATES = Jinja2Templates(directory=str(_settings.website_template_dir))
 
-SECURITY_HEADERS = {
-    "X-Content-Type-Options": "nosniff",
-    "X-Frame-Options": "DENY",
-    "Referrer-Policy": "strict-origin-when-cross-origin",
-    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
-    "Content-Security-Policy": (
-        "default-src 'self'; "
-        "script-src 'self'; "
-        "style-src 'self'; "
-        "img-src 'self' data:; "
-        "font-src 'self'; "
-        "connect-src 'self'; "
-        "base-uri 'self'; "
-        "form-action 'self'"
-    ),
-}
+def _security_headers(request: Request) -> Dict[str, str]:
+    settings = get_settings()
+    return security_headers_for_request(settings, request.url.hostname or "")
 
 _limiter: Optional[SlidingWindowLimiter] = None
 _catalog: Optional[List[LabEntry]] = None
@@ -110,7 +97,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
                             "reason": "Too many evaluation requests. Try again shortly.",
                             "detail": "rate_limited",
                         },
-                        headers=SECURITY_HEADERS,
+                        headers=_security_headers(request),
                     )
             content_length = request.headers.get("content-length")
             if content_length and content_length.isdigit() and int(content_length) > 16_384:
@@ -120,10 +107,10 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
                         "reason_code": "invalid_request",
                         "reason": "Request body is too large.",
                     },
-                    headers=SECURITY_HEADERS,
+                    headers=_security_headers(request),
                 )
         response = await call_next(request)
-        for key, value in SECURITY_HEADERS.items():
+        for key, value in _security_headers(request).items():
             response.headers.setdefault(key, value)
         return response
 
@@ -134,7 +121,6 @@ app.add_middleware(SecurityHeadersMiddleware)
 def _page_context(request: Request, **extra: Any) -> Dict[str, Any]:
     settings = get_settings()
     host = request.url.hostname or ""
-    is_test = os.environ.get("PYTEST_CURRENT_TEST") is not None
     labs = get_catalog()
     current = featured_lab(labs)
     return {
@@ -149,7 +135,7 @@ def _page_context(request: Request, **extra: Any) -> Dict[str, Any]:
             "Educational simulation with fictional companies, agents, accounts, "
             "tickers, and thresholds. Not investment advice. No order is executed."
         ),
-        "telemetry": public_telemetry_config(settings, host, is_test=is_test),
+        "telemetry": public_telemetry_config(settings, host),
         **extra,
     }
 

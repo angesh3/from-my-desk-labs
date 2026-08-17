@@ -41,6 +41,9 @@
     </div>
   </footer>
   <script id="telemetry-config" type="application/json">{{ telemetry | tojson }}</script>
+  {% if telemetry.enabled %}
+  <script src="{{ telemetry.sdk_src }}" async crossorigin="anonymous"></script>
+  {% endif %}
   <script src="/static/js/site.js" defer></script>
   {% block scripts %}{% endblock %}
 </body>
