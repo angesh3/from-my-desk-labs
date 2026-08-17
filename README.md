@@ -115,7 +115,7 @@ The official PostHog browser SDK (`array.js` from the PostHog assets host) is lo
 - `POSTHOG_KEY` is non-empty
 - the request hostname is not `localhost`, `127.0.0.1`, `::1`, or a test host
 
-Initialization uses `capture_pageview` and `capture_pageleave`, with `autocapture` off, session recording disabled, `person_profiles: identified_only`, `persistence: localStorage+cookie`, and `respect_dnt: true`. The site never calls `posthog.identify()`. Visitors remain anonymous.
+Initialization uses a single `posthog.init` with `capture_pageview: false` and `capture_pageleave: true`. After init succeeds, the `loaded` callback captures exactly one `$pageview` (`$current_url`, `$pathname`, `page_title` only). Autocapture and session recording stay off (`person_profiles: identified_only`, `persistence: localStorage+cookie`, `respect_dnt: true`). The site never calls `posthog.identify()`. Visitors remain anonymous.
 
 Analytics failures are non-blocking. Pages, Lab 001, and `POST /api/evaluate` do not depend on PostHog. Visitors are never shown analytics errors.
 
@@ -125,6 +125,7 @@ Custom events are privacy-safe. They never include principal, agent, or account 
 
 | Event | Properties |
 | --- | --- |
+| `$pageview` | `$current_url`, `$pathname`, `page_title` only. Captured once after init. |
 | `lab_preset_selected` | `lab_id` (`001`), `preset_category` (`allow`, `confirm`, `step_up`, or `deny`) |
 | `policy_evaluation_completed` | `lab_id` (`001`), `decision` (`allow`, `confirm`, `step_up`, or `deny`), `reason_category` (generalized only: `ok`, `confirmation_required`, `step_up_required`, `amount_limit`, `identity`, `authority`, `scope`, `invalid_request`, or `other`) |
 | `outbound_link_clicked` | `destination` (`github`, `linkedin_newsletter`, or `architecture`), `page_type` (`home`, `labs_index`, or `lab`) |

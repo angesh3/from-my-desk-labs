@@ -93,6 +93,26 @@
     return String(cfg.host).replace(".i.posthog.com", "-assets.i.posthog.com") + "/static/array.js";
   }
 
+  function capturePageviewOnce(posthog) {
+    if (window.__fromMyDeskPageviewSent) {
+      return;
+    }
+    var client = posthog || window.posthog;
+    if (!client || typeof client.capture !== "function") {
+      return;
+    }
+    try {
+      window.__fromMyDeskPageviewSent = true;
+      client.capture("$pageview", {
+        $current_url: window.location.href,
+        $pathname: window.location.pathname,
+        page_title: document.title
+      });
+    } catch (err) {
+      window.__fromMyDeskPageviewSent = false;
+    }
+  }
+
   function initPosthog(cfg) {
     if (!cfg || !cfg.enabled || !cfg.key) {
       return;
@@ -104,18 +124,22 @@
       return;
     }
     try {
+      window.__fromMyDeskPosthogReady = true;
       window.posthog.init(cfg.key, {
         api_host: cfg.host,
-        capture_pageview: true,
+        capture_pageview: false,
         capture_pageleave: true,
         autocapture: false,
         disable_session_recording: true,
         person_profiles: "identified_only",
         persistence: "localStorage+cookie",
-        respect_dnt: true
+        respect_dnt: true,
+        loaded: function (posthog) {
+          capturePageviewOnce(posthog);
+        }
       });
-      window.__fromMyDeskPosthogReady = true;
     } catch (err) {
+      window.__fromMyDeskPosthogReady = false;
       return;
     }
   }

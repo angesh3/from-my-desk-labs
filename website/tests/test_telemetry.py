@@ -95,7 +95,7 @@ def test_official_sdk_present_when_enabled_on_production_host(
     assert '"enabled": true' in html
     assert TEST_PUBLIC_TOKEN in html
     assert "https://us-assets.i.posthog.com/static/array.js" in html
-    assert '"capture_pageview": true' in html
+    assert '"capture_pageview": false' in html
     assert '"capture_pageleave": true' in html
     assert '"autocapture": false' in html
     assert '"disable_session_recording": true' in html
@@ -107,10 +107,50 @@ def test_official_sdk_present_when_enabled_on_production_host(
     assert "https://us.i.posthog.com" in csp
     assert "https://us-assets.i.posthog.com" in csp
     js = client.get("/static/js/site.js").text
-    assert "posthog.init" in js
-    assert "disable_session_recording" in js
+    assert js.count("window.posthog.init(") == 1
+    assert "capture_pageview: false" in js
+    assert "capture_pageleave: true" in js
+    assert "autocapture: false" in js
+    assert "disable_session_recording: true" in js
     assert "posthog.identify" not in js
-    assert "capture_pageview: true" in js
+    assert "capture_pageview: true" not in js
+    assert re.search(r'capture\(\s*"\$pageview"', js)
+    assert "loaded: function (posthog)" in js
+    assert js.count('"$pageview"') == 1 or js.count("'$pageview'") + js.count('"$pageview"') == 1
+
+
+def test_exactly_one_pageview_after_single_init():
+    js = SITE_JS.read_text(encoding="utf-8")
+    assert js.count("window.posthog.init(") == 1
+    assert len(re.findall(r'capture\(\s*"\$pageview"', js)) == 1
+    assert "__fromMyDeskPosthogReady" in js
+    assert "__fromMyDeskPageviewSent" in js
+    assert "loaded: function (posthog)" in js
+    capture_block = re.search(
+        r'capture\(\s*"\$pageview"\s*,\s*\{([^}]+)\}',
+        js,
+        re.DOTALL,
+    )
+    assert capture_block, "expected a $pageview capture payload"
+    body = capture_block.group(1)
+    assert "$current_url" in body
+    assert "$pathname" in body
+    assert "page_title" in body
+    for needle in (
+        "principal_id",
+        "agent_id",
+        "account_id",
+        "audit_id",
+        "limit_price",
+        "notional",
+        "ticker",
+        "quantity",
+    ):
+        assert needle not in body
+    assert "href:" not in body
+    assert "window.location.href" in body
+    # $pageview is not sent through track(), which would strip these fields.
+    assert "track(" not in body
 
 
 def test_config_helper_omits_key_when_disabled(telemetry_env_cleanup):
@@ -149,7 +189,7 @@ def test_js_never_includes_sensitive_telemetry_fields():
             "quantity",
             "href",
         ):
-            assert needle not in body, (name, needle, body)
+            assert needle not in body
 
 
 def test_pages_and_policy_unchanged_with_default_analytics(telemetry_env_cleanup):

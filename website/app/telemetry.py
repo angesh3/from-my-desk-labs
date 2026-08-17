@@ -62,7 +62,7 @@ def public_telemetry_config(settings: Settings, host: str) -> Dict[str, Any]:
         "key": settings.posthog_key,
         "host": api_host,
         "sdk_src": posthog_sdk_src(api_host),
-        "capture_pageview": True,
+        "capture_pageview": False,
         "capture_pageleave": True,
         "autocapture": False,
         "disable_session_recording": True,
