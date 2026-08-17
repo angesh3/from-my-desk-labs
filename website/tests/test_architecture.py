@@ -30,10 +30,14 @@ def test_architecture_svg_has_required_content():
     assert "Inside the Trust Gateway" in text
     assert "marker-end=" in text
     assert 'id="arrow"' in text
-    assert "Identity registry" in text
-    assert "Delegated authority" in text
-    assert "Policy rules" in text
-    assert "Request context" in text
+    assert ">Identity<" in text
+    assert ">Authority<" in text
+    assert ">Scope<" in text
+    assert ">Limits<" in text
+    assert ">Context<" in text
+    assert "who is acting?" in text
+    assert "Five trust dimensions" in text
+    assert "Policy Evaluation" in text
     assert "ALLOW" in text
     assert "CONFIRM" in text
     assert "STEP_UP" in text
@@ -42,6 +46,9 @@ def test_architecture_svg_has_required_content():
     assert "customer confirmation" in text
     assert "MFA" in text
     assert "POST /api/evaluate" in text
+    assert "Audit, provenance" in text
+    assert "Identity registry" not in text
+    assert "Delegated authority" not in text
 
 
 def test_architecture_url_and_type():
@@ -51,3 +58,5 @@ def test_architecture_url_and_type():
     body = response.content.decode("utf-8")
     assert "Panel A" in body
     assert "Panel B" in body
+    assert "Five trust dimensions" in body
+    assert "Audit, provenance" in body

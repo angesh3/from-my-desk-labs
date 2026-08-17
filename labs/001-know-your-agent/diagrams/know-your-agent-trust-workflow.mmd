@@ -1,0 +1,62 @@
+%%{init: {
+  "theme": "base",
+  "flowchart": {
+    "nodeSpacing": 45,
+    "rankSpacing": 50,
+    "diagramPadding": 15,
+    "curve": "basis"
+  },
+  "themeVariables": {
+    "background": "#FFFFFF",
+    "mainBkg": "#FFFFFF",
+    "primaryTextColor": "#1E293B",
+    "lineColor": "#64748B",
+    "edgeLabelBackground": "#F8FAFC",
+    "fontSize": "20px",
+    "nodePadding": "24px"
+  }
+}}%%
+flowchart TB
+    ADM["Policy Administrator"]
+    CP["Authority & Policy Control Plane"]
+    P["Person or Organization"]
+    A["AI Agent"]
+    G["Trust Gateway"]
+    D{"Decision"}
+    AL["ALLOW"]
+    CO["CONFIRM"]
+    ST["STEP-UP AUTHENTICATION"]
+    DN["DENY"]
+    EX["Execute Action"]
+    AU["Audit, Provenance and Accountability"]
+
+    ADM -->|"Manages authority, scope, limits and revocation"| CP
+    CP -.->|"Publishes trusted policy and authority state"| G
+    P -->|"Delegates limited authority"| A
+    A -->|"Requests an action"| G
+    G -->|"Checks identity, authority, scope, limits and context"| D
+    D -->|"Within authority"| AL
+    D -->|"Additional consent needed"| CO
+    D -->|"Higher assurance needed"| ST
+    D -->|"Outside authority or policy"| DN
+    AL --> EX
+    CO --> EX
+    ST --> EX
+    EX --> AU
+    DN --> AU
+
+    style ADM fill:#F1F5F9,stroke:#64748B,color:#1E293B,stroke-width:2px
+    style CP fill:#93C5FD,stroke:#2563EB,color:#1E3A8A,stroke-width:2px
+    style P fill:#EFF6FF,stroke:#3B82F6,color:#1E3A8A,stroke-width:2px
+    style A fill:#EEF2F6,stroke:#475569,color:#0F172A,stroke-width:2px
+    style G fill:#F0FDF4,stroke:#16A34A,color:#14532D,stroke-width:3px
+    style D fill:#FAF5FF,stroke:#A855F7,color:#581C87,stroke-width:2px
+    style AL fill:#DCFCE7,stroke:#16A34A,color:#14532D,stroke-width:2px
+    style CO fill:#FEF3C7,stroke:#D97706,color:#78350F,stroke-width:2px
+    style ST fill:#FFEDD5,stroke:#EA580C,color:#7C2D12,stroke-width:2px
+    style DN fill:#FEE2E2,stroke:#DC2626,color:#7F1D1D,stroke-width:2px
+    style EX fill:#E0F2FE,stroke:#0284C7,color:#0C4A6E,stroke-width:2px
+    style AU fill:#F8FAFC,stroke:#94A3B8,color:#334155,stroke-width:2px
+
+    classDef boldText font-weight:700,font-size:20px
+    class ADM,CP,P,A,G,D,AL,CO,ST,DN,EX,AU boldText
