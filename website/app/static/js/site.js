@@ -83,16 +83,6 @@
     }
   }
 
-  function sdkSrc(cfg) {
-    if (cfg.sdk_src) {
-      return cfg.sdk_src;
-    }
-    if (!cfg.host) {
-      return "";
-    }
-    return String(cfg.host).replace(".i.posthog.com", "-assets.i.posthog.com") + "/static/array.js";
-  }
-
   function capturePageviewOnce(posthog) {
     if (window.__fromMyDeskPageviewSent) {
       return;
@@ -104,29 +94,87 @@
     try {
       window.__fromMyDeskPageviewSent = true;
       client.capture("$pageview", {
-        $current_url: window.location.href,
-        $pathname: window.location.pathname,
-        page_title: document.title
+        "$current_url": window.location.href,
+        "$pathname": window.location.pathname,
+        "page_title": document.title
       });
     } catch (err) {
       window.__fromMyDeskPageviewSent = false;
     }
   }
 
-  function initPosthog(cfg) {
-    if (!cfg || !cfg.enabled || !cfg.key) {
+  function installOfficialStub() {
+    if (window.posthog && window.posthog.__SV) {
       return;
     }
-    if (!window.posthog || typeof window.posthog.init !== "function") {
+    /* Official PostHog snippet (https://posthog.com/docs/libraries/js). Queues
+       capture/init, then loads array.js. site.js is first-party so CSP stays
+       script-src 'self' plus PostHog hosts. */
+    (function (t, e) {
+      var o, n, p, r;
+      if (e.__SV) {
+        return;
+      }
+      window.posthog = e;
+      e._i = [];
+      e.init = function (i, s, a) {
+        function g(t, e) {
+          var o = e.split(".");
+          if (2 === o.length) {
+            t = t[o[0]];
+            e = o[1];
+          }
+          t[e] = function () {
+            t.push([e].concat(Array.prototype.slice.call(arguments, 0)));
+          };
+        }
+        p = t.createElement("script");
+        p.type = "text/javascript";
+        p.crossOrigin = "anonymous";
+        p.async = true;
+        p.src = s.api_host.replace(".i.posthog.com", "-assets.i.posthog.com") + "/static/array.js";
+        r = t.getElementsByTagName("script")[0];
+        r.parentNode.insertBefore(p, r);
+        var u = e;
+        if (void 0 !== a) {
+          u = e[a] = [];
+        } else {
+          a = "posthog";
+        }
+        u.people = u.people || [];
+        u.toString = function (t) {
+          var e = "posthog";
+          return "posthog" !== a && (e += "." + a), t || (e += " (stub)"), e;
+        };
+        u.people.toString = function () {
+          return u.toString(1) + ".people (stub)";
+        };
+        o = "init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagResult isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" ");
+        for (n = 0; n < o.length; n++) {
+          g(u, o[n]);
+        }
+        e._i.push([i, s, a]);
+      };
+      e.__SV = 1;
+    })(document, window.posthog || []);
+  }
+
+  function initPosthog(cfg) {
+    if (!cfg || !cfg.enabled || !cfg.key) {
       return;
     }
     if (window.__fromMyDeskPosthogReady) {
       return;
     }
     try {
+      installOfficialStub();
+      if (!window.posthog || typeof window.posthog.init !== "function") {
+        return;
+      }
       window.__fromMyDeskPosthogReady = true;
       window.posthog.init(cfg.key, {
         api_host: cfg.host,
+        defaults: "2026-05-30",
         capture_pageview: false,
         capture_pageleave: true,
         autocapture: false,
@@ -140,7 +188,6 @@
       });
     } catch (err) {
       window.__fromMyDeskPosthogReady = false;
-      return;
     }
   }
 
@@ -149,32 +196,7 @@
       return;
     }
     try {
-      if (window.posthog && typeof window.posthog.init === "function") {
-        initPosthog(cfg);
-        return;
-      }
-      var src = sdkSrc(cfg);
-      if (!src) {
-        return;
-      }
-      var existing = document.querySelector('script[src="' + src.replace(/"/g, "") + '"]');
-      if (existing) {
-        existing.addEventListener("load", function () {
-          initPosthog(cfg);
-        });
-        return;
-      }
-      var script = document.createElement("script");
-      script.async = true;
-      script.crossOrigin = "anonymous";
-      script.src = src;
-      script.onload = function () {
-        initPosthog(cfg);
-      };
-      script.onerror = function () {
-        return;
-      };
-      document.head.appendChild(script);
+      initPosthog(cfg);
     } catch (err) {
       return;
     }

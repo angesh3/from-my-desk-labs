@@ -109,13 +109,15 @@ Leave `POSTHOG_ENABLED=false` and `POSTHOG_KEY` empty until you intend to collec
 
 ### Runtime behavior
 
-The official PostHog browser SDK (`array.js` from the PostHog assets host) is loaded only when all of the following are true:
+`site.js` installs the official PostHog snippet (https://posthog.com/docs/libraries/js) and then calls `posthog.init` once. There is no second SDK `<script>` tag in HTML. The snippet injects `array.js` from the PostHog assets host only when all of the following are true:
 
 - `POSTHOG_ENABLED` is true
 - `POSTHOG_KEY` is non-empty
 - the request hostname is not `localhost`, `127.0.0.1`, `::1`, or a test host
 
-Initialization uses a single `posthog.init` with `capture_pageview: false` and `capture_pageleave: true`. After init succeeds, the `loaded` callback captures exactly one `$pageview` (`$current_url`, `$pathname`, `page_title` only). Autocapture and session recording stay off (`person_profiles: identified_only`, `persistence: localStorage+cookie`, `respect_dnt: true`). The site never calls `posthog.identify()`. Visitors remain anonymous.
+Initialization uses a single `posthog.init` with `defaults: '2026-05-30'`, `capture_pageview: false`, and `capture_pageleave: true`. After init succeeds, the `loaded` callback captures exactly one `$pageview` (`$current_url`, `$pathname`, `page_title` only). Autocapture and session recording stay off (`person_profiles: identified_only`, `persistence: localStorage+cookie`, `respect_dnt: true`). The site never calls `posthog.identify()`. Visitors remain anonymous.
+
+When telemetry is enabled, Content-Security-Policy allowlists `https://*.i.posthog.com` and `https://*.posthog.com` on `script-src` and `connect-src`, plus `worker-src 'self' blob: data:`. A narrow host list can look installed while ingest stays empty.
 
 Analytics failures are non-blocking. Pages, Lab 001, and `POST /api/evaluate` do not depend on PostHog. Visitors are never shown analytics errors.
 

@@ -64,6 +64,10 @@ def test_live_pages_and_assets():
         assert code == 200
         assert needle in body
         assert "text/html" in headers.get("Content-Type", "")
+        if path == "/":
+            assert b'"enabled": false' in body
+            assert b"array.js" not in body
+            assert "posthog.com" not in headers.get("Content-Security-Policy", "")
 
     code, headers, body = _get("/static/css/styles.css")
     assert code == 200

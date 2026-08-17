@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from typing import Any, Dict, FrozenSet
-from urllib.parse import urlparse
 
 from from_my_desk.config import Settings
 
@@ -72,24 +71,17 @@ def public_telemetry_config(settings: Settings, host: str) -> Dict[str, Any]:
     }
 
 
-def _origin(url: str) -> str:
-    parsed = urlparse(url)
-    if parsed.scheme and parsed.netloc:
-        return "{0}://{1}".format(parsed.scheme, parsed.netloc)
-    return url.rstrip("/")
-
-
 def content_security_policy(settings: Settings, host: str) -> str:
     script_src = ["'self'"]
     connect_src = ["'self'"]
+    extra = ""
     if telemetry_enabled_for_request(settings, host):
-        api = _origin(settings.posthog_host)
-        assets = _origin(posthog_assets_origin(settings.posthog_host))
-        for origin in (api, assets):
-            if origin not in script_src:
-                script_src.append(origin)
-            if origin not in connect_src:
-                connect_src.append(origin)
+        # PostHog hosts rotate; a narrow origin list silently drops capture.
+        # https://posthog.com/docs/libraries/js
+        for origin in ("https://*.i.posthog.com", "https://*.posthog.com"):
+            script_src.append(origin)
+            connect_src.append(origin)
+        extra = "worker-src 'self' blob: data:; "
     return (
         "default-src 'self'; "
         "script-src {0}; "
@@ -97,8 +89,9 @@ def content_security_policy(settings: Settings, host: str) -> str:
         "img-src 'self' data:; "
         "font-src 'self'; "
         "connect-src {1}; "
+        "{2}"
         "base-uri 'self'; "
-        "form-action 'self'".format(" ".join(script_src), " ".join(connect_src))
+        "form-action 'self'".format(" ".join(script_src), " ".join(connect_src), extra)
     )
 
 
