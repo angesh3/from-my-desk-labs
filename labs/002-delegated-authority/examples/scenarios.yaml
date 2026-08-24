@@ -1,0 +1,281 @@
+scenarios:
+  - id: valid_narrow_delegation
+    title: Valid narrow delegation
+    short_description: Research-only request within effective authority.
+    category: valid_recoverable
+    expected_decision: allow
+    expected_reason_code: policy_satisfied
+    request:
+      request_id: req-valid-001
+      principal_id: principal-demo-001
+      agent_id: research-agent-001
+      requested_capability: research
+      requested_resource: market-summaries
+      requested_amount: "500.00"
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-portfolio-research
+      context: normal
+      assurance_level: standard
+    chain_preview:
+      - {role: Human Principal, capabilities: [research, propose, approve], resources: [paper-desk-alpha, market-summaries], maximum_amount: "20000.00", expiry: "2026-12-31", redelegation: true, remaining_depth: 2}
+      - {role: Portfolio Agent, capabilities: [research, propose], resources: [paper-desk-alpha, market-summaries], maximum_amount: "20000.00", expiry: "2026-12-31", redelegation: true, remaining_depth: 2}
+      - {role: Research Agent, capabilities: [research], resources: [market-summaries], maximum_amount: "5000.00", expiry: "2026-06-30", redelegation: false, remaining_depth: 0}
+      - {role: Requested Tool, capabilities: [research], resources: [market-summaries], maximum_amount: "500.00", expiry: "request-bound", redelegation: false, remaining_depth: 0}
+
+  - id: confirmation_required
+    title: Human confirmation required
+    short_description: Valid authority, amount above autonomous threshold.
+    category: valid_recoverable
+    expected_decision: confirm
+    expected_reason_code: confirmation_threshold
+    request:
+      request_id: req-confirm-001
+      principal_id: principal-demo-001
+      agent_id: research-agent-001
+      requested_capability: research
+      requested_resource: market-summaries
+      requested_amount: "7500.00"
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-portfolio-research
+      context: normal
+      assurance_level: standard
+    overlays:
+      delegations:
+        del-portfolio-research:
+          maximum_amount: "10000.00"
+
+  - id: stale_posture
+    title: Stale posture evidence
+    short_description: Authority valid but APSE evidence is stale.
+    category: valid_recoverable
+    expected_decision: step_up
+    expected_reason_code: posture_evidence_stale
+    request:
+      request_id: req-stale-001
+      principal_id: principal-demo-001
+      agent_id: research-agent-stale
+      requested_capability: research
+      requested_resource: market-summaries
+      requested_amount: "500.00"
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-portfolio-research-stale
+      context: normal
+      assurance_level: standard
+
+  - id: unusual_context
+    title: Unusual but permitted context
+    short_description: Valid authority with unusual operating context.
+    category: valid_recoverable
+    expected_decision: confirm
+    expected_reason_code: unusual_context
+    request:
+      request_id: req-unusual-001
+      principal_id: principal-demo-001
+      agent_id: research-agent-001
+      requested_capability: research
+      requested_resource: market-summaries
+      requested_amount: "500.00"
+      request_time: "2026-03-15T02:00:00Z"
+      delegation_id: del-portfolio-research
+      context: unusual
+      assurance_level: standard
+
+  - id: execution_not_delegated
+    title: Execution not delegated
+    short_description: Research agent requests execution outside authority.
+    category: delegation_failure
+    expected_decision: deny
+    expected_reason_code: capability_not_delegated
+    request:
+      request_id: req-exec-001
+      principal_id: principal-demo-001
+      agent_id: research-agent-001
+      requested_capability: execute
+      requested_resource: market-summaries
+      requested_amount: "500.00"
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-portfolio-research
+      context: normal
+      assurance_level: standard
+
+  - id: child_capability_exceeds_parent
+    title: Child capability exceeds parent
+    short_description: Child envelope claims execute beyond parent.
+    category: delegation_failure
+    expected_decision: deny
+    expected_reason_code: child_capability_exceeds_parent
+    request:
+      request_id: req-cap-001
+      principal_id: principal-demo-001
+      agent_id: research-agent-001
+      requested_capability: research
+      requested_resource: market-summaries
+      requested_amount: "100.00"
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-child-cap-exceeds
+      context: normal
+      assurance_level: standard
+
+  - id: child_limit_exceeds_parent
+    title: Child limit exceeds parent
+    short_description: Child maximum amount exceeds parent maximum.
+    category: delegation_failure
+    expected_decision: deny
+    expected_reason_code: child_limit_exceeds_parent
+    request:
+      request_id: req-limit-001
+      principal_id: principal-demo-001
+      agent_id: research-agent-001
+      requested_capability: research
+      requested_resource: market-summaries
+      requested_amount: "100.00"
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-child-limit-exceeds
+      context: normal
+      assurance_level: standard
+
+  - id: child_expiry_exceeds_parent
+    title: Child expiry exceeds parent
+    short_description: Child validity window exceeds parent expiry.
+    category: delegation_failure
+    expected_decision: deny
+    expected_reason_code: child_expiry_exceeds_parent
+    request:
+      request_id: req-expiry-001
+      principal_id: principal-demo-001
+      agent_id: research-agent-001
+      requested_capability: research
+      requested_resource: market-summaries
+      requested_amount: "100.00"
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-child-expiry-exceeds
+      context: normal
+      assurance_level: standard
+
+  - id: delegation_depth_exceeded
+    title: Delegation depth exceeded
+    short_description: Redelegation attempted after remaining depth is zero.
+    category: delegation_failure
+    expected_decision: deny
+    expected_reason_code: delegation_depth_exceeded
+    request:
+      request_id: req-depth-001
+      principal_id: principal-demo-001
+      agent_id: research-agent-001
+      requested_capability: research
+      requested_resource: market-summaries
+      requested_amount: "100.00"
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-depth-leaf
+      context: normal
+      assurance_level: standard
+
+  - id: parent_expired
+    title: Parent expired
+    short_description: Parent delegation expired; child is invalid.
+    category: lifecycle_failure
+    expected_decision: deny
+    expected_reason_code: parent_expired
+    request:
+      request_id: req-pexp-001
+      principal_id: principal-demo-001
+      agent_id: research-agent-001
+      requested_capability: research
+      requested_resource: market-summaries
+      requested_amount: "100.00"
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-parent-expired-child
+      context: normal
+      assurance_level: standard
+
+  - id: parent_revoked
+    title: Parent revoked
+    short_description: Parent revocation invalidates downstream authority.
+    category: lifecycle_failure
+    expected_decision: deny
+    expected_reason_code: parent_revoked
+    request:
+      request_id: req-prev-001
+      principal_id: principal-demo-001
+      agent_id: research-agent-001
+      requested_capability: research
+      requested_resource: market-summaries
+      requested_amount: "100.00"
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-parent-revoked-child
+      context: normal
+      assurance_level: standard
+
+  - id: unknown_agent
+    title: Unknown agent
+    short_description: Unregistered agent; restricted registration fallback.
+    category: lifecycle_failure
+    expected_decision: deny
+    expected_reason_code: agent_unknown
+    request:
+      request_id: req-unk-001
+      principal_id: principal-demo-001
+      agent_id: unknown-bot-999
+      requested_capability: research
+      requested_resource: market-summaries
+      requested_amount: "100.00"
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-portfolio-research
+      context: normal
+      assurance_level: standard
+    overlays:
+      remove_agents: [unknown-bot-999]
+
+  - id: profile_mismatch
+    title: Profile mismatch
+    short_description: Conflicting APE profile requires human review.
+    category: profile_posture
+    expected_decision: step_up
+    expected_reason_code: profile_mismatch
+    request:
+      request_id: req-pm-001
+      principal_id: principal-demo-001
+      agent_id: research-agent-mismatch
+      requested_capability: research
+      requested_resource: market-summaries
+      requested_amount: "200.00"
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-portfolio-research-mismatch
+      context: normal
+      assurance_level: standard
+
+  - id: noncompliant_model_version
+    title: Noncompliant model version
+    short_description: Recoverable version issue under otherwise valid authority.
+    category: profile_posture
+    expected_decision: step_up
+    expected_reason_code: model_version_noncompliant
+    request:
+      request_id: req-ver-001
+      principal_id: principal-demo-001
+      agent_id: research-agent-version
+      requested_capability: research
+      requested_resource: market-summaries
+      requested_amount: "200.00"
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-portfolio-research-version
+      context: normal
+      assurance_level: standard
+
+  - id: tool_inventory_changed
+    title: Tool inventory changed
+    short_description: Unexpected tools trigger hard DENY.
+    category: profile_posture
+    expected_decision: deny
+    expected_reason_code: tool_inventory_changed
+    request:
+      request_id: req-tools-001
+      principal_id: principal-demo-001
+      agent_id: research-agent-tools
+      requested_capability: research
+      requested_resource: market-summaries
+      requested_amount: "200.00"
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-portfolio-research-tools
+      context: normal
+      assurance_level: standard

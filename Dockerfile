@@ -12,14 +12,21 @@ COPY website /srv/website
 COPY labs/001-know-your-agent/src /srv/labs/001-know-your-agent/src
 COPY labs/001-know-your-agent/policies /srv/labs/001-know-your-agent/policies
 COPY labs/001-know-your-agent/static /srv/labs/001-know-your-agent/static
+COPY labs/002-delegated-authority/src /srv/labs/002-delegated-authority/src
+COPY labs/002-delegated-authority/policies /srv/labs/002-delegated-authority/policies
+COPY labs/002-delegated-authority/examples /srv/labs/002-delegated-authority/examples
+COPY labs/002-delegated-authority/static /srv/labs/002-delegated-authority/static
 
 RUN pip install --no-cache-dir .
 
 ENV WEBSITE_TEMPLATE_DIR=/srv/website/app/templates
 ENV WEBSITE_STATIC_DIR=/srv/website/app/static
 ENV LAB_STATIC_DIR=/srv/labs/001-know-your-agent/static
+ENV LAB002_STATIC_DIR=/srv/labs/002-delegated-authority/static
 ENV CATALOG_PATH=/srv/website/catalog/labs.yaml
 ENV POLICY_DIR=/srv/labs/001-know-your-agent/policies
+ENV LAB002_DATA_DIR=/srv/labs/002-delegated-authority/examples
+ENV LAB002_POLICY_DIR=/srv/labs/002-delegated-authority/policies
 ENV APP_VERSION=0.3.0
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1

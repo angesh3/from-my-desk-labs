@@ -15,6 +15,7 @@ PAGES = {
     "/": "Perspectives shaped by experience",
     "/labs": "Labs",
     "/labs/know-your-agent": "Know Your Agent",
+    "/labs/delegated-authority": "Delegated Authority",
 }
 
 ASSET_URL_RE = re.compile(
@@ -81,6 +82,22 @@ def test_lab_assets():
     assert gif.status_code == 200
     assert "image/gif" in gif.headers["content-type"]
     assert gif.content[:6] in {b"GIF87a", b"GIF89a"}
+
+    for name in (
+        "delegated-authority-workflow.svg",
+        "system-architecture.svg",
+        "evaluation-flow.svg",
+        "fallback-flow.svg",
+        "revocation-flow.svg",
+    ):
+        svg2 = client.get(f"/static/labs/002/{name}")
+        assert svg2.status_code == 200, name
+        assert "image/svg+xml" in svg2.headers["content-type"], name
+        assert svg2.text.strip().startswith("<svg") or "svg" in svg2.text.lower()
+
+    js2 = client.get("/static/labs/002/lab.js")
+    assert js2.status_code == 200
+    assert "lab_opened" in js2.text
 
 
 def test_html_emitted_assets_all_resolve():

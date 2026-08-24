@@ -1,0 +1,9 @@
+policy_id: lab002-posture
+policy_version: lab002-posture-1
+stale_requires: step_up
+noncompliant_version_requires: step_up
+tool_inventory_changed_requires: deny
+compromised_runtime_requires: deny
+notes: >
+  Posture may restrict or challenge the use of existing authority.
+  Posture must never create or expand authority.

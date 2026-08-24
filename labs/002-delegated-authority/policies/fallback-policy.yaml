@@ -1,0 +1,8 @@
+policy_id: lab002-fallback
+policy_version: lab002-fallback-1
+new_evaluation_required: true
+never_override_deny: true
+never_execute: true
+notes: >
+  Fallback may create a new recovery or authorization path.
+  It never converts the original DENY into permission.

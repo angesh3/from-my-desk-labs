@@ -4,7 +4,7 @@ from from_my_desk.main import app
 
 client = TestClient(app)
 
-PAGES = ("/", "/labs", "/labs/know-your-agent")
+PAGES = ("/", "/labs", "/labs/know-your-agent", "/labs/delegated-authority")
 FORBIDDEN_SNIPPETS = (
     "r2.dev",
     "r2.cloudflarestorage",
@@ -57,11 +57,33 @@ def test_catalog_renders_lab_cards():
     labs = client.get("/labs").text
     for html in (home, labs):
         assert "Know Your Agent: Identity Is Only the Beginning" in html
+        assert "Delegated Authority" in html
         assert "Explore the interactive lab" in html or "Explore lab" in html
         assert "AI Agents" in html
         assert "Interactive demo" in html
         assert "/labs/know-your-agent" in html
-        assert "Not investment advice" in html
+        assert "/labs/delegated-authority" in html
+        assert "Not investment advice" in html or "No real accounts" in html
+
+
+def test_lab002_page_basics():
+    html = client.get("/labs/delegated-authority").text
+    assert "Delegated Authority" in html
+    assert "Evaluate delegated authority" in html
+    assert 'data-scenario="execution_not_delegated"' in html
+    assert "/static/labs/002/delegated-authority-workflow.svg" in html
+    assert "/static/labs/002/system-architecture.svg" in html
+    assert "/static/labs/002/evaluation-flow.svg" in html
+    assert "/static/labs/002/fallback-flow.svg" in html
+    assert "/static/labs/002/revocation-flow.svg" in html
+    assert "/static/labs/002/architecture.svg" not in html
+    assert "/static/labs/002/lab.js" in html
+    assert "Open Lab 001" in html
+    assert "authority-chain" in html
+    assert "journey-stepper" in html
+    assert "How to use this Lab" in html
+    assert "preset-card" in html
+    assert "not_performed" in html
 
 
 def test_lab_page_order_and_copy():
@@ -106,6 +128,12 @@ def test_static_assets():
         ("/static/labs/001/know-your-agent-trust-workflow.gif", "image/gif"),
         ("/static/labs/001/architecture.svg", "image/svg+xml"),
         ("/static/labs/001/lab.js", "javascript"),
+        ("/static/labs/002/delegated-authority-workflow.svg", "image/svg+xml"),
+        ("/static/labs/002/system-architecture.svg", "image/svg+xml"),
+        ("/static/labs/002/evaluation-flow.svg", "image/svg+xml"),
+        ("/static/labs/002/fallback-flow.svg", "image/svg+xml"),
+        ("/static/labs/002/revocation-flow.svg", "image/svg+xml"),
+        ("/static/labs/002/lab.js", "javascript"),
     ]
     for url, content_type in assets:
         response = client.get(url)

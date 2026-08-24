@@ -1,0 +1,261 @@
+delegations:
+  # Human → Portfolio (root)
+  - delegation_id: del-human-portfolio
+    parent_delegation_id: null
+    principal_id: principal-demo-001
+    delegator_id: principal-demo-001
+    delegate_id: portfolio-agent-001
+    capabilities: [research, propose, approve]
+    resources: [paper-desk-alpha, market-summaries]
+    maximum_amount: "20000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-12-31T23:59:59Z"
+    may_redelegate: true
+    remaining_depth: 2
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  # Portfolio → Research (narrow)
+  - delegation_id: del-portfolio-research
+    parent_delegation_id: del-human-portfolio
+    principal_id: principal-demo-001
+    delegator_id: portfolio-agent-001
+    delegate_id: research-agent-001
+    capabilities: [research]
+    resources: [market-summaries]
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  # Variants used by overlays (base copies keyed for specific agents)
+  - delegation_id: del-portfolio-research-stale
+    parent_delegation_id: del-human-portfolio
+    principal_id: principal-demo-001
+    delegator_id: portfolio-agent-001
+    delegate_id: research-agent-stale
+    capabilities: [research]
+    resources: [market-summaries]
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-portfolio-research-version
+    parent_delegation_id: del-human-portfolio
+    principal_id: principal-demo-001
+    delegator_id: portfolio-agent-001
+    delegate_id: research-agent-version
+    capabilities: [research]
+    resources: [market-summaries]
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-portfolio-research-tools
+    parent_delegation_id: del-human-portfolio
+    principal_id: principal-demo-001
+    delegator_id: portfolio-agent-001
+    delegate_id: research-agent-tools
+    capabilities: [research]
+    resources: [market-summaries]
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-portfolio-research-mismatch
+    parent_delegation_id: del-human-portfolio
+    principal_id: principal-demo-001
+    delegator_id: portfolio-agent-001
+    delegate_id: research-agent-mismatch
+    capabilities: [research]
+    resources: [market-summaries]
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  # Research-only envelope used to prove Execution profile cannot grant execute
+  - delegation_id: del-portfolio-exec-profile-research-only
+    parent_delegation_id: del-human-portfolio
+    principal_id: principal-demo-001
+    delegator_id: portfolio-agent-001
+    delegate_id: execution-profile-agent
+    capabilities: [research]
+    resources: [market-summaries]
+    maximum_amount: "1000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  # Intentionally invalid child envelopes (for DENY scenarios)
+  - delegation_id: del-child-cap-exceeds
+    parent_delegation_id: del-human-portfolio
+    principal_id: principal-demo-001
+    delegator_id: portfolio-agent-001
+    delegate_id: research-agent-001
+    capabilities: [research, execute]
+    resources: [market-summaries]
+    maximum_amount: "1000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-child-limit-exceeds
+    parent_delegation_id: del-human-portfolio
+    principal_id: principal-demo-001
+    delegator_id: portfolio-agent-001
+    delegate_id: research-agent-001
+    capabilities: [research]
+    resources: [market-summaries]
+    maximum_amount: "25000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-child-expiry-exceeds
+    parent_delegation_id: del-human-portfolio
+    principal_id: principal-demo-001
+    delegator_id: portfolio-agent-001
+    delegate_id: research-agent-001
+    capabilities: [research]
+    resources: [market-summaries]
+    maximum_amount: "1000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2027-12-31T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-depth-mid
+    parent_delegation_id: del-human-portfolio
+    principal_id: principal-demo-001
+    delegator_id: portfolio-agent-001
+    delegate_id: research-agent-001
+    capabilities: [research]
+    resources: [market-summaries]
+    maximum_amount: "1000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: true
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-depth-leaf
+    parent_delegation_id: del-depth-mid
+    principal_id: principal-demo-001
+    delegator_id: research-agent-001
+    delegate_id: research-agent-001
+    capabilities: [research]
+    resources: [market-summaries]
+    maximum_amount: "500.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-parent-expired-root
+    parent_delegation_id: null
+    principal_id: principal-demo-001
+    delegator_id: principal-demo-001
+    delegate_id: portfolio-agent-001
+    capabilities: [research, propose, approve]
+    resources: [paper-desk-alpha, market-summaries]
+    maximum_amount: "20000.00"
+    valid_from: "2025-01-01T00:00:00Z"
+    valid_until: "2025-06-01T00:00:00Z"
+    may_redelegate: true
+    remaining_depth: 2
+    required_assurance: standard
+    status: expired
+    version: "1"
+
+  - delegation_id: del-parent-expired-child
+    parent_delegation_id: del-parent-expired-root
+    principal_id: principal-demo-001
+    delegator_id: portfolio-agent-001
+    delegate_id: research-agent-001
+    capabilities: [research]
+    resources: [market-summaries]
+    maximum_amount: "1000.00"
+    valid_from: "2025-01-01T00:00:00Z"
+    valid_until: "2025-05-01T00:00:00Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-parent-revoked-root
+    parent_delegation_id: null
+    principal_id: principal-demo-001
+    delegator_id: principal-demo-001
+    delegate_id: portfolio-agent-001
+    capabilities: [research, propose, approve]
+    resources: [paper-desk-alpha, market-summaries]
+    maximum_amount: "20000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-12-31T23:59:59Z"
+    may_redelegate: true
+    remaining_depth: 2
+    required_assurance: standard
+    status: revoked
+    version: "1"
+
+  - delegation_id: del-parent-revoked-child
+    parent_delegation_id: del-parent-revoked-root
+    principal_id: principal-demo-001
+    delegator_id: portfolio-agent-001
+    delegate_id: research-agent-001
+    capabilities: [research]
+    resources: [market-summaries]
+    maximum_amount: "1000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"

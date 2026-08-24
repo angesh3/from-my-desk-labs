@@ -11,6 +11,7 @@ from fastapi.testclient import TestClient
 from from_my_desk.config import Settings, reset_settings_cache
 from from_my_desk.main import app
 from from_my_desk.telemetry import (
+    content_security_policy,
     public_telemetry_config,
     telemetry_enabled_for_request,
 )
@@ -79,8 +80,12 @@ def test_no_posthog_script_on_localhost_even_when_configured(
     assert "array.js" not in html
     csp = local.get("/").headers.get("content-security-policy", "")
     assert "posthog.com" not in csp
+    assert "worker-src" not in csp
     pytest_client = TestClient(app)
     assert "array.js" not in pytest_client.get("/labs/know-your-agent").text
+    tight = content_security_policy(settings, "127.0.0.1")
+    assert "posthog.com" not in tight
+    assert "worker-src" not in tight
 
 
 def test_official_sdk_present_when_enabled_on_production_host(
@@ -94,7 +99,10 @@ def test_official_sdk_present_when_enabled_on_production_host(
     html = client.get("/").text
     assert '"enabled": true' in html
     assert TEST_PUBLIC_TOKEN in html
-    assert "https://us-assets.i.posthog.com/static/array.js" in html
+    assert '"sdk_src": "https://us-assets.i.posthog.com/static/array.js"' in html
+    assert '<script src="https://us-assets.i.posthog.com/static/array.js"' not in html
+    assert "/static/js/site.js" in html
+    assert html.count("<script") == 2
     assert '"capture_pageview": false' in html
     assert '"capture_pageleave": true' in html
     assert '"autocapture": false' in html
@@ -103,11 +111,19 @@ def test_official_sdk_present_when_enabled_on_production_host(
     assert '"persistence": "localStorage+cookie"' in html
     assert '"respect_dnt": true' in html
     assert "posthog.identify" not in html
+    assert "posthog.init" not in html
     csp = client.get("/").headers.get("content-security-policy", "")
-    assert "https://us.i.posthog.com" in csp
-    assert "https://us-assets.i.posthog.com" in csp
+    assert "https://*.i.posthog.com" in csp
+    assert "https://*.posthog.com" in csp
+    assert "worker-src 'self' blob: data:" in csp
+    assert "https://us.i.posthog.com" not in csp
+    assert "https://us-assets.i.posthog.com" not in csp
     js = client.get("/static/js/site.js").text
+    assert "installOfficialStub" in js
+    assert "e.__SV" in js
+    assert "/static/array.js" in js
     assert js.count("window.posthog.init(") == 1
+    assert 'defaults: "2026-05-30"' in js
     assert "capture_pageview: false" in js
     assert "capture_pageleave: true" in js
     assert "autocapture: false" in js
@@ -151,6 +167,164 @@ def test_exactly_one_pageview_after_single_init():
     assert "window.location.href" in body
     # $pageview is not sent through track(), which would strip these fields.
     assert "track(" not in body
+
+
+LOADER_HARNESS = r"""
+const fs = require("fs");
+const vm = require("vm");
+const siteJs = fs.readFileSync(process.argv[2], "utf8");
+const cfg = JSON.parse(process.argv[3]);
+
+function pickOptions(opts) {
+  opts = opts || {};
+  return {
+    api_host: opts.api_host,
+    defaults: opts.defaults,
+    capture_pageview: opts.capture_pageview,
+    capture_pageleave: opts.capture_pageleave,
+    autocapture: opts.autocapture,
+    disable_session_recording: opts.disable_session_recording,
+    person_profiles: opts.person_profiles,
+    persistence: opts.persistence,
+    respect_dnt: opts.respect_dnt,
+    has_loaded: typeof opts.loaded === "function"
+  };
+}
+
+function boot(window, scripts) {
+  const document = {
+    readyState: "complete",
+    title: "Know Your Agent",
+    getElementById: function (id) {
+      if (id === "telemetry-config") {
+        return { textContent: JSON.stringify(cfg) };
+      }
+      return null;
+    },
+    createElement: function () {
+      return { type: "", crossOrigin: "", async: false, src: "" };
+    },
+    getElementsByTagName: function () {
+      return [{
+        parentNode: {
+          insertBefore: function (node) {
+            scripts.push(node.src);
+          }
+        }
+      }];
+    },
+    addEventListener: function () {}
+  };
+  window.document = document;
+  const context = { window: window, document: document, console: console };
+  vm.createContext(context);
+  vm.runInContext(siteJs, context);
+}
+
+const scripts = [];
+const captures = [];
+const windowObj = {
+  location: {
+    href: "https://from-my-desk.example/labs/know-your-agent",
+    pathname: "/labs/know-your-agent"
+  }
+};
+boot(windowObj, scripts);
+const queued = (windowObj.posthog && windowObj.posthog._i) || [];
+const inits = queued.map(function (entry) {
+  const opts = entry[1] || {};
+  const client = {
+    capture: function (name, props) {
+      captures.push({ name: name, props: props });
+    }
+  };
+  if (typeof opts.loaded === "function") {
+    opts.loaded(client);
+    opts.loaded(client);
+  }
+  return { key: entry[0], options: pickOptions(opts) };
+});
+boot(windowObj, scripts);
+const queuedAfterReload = (windowObj.posthog && windowObj.posthog._i) || [];
+process.stdout.write(JSON.stringify({
+  scripts: scripts,
+  captures: captures,
+  inits: inits,
+  queuedAfterReload: queuedAfterReload.length,
+  pageviewSent: Boolean(windowObj.__fromMyDeskPageviewSent),
+  ready: Boolean(windowObj.__fromMyDeskPosthogReady)
+}));
+"""
+
+
+def _run_loader_harness(config: dict) -> dict:
+    import json
+    import shutil
+    import subprocess
+    import tempfile
+    from pathlib import Path
+
+    node = shutil.which("node")
+    if not node:
+        pytest.skip("node is required to execute the PostHog loader harness")
+    with tempfile.TemporaryDirectory() as tmp:
+        harness = Path(tmp) / "posthog_loader_harness.js"
+        harness.write_text(LOADER_HARNESS, encoding="utf-8")
+        result = subprocess.run(
+            [node, str(harness), str(SITE_JS), json.dumps(config)],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    if result.returncode != 0:
+        pytest.fail(result.stderr or result.stdout or "loader harness failed")
+    return json.loads(result.stdout)
+
+
+def test_loader_captures_exactly_one_pageview_and_does_not_reinit():
+    cfg = {
+        "enabled": True,
+        "key": TEST_PUBLIC_TOKEN,
+        "host": "https://us.i.posthog.com",
+        "capture_pageview": False,
+        "capture_pageleave": True,
+        "autocapture": False,
+        "disable_session_recording": True,
+    }
+    report = _run_loader_harness(cfg)
+    assert len(report["inits"]) == 1
+    options = report["inits"][0]["options"]
+    assert report["inits"][0]["key"] == TEST_PUBLIC_TOKEN
+    assert options["api_host"] == "https://us.i.posthog.com"
+    assert options["defaults"] == "2026-05-30"
+    assert options["capture_pageview"] is False
+    assert options["capture_pageleave"] is True
+    assert options["autocapture"] is False
+    assert options["disable_session_recording"] is True
+    assert options["has_loaded"] is True
+    assert report["queuedAfterReload"] == 1
+    assert len(report["scripts"]) == 1
+    assert report["scripts"][0].endswith("/static/array.js")
+    assert "us-assets.i.posthog.com" in report["scripts"][0]
+    pageviews = [item for item in report["captures"] if item["name"] == "$pageview"]
+    assert len(pageviews) == 1
+    props = pageviews[0]["props"]
+    assert set(props) == {"$current_url", "$pathname", "page_title"}
+    assert props["$current_url"] == "https://from-my-desk.example/labs/know-your-agent"
+    assert props["$pathname"] == "/labs/know-your-agent"
+    assert props["page_title"] == "Know Your Agent"
+    assert report["ready"] is True
+    assert report["pageviewSent"] is True
+
+
+def test_loader_stays_idle_when_telemetry_disabled():
+    report = _run_loader_harness({"enabled": False})
+    assert report["inits"] == []
+    assert report["scripts"] == []
+    assert report["captures"] == []
+    assert report["queuedAfterReload"] == 0
+    assert report["ready"] is False
+    assert report["pageviewSent"] is False
 
 
 def test_config_helper_omits_key_when_disabled(telemetry_env_cleanup):

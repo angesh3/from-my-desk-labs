@@ -83,6 +83,7 @@ def test_required_routes_registered_once_in_safe_order():
         "labs_index": ("/labs", ["GET"]),
         "lab_page": ("/labs/{slug}", ["GET"]),
         "lab001-static": ("/static/labs/001", []),
+        "lab002-static": ("/static/labs/002", []),
         "static": ("/static", []),
     }
     for name, (path, methods) in required.items():
@@ -93,17 +94,18 @@ def test_required_routes_registered_once_in_safe_order():
 
     # Exactly one of each critical path.
     paths = [row["path"] for row in table]
-    for path in ("/", "/labs", "/labs/{slug}", "/health", "/api/evaluate"):
+    for path in ("/", "/labs", "/labs/{slug}", "/health", "/api/evaluate", "/api/labs/002/evaluate"):
         assert paths.count(path) == 1, path
 
     home_idx = next(i for i, row in enumerate(table) if row["name"] == "home")
     labs_idx = next(i for i, row in enumerate(table) if row["name"] == "labs_index")
     lab_idx = next(i for i, row in enumerate(table) if row["name"] == "lab_page")
     lab_static_idx = next(i for i, row in enumerate(table) if row["name"] == "lab001-static")
+    lab002_static_idx = next(i for i, row in enumerate(table) if row["name"] == "lab002-static")
     static_idx = next(i for i, row in enumerate(table) if row["name"] == "static")
     health_idx = next(i for i, row in enumerate(table) if row["name"] == "health")
 
-    assert health_idx < home_idx < labs_idx < lab_idx < lab_static_idx < static_idx
+    assert health_idx < home_idx < labs_idx < lab_idx < lab_static_idx < lab002_static_idx < static_idx
 
     # Page routes must not be Mount objects; static mounts must not precede pages.
     for route in app.routes:

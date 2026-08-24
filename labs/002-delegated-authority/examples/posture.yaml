@@ -1,0 +1,94 @@
+posture:
+  - agent_id: research-agent-001
+    posture_status: compliant
+    risk_level: low
+    model_version_status: approved
+    configuration_integrity: intact
+    tool_inventory_status: expected
+    attestation_status: ok
+    credential_status: healthy
+    behavior_status: normal
+    evidence_freshness: current
+    recommended_treatment: continue
+    posture_version: "1"
+
+  - agent_id: research-agent-stale
+    posture_status: stale
+    risk_level: medium
+    model_version_status: approved
+    configuration_integrity: intact
+    tool_inventory_status: expected
+    attestation_status: ok
+    credential_status: healthy
+    behavior_status: normal
+    evidence_freshness: stale
+    recommended_treatment: step_up
+    reason_code: posture_evidence_stale
+    posture_version: "1"
+
+  - agent_id: research-agent-version
+    posture_status: noncompliant
+    risk_level: medium
+    model_version_status: noncompliant
+    configuration_integrity: intact
+    tool_inventory_status: expected
+    attestation_status: ok
+    credential_status: healthy
+    behavior_status: normal
+    evidence_freshness: current
+    recommended_treatment: step_up
+    reason_code: model_version_noncompliant
+    posture_version: "1"
+
+  - agent_id: research-agent-tools
+    posture_status: noncompliant
+    risk_level: high
+    model_version_status: approved
+    configuration_integrity: intact
+    tool_inventory_status: changed
+    attestation_status: ok
+    credential_status: healthy
+    behavior_status: anomalous
+    evidence_freshness: current
+    recommended_treatment: deny
+    reason_code: tool_inventory_changed
+    posture_version: "1"
+
+  - agent_id: research-agent-mismatch
+    posture_status: compliant
+    risk_level: low
+    model_version_status: approved
+    configuration_integrity: intact
+    tool_inventory_status: expected
+    attestation_status: ok
+    credential_status: healthy
+    behavior_status: normal
+    evidence_freshness: current
+    recommended_treatment: continue
+    posture_version: "1"
+
+  - agent_id: portfolio-agent-001
+    posture_status: compliant
+    risk_level: low
+    model_version_status: approved
+    configuration_integrity: intact
+    tool_inventory_status: expected
+    attestation_status: ok
+    credential_status: healthy
+    behavior_status: normal
+    evidence_freshness: current
+    recommended_treatment: continue
+    posture_version: "1"
+
+  - agent_id: execution-profile-agent
+    posture_status: compliant
+    risk_level: low
+    model_version_status: approved
+    configuration_integrity: intact
+    tool_inventory_status: expected
+    attestation_status: ok
+    credential_status: healthy
+    behavior_status: normal
+    evidence_freshness: current
+    recommended_treatment: continue
+    posture_version: "1"

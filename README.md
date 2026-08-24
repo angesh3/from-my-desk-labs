@@ -6,7 +6,7 @@ This repository hosts the public companion site and any editions that include a 
 
 ```
 from-my-desk-labs/
-├── pyproject.toml          # installs the know_your_agent package
+├── pyproject.toml          # installs know_your_agent and delegated_authority
 ├── Dockerfile
 ├── docker-compose.yml
 ├── website/
@@ -14,13 +14,21 @@ from-my-desk-labs/
 │   ├── assets/source/      # non-public master brand files
 │   └── catalog/            # labs.yaml is the source of truth for discovery
 └── labs/
-    └── 001-know-your-agent/
-        ├── src/know_your_agent/   # uniquely named Python package
+    ├── 001-know-your-agent/
+    │   ├── src/know_your_agent/
+    │   ├── policies/
+    │   ├── examples/
+    │   ├── tests/
+    │   ├── diagrams/
+    │   └── static/
+    └── 002-delegated-authority/
+        ├── src/delegated_authority/
         ├── policies/
         ├── examples/
         ├── tests/
+        ├── docs/
         ├── diagrams/
-        └── static/         # lab GIF, architecture SVG, lab.js
+        └── static/
 ```
 
 ## Why the Python layout looks this way
@@ -44,6 +52,7 @@ Discovery is data-driven. Edit `website/catalog/labs.yaml`; do not hard-code edi
 | Lab | Title | What it demonstrates |
 | --- | --- | --- |
 | [001-know-your-agent](labs/001-know-your-agent) | Know Your Agent | Identity versus delegated authority. Four-way policy gate: ALLOW, CONFIRM, STEP_UP, DENY. Fictional paper-order simulation only. |
+| [002-delegated-authority](labs/002-delegated-authority) | KYA: Delegated Authority | Trust must narrow at every handoff. Parent-child delegation, APE, APSE, revocation, and restricted fallback. Never executes. |
 
 ## Local setup
 
@@ -63,6 +72,7 @@ Open:
 - http://127.0.0.1:8080/
 - http://127.0.0.1:8080/labs
 - http://127.0.0.1:8080/labs/know-your-agent
+- http://127.0.0.1:8080/labs/delegated-authority
 - http://127.0.0.1:8080/health
 
 ## Tests
@@ -109,13 +119,15 @@ Leave `POSTHOG_ENABLED=false` and `POSTHOG_KEY` empty until you intend to collec
 
 ### Runtime behavior
 
-The official PostHog browser SDK (`array.js` from the PostHog assets host) is loaded only when all of the following are true:
+`site.js` installs the official PostHog snippet (https://posthog.com/docs/libraries/js) and then calls `posthog.init` once. There is no second SDK `<script>` tag in HTML. The snippet injects `array.js` from the PostHog assets host only when all of the following are true:
 
 - `POSTHOG_ENABLED` is true
 - `POSTHOG_KEY` is non-empty
 - the request hostname is not `localhost`, `127.0.0.1`, `::1`, or a test host
 
-Initialization uses a single `posthog.init` with `capture_pageview: false` and `capture_pageleave: true`. After init succeeds, the `loaded` callback captures exactly one `$pageview` (`$current_url`, `$pathname`, `page_title` only). Autocapture and session recording stay off (`person_profiles: identified_only`, `persistence: localStorage+cookie`, `respect_dnt: true`). The site never calls `posthog.identify()`. Visitors remain anonymous.
+Initialization uses a single `posthog.init` with `defaults: '2026-05-30'`, `capture_pageview: false`, and `capture_pageleave: true`. After init succeeds, the `loaded` callback captures exactly one `$pageview` (`$current_url`, `$pathname`, `page_title` only). Autocapture and session recording stay off (`person_profiles: identified_only`, `persistence: localStorage+cookie`, `respect_dnt: true`). The site never calls `posthog.identify()`. Visitors remain anonymous.
+
+When telemetry is enabled, Content-Security-Policy allowlists `https://*.i.posthog.com` and `https://*.posthog.com` on `script-src` and `connect-src`, plus `worker-src 'self' blob: data:`. A narrow host list can look installed while ingest stays empty.
 
 Analytics failures are non-blocking. Pages, Lab 001, and `POST /api/evaluate` do not depend on PostHog. Visitors are never shown analytics errors.
 
@@ -126,8 +138,11 @@ Custom events are privacy-safe. They never include principal, agent, or account 
 | Event | Properties |
 | --- | --- |
 | `$pageview` | `$current_url`, `$pathname`, `page_title` only. Captured once after init. |
-| `lab_preset_selected` | `lab_id` (`001`), `preset_category` (`allow`, `confirm`, `step_up`, or `deny`) |
-| `policy_evaluation_completed` | `lab_id` (`001`), `decision` (`allow`, `confirm`, `step_up`, or `deny`), `reason_category` (generalized only: `ok`, `confirmation_required`, `step_up_required`, `amount_limit`, `identity`, `authority`, `scope`, `invalid_request`, or `other`) |
+| `lab_opened` | `lab_id`, `lab_slug` (Lab 002) |
+| `lab_preset_selected` | `lab_id`, `preset_category` (Lab 001) or `scenario_category` + `preset_id` (Lab 002) |
+| `policy_evaluation_completed` | `lab_id`, `decision`, `reason_category`; Lab 002 also `scenario_category`, `fallback_available` |
+| `fallback_previewed` | `lab_id`, `decision`, `fallback_type` (Lab 002) |
+| `architecture_viewed` | `lab_id`, `architecture_type` (Lab 002) |
 | `outbound_link_clicked` | `destination` (`github`, `linkedin_newsletter`, or `architecture`), `page_type` (`home`, `labs_index`, or `lab`) |
 
 ## Adding Lab 002

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="title desc">
+  <title id="title">Lab 002 evaluation flow</title>
+  <desc id="desc">
+    Action request flows through Identity, Delegation, APE, APSE, then scope limits and context.
+    Candidate outcomes are resolved with precedence DENY greater than STEP_UP greater than CONFIRM greater than ALLOW.
+    Result goes to audit and fallback with execution not performed.
+  </desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#0b1f33"/>
+    </marker>
+  </defs>
+  <rect width="960" height="640" fill="#f7f4ec"/>
+  <text x="32" y="40" font-family="Georgia, serif" font-size="20" fill="#0b1f33">Evaluation sequence</text>
+  <text x="32" y="64" font-family="Georgia, serif" font-size="13" fill="#5c5a54">DENY &gt; STEP_UP &gt; CONFIRM &gt; ALLOW</text>
+
+  <g font-family="Georgia, serif" font-size="13" fill="#0b1f33">
+    <rect x="360" y="88" width="240" height="44" fill="#0b1f33"/>
+    <text x="480" y="115" text-anchor="middle" fill="#f7f4ec">Action request</text>
+
+    <path d="M480 132 V156" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+    <rect x="360" y="156" width="240" height="40" fill="#ffffff" stroke="#0b1f33"/>
+    <text x="480" y="181" text-anchor="middle">Identity</text>
+
+    <path d="M480 196 V220" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+    <rect x="360" y="220" width="240" height="40" fill="#ffffff" stroke="#0b1f33"/>
+    <text x="480" y="245" text-anchor="middle">Delegation chain</text>
+
+    <path d="M480 260 V284" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+    <rect x="360" y="284" width="240" height="40" fill="#ffffff" stroke="#0b1f33"/>
+    <text x="480" y="309" text-anchor="middle">APE / APSE</text>
+
+    <path d="M480 324 V348" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+    <rect x="360" y="348" width="240" height="40" fill="#ffffff" stroke="#c4a35a" stroke-width="2"/>
+    <text x="480" y="373" text-anchor="middle">Scope / Limits / Context</text>
+
+    <path d="M480 388 V412" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+    <polygon points="480,416 560,456 480,496 400,456" fill="#ffffff" stroke="#0b1f33" stroke-width="2"/>
+    <text x="480" y="452" text-anchor="middle" font-size="12">Precedence</text>
+    <text x="480" y="468" text-anchor="middle" font-size="11" fill="#5c5a54">most restrictive</text>
+
+    <path d="M400 456 H120 V520" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+    <path d="M430 480 L280 520" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+    <path d="M530 480 L680 520" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+    <path d="M560 456 H840 V520" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+
+    <rect x="40" y="524" width="160" height="44" fill="#ffffff" stroke="#a31f1f" stroke-width="2"/>
+    <text x="120" y="551" text-anchor="middle" fill="#a31f1f">DENY</text>
+
+    <rect x="220" y="524" width="160" height="44" fill="#ffffff" stroke="#c45c12" stroke-width="2"/>
+    <text x="300" y="551" text-anchor="middle" fill="#c45c12">STEP_UP</text>
+
+    <rect x="580" y="524" width="160" height="44" fill="#ffffff" stroke="#9a7b24" stroke-width="2"/>
+    <text x="660" y="551" text-anchor="middle" fill="#9a7b24">CONFIRM</text>
+
+    <rect x="760" y="524" width="160" height="44" fill="#ffffff" stroke="#1f7a4d" stroke-width="2"/>
+    <text x="840" y="551" text-anchor="middle" fill="#1f7a4d">ALLOW</text>
+
+    <text x="480" y="608" text-anchor="middle" font-size="13" fill="#5c5a54">Then audit evidence + restricted fallback / execution: not_performed</text>
+  </g>
+</svg>

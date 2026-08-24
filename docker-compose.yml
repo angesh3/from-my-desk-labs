@@ -9,8 +9,11 @@ services:
       WEBSITE_TEMPLATE_DIR: /srv/website/app/templates
       WEBSITE_STATIC_DIR: /srv/website/app/static
       LAB_STATIC_DIR: /srv/labs/001-know-your-agent/static
+      LAB002_STATIC_DIR: /srv/labs/002-delegated-authority/static
       CATALOG_PATH: /srv/website/catalog/labs.yaml
       POLICY_DIR: /srv/labs/001-know-your-agent/policies
+      LAB002_DATA_DIR: /srv/labs/002-delegated-authority/examples
+      LAB002_POLICY_DIR: /srv/labs/002-delegated-authority/policies
       PORT: "8080"
       POSTHOG_ENABLED: "false"
       POSTHOG_KEY: ""

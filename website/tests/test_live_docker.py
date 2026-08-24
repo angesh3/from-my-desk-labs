@@ -59,11 +59,16 @@ def test_live_pages_and_assets():
         ("/", b"Perspectives shaped by experience"),
         ("/labs", b"Labs"),
         ("/labs/know-your-agent", b"Know Your Agent"),
+        ("/labs/delegated-authority", b"Delegated Authority"),
     ):
         code, headers, body = _get(path)
         assert code == 200
         assert needle in body
         assert "text/html" in headers.get("Content-Type", "")
+        if path == "/":
+            assert b'"enabled": false' in body
+            assert b"array.js" not in body
+            assert "posthog.com" not in headers.get("Content-Security-Policy", "")
 
     code, headers, body = _get("/static/css/styles.css")
     assert code == 200
@@ -89,6 +94,21 @@ def test_live_pages_and_assets():
     code, headers, _ = _get("/static/labs/001/know-your-agent-trust-workflow.gif")
     assert code == 200
     assert "image/gif" in headers.get("Content-Type", "")
+
+    for name in (
+        "delegated-authority-workflow.svg",
+        "system-architecture.svg",
+        "evaluation-flow.svg",
+        "fallback-flow.svg",
+        "revocation-flow.svg",
+    ):
+        code, headers, body = _get(f"/static/labs/002/{name}")
+        assert code == 200, name
+        assert "image/svg+xml" in headers.get("Content-Type", ""), name
+
+    code, headers, body = _get("/static/labs/002/lab.js")
+    assert code == 200
+    assert "javascript" in headers.get("Content-Type", "")
 
     with pytest.raises(urllib.error.HTTPError) as exc:
         _get("/static/brand/from-my-desk-logo-source.png")

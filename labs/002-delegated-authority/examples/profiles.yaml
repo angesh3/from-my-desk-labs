@@ -1,0 +1,189 @@
+profiles:
+  - agent_id: research-agent-001
+    classification: Research Agent
+    confidence: high
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [research]
+    expected_tools: [market_data, document_reader]
+    declared:
+      agent_type: Research Agent
+      model: research-model-2.1
+      tools: [market_data, document_reader]
+      declared_capabilities: [research]
+      owner: principal-demo-001
+    observed:
+      typical_data_access: [market_summaries]
+      typical_tool_usage: [market_data]
+      typical_action_types: [research]
+      typical_operating_period: market_hours
+      observed_execution_behavior: read_only
+    verified:
+      signed_manifest: true
+      approved_software_version: research-model-2.1
+      attested_runtime: true
+      registered_environment: lab-sandbox
+      verified_tool_inventory: [market_data, document_reader]
+
+  - agent_id: research-agent-stale
+    classification: Research Agent
+    confidence: high
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [research]
+    expected_tools: [market_data, document_reader]
+    declared:
+      agent_type: Research Agent
+      model: research-model-2.1
+      tools: [market_data, document_reader]
+      declared_capabilities: [research]
+      owner: principal-demo-001
+    observed:
+      typical_data_access: [market_summaries]
+      typical_tool_usage: [market_data]
+      typical_action_types: [research]
+      typical_operating_period: market_hours
+      observed_execution_behavior: read_only
+    verified:
+      signed_manifest: true
+      approved_software_version: research-model-2.1
+      attested_runtime: true
+      registered_environment: lab-sandbox
+      verified_tool_inventory: [market_data, document_reader]
+
+  - agent_id: research-agent-version
+    classification: Research Agent
+    confidence: medium
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [research]
+    expected_tools: [market_data, document_reader]
+    declared:
+      agent_type: Research Agent
+      model: research-model-1.0
+      tools: [market_data, document_reader]
+      declared_capabilities: [research]
+      owner: principal-demo-001
+    observed:
+      typical_data_access: [market_summaries]
+      typical_tool_usage: [market_data]
+      typical_action_types: [research]
+      typical_operating_period: market_hours
+      observed_execution_behavior: read_only
+    verified:
+      signed_manifest: true
+      approved_software_version: research-model-1.0
+      attested_runtime: true
+      registered_environment: lab-sandbox
+      verified_tool_inventory: [market_data, document_reader]
+
+  - agent_id: research-agent-tools
+    classification: Research Agent
+    confidence: high
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [research]
+    expected_tools: [market_data, document_reader]
+    declared:
+      agent_type: Research Agent
+      model: research-model-2.1
+      tools: [market_data, document_reader]
+      declared_capabilities: [research]
+      owner: principal-demo-001
+    observed:
+      typical_data_access: [market_summaries]
+      typical_tool_usage: [market_data, shell_tool]
+      typical_action_types: [research]
+      typical_operating_period: market_hours
+      observed_execution_behavior: unexpected_tool
+    verified:
+      signed_manifest: true
+      approved_software_version: research-model-2.1
+      attested_runtime: true
+      registered_environment: lab-sandbox
+      verified_tool_inventory: [market_data, document_reader]
+
+  - agent_id: research-agent-mismatch
+    classification: Research Agent
+    confidence: medium
+    profile_status: conflicting
+    profile_mismatch: true
+    profile_version: "1"
+    expected_capabilities: [research]
+    expected_tools: [market_data, document_reader]
+    declared:
+      agent_type: Research Agent
+      model: research-model-2.1
+      tools: [market_data, document_reader]
+      declared_capabilities: [research]
+      owner: principal-demo-001
+    observed:
+      typical_data_access: [market_summaries, order_books]
+      typical_tool_usage: [market_data, order_router]
+      typical_action_types: [research, execute]
+      typical_operating_period: off_hours
+      observed_execution_behavior: unexpected_execution_attempts
+    verified:
+      signed_manifest: true
+      approved_software_version: research-model-2.1
+      attested_runtime: true
+      registered_environment: lab-sandbox
+      verified_tool_inventory: [market_data, document_reader]
+
+  - agent_id: portfolio-agent-001
+    classification: Portfolio Agent
+    confidence: high
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [research, propose]
+    expected_tools: [market_data, proposal_builder]
+    declared:
+      agent_type: Portfolio Agent
+      model: portfolio-model-1.2
+      tools: [market_data, proposal_builder]
+      declared_capabilities: [research, propose]
+      owner: principal-demo-001
+    observed:
+      typical_data_access: [portfolio_views]
+      typical_tool_usage: [proposal_builder]
+      typical_action_types: [propose]
+      typical_operating_period: market_hours
+      observed_execution_behavior: proposal_only
+    verified:
+      signed_manifest: true
+      approved_software_version: portfolio-model-1.2
+      attested_runtime: true
+      registered_environment: lab-sandbox
+      verified_tool_inventory: [market_data, proposal_builder]
+
+  - agent_id: execution-profile-agent
+    classification: Execution Agent
+    confidence: high
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [execute]
+    expected_tools: [order_router]
+    declared:
+      agent_type: Execution Agent
+      model: exec-model-1.0
+      tools: [order_router]
+      declared_capabilities: [execute]
+      owner: principal-demo-001
+    observed:
+      typical_data_access: [order_tickets]
+      typical_tool_usage: [order_router]
+      typical_action_types: [execute]
+      typical_operating_period: market_hours
+      observed_execution_behavior: executor_pattern
+    verified:
+      signed_manifest: true
+      approved_software_version: exec-model-1.0
+      attested_runtime: true
+      registered_environment: lab-sandbox
+      verified_tool_inventory: [order_router]
