@@ -1,0 +1,18 @@
+%% Lab 002 — Evaluation flow with precedence DENY > STEP_UP > CONFIRM > ALLOW
+flowchart TD
+    A[Action request] --> B[Identity]
+    B --> C[Delegation chain]
+    C --> D[APE]
+    D --> E[APSE]
+    E --> F[Scope limits context]
+    F --> G[Collect candidate outcomes]
+    G --> H{Precedence}
+    H -->|most restrictive| I[DENY]
+    H -->|else| J[STEP_UP]
+    H -->|else| K[CONFIRM]
+    H -->|all pass| L[ALLOW]
+    I --> M[Audit + fallback]
+    J --> M
+    K --> M
+    L --> M
+    M --> N[execution: not_performed]

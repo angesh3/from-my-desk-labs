@@ -50,9 +50,15 @@
   function safeProperties(properties) {
     var allowed = {
       lab_id: true,
+      lab_slug: true,
       preset_category: true,
+      scenario_category: true,
+      preset_id: true,
       decision: true,
       reason_category: true,
+      fallback_available: true,
+      fallback_type: true,
+      architecture_type: true,
       destination: true,
       page_type: true
     };

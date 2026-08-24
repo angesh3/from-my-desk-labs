@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 780" role="img" aria-labelledby="title desc">
+  <title id="title">Lab 002 system architecture</title>
+  <desc id="desc">
+    An agent action request enters the Trust Gateway. Identity Service, Delegation Evaluator,
+    APE, APSE, Agent Management Plane, and request context feed policy evaluation.
+    Outcomes are ALLOW, CONFIRM, STEP_UP, or DENY with audit evidence. Restricted fallback
+    leads to a new request and new evaluation. Execution remains a separate boundary and is
+    not performed in this lab.
+  </desc>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#14213d"/>
+    </marker>
+    <marker id="arrg" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#b08d57"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="780" fill="#f7f4ec"/>
+  <text x="28" y="36" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#14213d">Lab 002 - System architecture</text>
+  <text x="28" y="58" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#5c5a54">Trust must narrow at every handoff. Policy evaluation is separate from execution.</text>
+
+  <!-- Request -->
+  <rect x="28" y="80" width="160" height="56" rx="2" fill="#ffffff" stroke="#14213d" stroke-width="1.5"/>
+  <text x="108" y="104" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#14213d">Agent action</text>
+  <text x="108" y="122" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#14213d">request</text>
+
+  <line x1="188" y1="108" x2="248" y2="108" stroke="#14213d" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Trust Gateway -->
+  <rect x="248" y="72" width="280" height="280" rx="2" fill="#ffffff" stroke="#14213d" stroke-width="2"/>
+  <rect x="248" y="72" width="280" height="36" fill="#14213d"/>
+  <text x="388" y="95" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#f7f4ec">Trust Gateway</text>
+  <text x="388" y="128" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#5c5a54">Policy evaluation</text>
+
+  <rect x="268" y="144" width="110" height="36" fill="#f7f4ec" stroke="#14213d"/>
+  <text x="323" y="166" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#14213d">Identity</text>
+  <rect x="398" y="144" width="110" height="36" fill="#f7f4ec" stroke="#14213d"/>
+  <text x="453" y="166" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#14213d">Delegation</text>
+  <rect x="268" y="192" width="110" height="36" fill="#f7f4ec" stroke="#14213d"/>
+  <text x="323" y="214" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#14213d">APE profile</text>
+  <rect x="398" y="192" width="110" height="36" fill="#f7f4ec" stroke="#14213d"/>
+  <text x="453" y="214" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#14213d">APSE posture</text>
+  <rect x="268" y="240" width="240" height="36" fill="#f7f4ec" stroke="#b08d57" stroke-width="1.5"/>
+  <text x="388" y="262" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#14213d">Scope, limits, context</text>
+  <rect x="268" y="288" width="240" height="44" fill="#14213d"/>
+  <text x="388" y="306" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#f7f4ec">Decision precedence</text>
+  <text x="388" y="322" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#b08d57">DENY &gt; STEP_UP &gt; CONFIRM &gt; ALLOW</text>
+
+  <!-- Inputs -->
+  <text x="580" y="92" font-family="Georgia, serif" font-size="12" fill="#5c5a54">Inputs</text>
+  <rect x="560" y="104" width="180" height="32" fill="#ffffff" stroke="#14213d"/>
+  <text x="650" y="124" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#14213d">Identity Service</text>
+  <rect x="560" y="144" width="180" height="32" fill="#ffffff" stroke="#14213d"/>
+  <text x="650" y="164" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#14213d">Delegation Evaluator</text>
+  <rect x="560" y="184" width="180" height="32" fill="#ffffff" stroke="#14213d"/>
+  <text x="650" y="204" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#14213d">APE (does not grant)</text>
+  <rect x="560" y="224" width="180" height="32" fill="#ffffff" stroke="#14213d"/>
+  <text x="650" y="244" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#14213d">APSE (does not expand)</text>
+  <rect x="560" y="264" width="180" height="32" fill="#ffffff" stroke="#14213d"/>
+  <text x="650" y="284" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#14213d">Management Plane</text>
+  <rect x="560" y="304" width="180" height="32" fill="#ffffff" stroke="#14213d"/>
+  <text x="650" y="324" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#14213d">Request context</text>
+
+  <line x1="560" y1="120" x2="528" y2="162" stroke="#b08d57" stroke-width="1" marker-end="url(#arrg)"/>
+  <line x1="560" y1="160" x2="528" y2="162" stroke="#b08d57" stroke-width="1" marker-end="url(#arrg)"/>
+  <line x1="560" y1="200" x2="528" y2="210" stroke="#b08d57" stroke-width="1" marker-end="url(#arrg)"/>
+  <line x1="560" y1="240" x2="528" y2="210" stroke="#b08d57" stroke-width="1" marker-end="url(#arrg)"/>
+  <line x1="560" y1="280" x2="528" y2="258" stroke="#b08d57" stroke-width="1" marker-end="url(#arrg)"/>
+  <line x1="560" y1="320" x2="528" y2="258" stroke="#b08d57" stroke-width="1" marker-end="url(#arrg)"/>
+
+  <!-- Outcomes -->
+  <line x1="388" y1="352" x2="388" y2="392" stroke="#14213d" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="28" y="384" font-family="Georgia, serif" font-size="12" fill="#5c5a54">Policy decision</text>
+
+  <rect x="80" y="400" width="100" height="40" fill="#e8f5ee" stroke="#1f7a4d"/>
+  <text x="130" y="424" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#1f7a4d">ALLOW</text>
+  <rect x="200" y="400" width="100" height="40" fill="#f7f0d8" stroke="#9a7b24"/>
+  <text x="250" y="424" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#9a7b24">CONFIRM</text>
+  <rect x="320" y="400" width="100" height="40" fill="#fbe8d8" stroke="#c45c12"/>
+  <text x="370" y="424" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#c45c12">STEP_UP</text>
+  <rect x="440" y="400" width="100" height="40" fill="#f8e4e4" stroke="#a31f1f"/>
+  <text x="490" y="424" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#a31f1f">DENY</text>
+
+  <!-- Audit -->
+  <line x1="290" y1="440" x2="290" y2="488" stroke="#14213d" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="160" y="488" width="260" height="48" fill="#ffffff" stroke="#14213d" stroke-width="1.5"/>
+  <text x="290" y="508" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#14213d">Audit evidence</text>
+  <text x="290" y="526" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#5c5a54">Every outcome is recorded</text>
+
+  <!-- Fallback path -->
+  <line x1="490" y1="440" x2="620" y2="488" stroke="#a31f1f" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="560" y="488" width="200" height="48" fill="#ffffff" stroke="#a31f1f"/>
+  <text x="660" y="508" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#a31f1f">Restricted fallback</text>
+  <text x="660" y="524" text-anchor="middle" font-family="Georgia, serif" font-size="10" fill="#5c5a54">Does not override DENY</text>
+
+  <line x1="660" y1="536" x2="660" y2="580" stroke="#14213d" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="560" y="580" width="200" height="40" fill="#ffffff" stroke="#14213d"/>
+  <text x="660" y="604" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#14213d">New request + evaluation</text>
+
+  <!-- Executor boundary -->
+  <rect x="28" y="640" width="504" height="72" fill="#ffffff" stroke="#b08d57" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="40" y="664" font-family="Georgia, serif" font-size="13" fill="#14213d">Separate executor boundary</text>
+  <text x="40" y="684" font-family="Georgia, serif" font-size="12" fill="#5c5a54">ALLOW is policy approval only. This lab reports execution: not_performed.</text>
+  <text x="40" y="700" font-family="Georgia, serif" font-size="12" fill="#5c5a54">No transaction or tool action is executed here.</text>
+
+  <text x="560" y="664" font-family="Georgia, serif" font-size="11" fill="#5c5a54">Boundaries</text>
+  <text x="560" y="682" font-family="Georgia, serif" font-size="11" fill="#14213d">APE informs; never grants authority</text>
+  <text x="560" y="698" font-family="Georgia, serif" font-size="11" fill="#14213d">APSE restricts; never expands</text>
+  <text x="560" y="714" font-family="Georgia, serif" font-size="11" fill="#14213d">Fallback never converts DENY</text>
+</svg>

@@ -34,15 +34,17 @@ def valid_lab(**overrides):
 
 def test_published_catalog_loads():
     labs = load_catalog(CATALOG)
-    assert len(labs) == 1
-    lab = labs[0]
-    assert lab.id == "001"
-    assert lab.slug == "know-your-agent"
-    assert lab.featured is True
-    assert lab.interactive is True
-    assert lab.published_date is None
-    assert lab.disclaimer
-    assert "Authorization" in lab.tags
+    assert len(labs) == 2
+    by_id = {lab.id: lab for lab in labs}
+    assert by_id["001"].slug == "know-your-agent"
+    assert by_id["001"].featured is True
+    assert by_id["001"].interactive is True
+    assert by_id["001"].disclaimer
+    assert "Authorization" in by_id["001"].tags
+    assert by_id["002"].slug == "delegated-authority"
+    assert by_id["002"].featured is False
+    assert by_id["002"].interactive is True
+    assert by_id["002"].lab_url == "/labs/delegated-authority"
 
 
 def test_duplicate_id_rejected(tmp_path):

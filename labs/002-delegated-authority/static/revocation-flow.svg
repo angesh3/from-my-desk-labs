@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">Lab 002 revocation propagation</title>
+  <desc id="desc">
+    Parent envelope revocation invalidates child and downstream hops.
+    Policy returns DENY with parent_revoked, records audit evidence,
+    and offers fallback that requires a new evaluation. Automatic restore is not allowed.
+  </desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#0b1f33"/>
+    </marker>
+    <marker id="arrow-deny" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#a31f1f"/>
+    </marker>
+  </defs>
+  <rect width="960" height="560" fill="#f7f4ec"/>
+  <text x="32" y="40" font-family="Georgia, serif" font-size="20" fill="#0b1f33">Revocation propagation</text>
+  <text x="32" y="64" font-family="Georgia, serif" font-size="13" fill="#5c5a54">Parent revoke invalidates the entire downstream chain</text>
+
+  <g font-family="Georgia, serif" font-size="13" fill="#0b1f33">
+    <rect x="80" y="100" width="200" height="56" fill="#ffffff" stroke="#a31f1f" stroke-width="2"/>
+    <text x="180" y="124" text-anchor="middle">Parent envelope</text>
+    <text x="180" y="144" text-anchor="middle" fill="#a31f1f">REVOKED</text>
+
+    <path d="M280 128 H340" stroke="#a31f1f" fill="none" marker-end="url(#arrow-deny)"/>
+    <rect x="340" y="100" width="200" height="56" fill="#ffffff" stroke="#a31f1f" stroke-width="2"/>
+    <text x="440" y="124" text-anchor="middle">Child envelope</text>
+    <text x="440" y="144" text-anchor="middle" fill="#a31f1f">INVALID</text>
+
+    <path d="M540 128 H600" stroke="#a31f1f" fill="none" marker-end="url(#arrow-deny)"/>
+    <rect x="600" y="100" width="240" height="56" fill="#ffffff" stroke="#a31f1f" stroke-width="2"/>
+    <text x="720" y="124" text-anchor="middle">Tool / leaf hop</text>
+    <text x="720" y="144" text-anchor="middle" fill="#a31f1f">INVALID</text>
+
+    <path d="M440 156 V200" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+    <rect x="300" y="200" width="280" height="48" fill="#0b1f33"/>
+    <text x="440" y="230" text-anchor="middle" fill="#f7f4ec">Policy: DENY parent_revoked</text>
+
+    <path d="M300 224 H180 V280" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+    <path d="M580 224 H700 V280" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+
+    <rect x="60" y="284" width="240" height="64" fill="#f7f4ec" stroke="#0b1f33"/>
+    <text x="180" y="312" text-anchor="middle">Audit evidence</text>
+    <text x="180" y="332" text-anchor="middle" font-size="11" fill="#5c5a54">DENY recorded</text>
+
+    <rect x="580" y="284" width="280" height="64" fill="#f7f4ec" stroke="#c4a35a" stroke-width="2"/>
+    <text x="720" y="312" text-anchor="middle">Fallback</text>
+    <text x="720" y="332" text-anchor="middle" font-size="11" fill="#5c5a54">human review / new delegation</text>
+
+    <path d="M720 348 V392" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+    <rect x="580" y="396" width="280" height="48" fill="#ffffff" stroke="#0b1f33"/>
+    <text x="720" y="425" text-anchor="middle">New evaluation required</text>
+
+    <rect x="60" y="396" width="400" height="80" fill="#ffffff" stroke="#a31f1f" stroke-dasharray="6 4"/>
+    <text x="260" y="430" text-anchor="middle" fill="#a31f1f">Automatic restore of revoked chain</text>
+    <text x="260" y="452" text-anchor="middle" font-size="12" fill="#5c5a54">NOT PERMITTED</text>
+  </g>
+
+  <text x="32" y="530" font-family="Georgia, serif" font-size="13" fill="#5c5a54">Fallback never re-enables the revoked envelopes in place.</text>
+</svg>

@@ -1,0 +1,21 @@
+flowchart LR
+  REQ[Agent action request] --> GW[Trust Gateway]
+  ID[Identity Service] --> GW
+  DEL[Delegation Evaluator] --> GW
+  APE[APE - informs only] --> GW
+  APSE[APSE - restricts only] --> GW
+  AMP[Agent Management Plane] --> GW
+  CTX[Request context] --> GW
+  GW --> DEC{Policy decision}
+  DEC --> ALLOW[ALLOW]
+  DEC --> CONFIRM[CONFIRM]
+  DEC --> STEP[STEP_UP]
+  DEC --> DENY[DENY]
+  ALLOW --> AUD[Audit evidence]
+  CONFIRM --> AUD
+  STEP --> AUD
+  DENY --> AUD
+  DENY --> FB[Restricted fallback]
+  FB --> NEW[New request]
+  NEW --> REEVAL[New evaluation]
+  AUD -.-> EXEC[Separate executor - not performed]

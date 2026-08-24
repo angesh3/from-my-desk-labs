@@ -1,0 +1,101 @@
+%%{init: {"theme":"base","flowchart":{"nodeSpacing":18,"rankSpacing":22,"diagramPadding":40,"curve":"linear"},"themeVariables":{"background":"#FFFFFF","mainBkg":"#FFFFFF","primaryTextColor":"#0B1F3A","lineColor":"#5B6470","edgeLabelBackground":"#FFFFFF","fontSize":"18px"}}}%%%%{init: {"theme":"base","flowchart":{"htmlLabels":false,"nodeSpacing":18,"rankSpacing":22,"diagramPadding":40,"curve":"linear"},"themeVariables":{"background":"#FFFFFF","mainBkg":"#FFFFFF","primaryTextColor":"#0B1F3A","lineColor":"#5B6470","edgeLabelBackground":"#FFFFFF","fontFamily":"Arial, Helvetica, sans-serif","fontSize":"16px"}}}%%
+
+flowchart TB
+
+    HP2["Human Principal"]
+
+    PORT2["Portfolio Agent"]
+
+    RES2["Research Agent"]
+
+    TOOL2["Requested Tool Action"]
+
+    MGMT2["Agent Management Plane"]
+
+    GW2["Trust Gateway<br/>Identity · Delegation · APE · APSE<br/>Scope · Limits · Context"]
+
+    DEC2{"Decision"}
+
+    ALLOW2["ALLOW ACTION"]
+
+    CONFIRM2["CONFIRM ACTION"]
+
+    STEPUP2["STEP-UP AUTH"]
+
+    DENY2["DENY ACTION"]
+
+    EXEC2["Separate Executor<br/>Not invoked in this Lab"]
+
+    AUDIT2["Audit Evidence<br/>and Accountability"]
+
+    FALLBACK2["Safe Fallback"]
+
+    NEW2["New Request<br/>and Policy Evaluation"]
+
+    HP2 -->|"Delegates limited authority"| PORT2
+
+    PORT2 -->|"Narrows capabilities, limits and duration"| RES2
+
+    RES2 -->|"Requests a tool action"| TOOL2
+
+    TOOL2 -->|"Requests execution"| GW2
+
+    MGMT2 -->|"Provides profile and posture baselines"| GW2
+
+    GW2 -->|"Evaluates current authority and trust"| DEC2
+
+    DEC2 -->|"Within delegated authority"| ALLOW2
+
+    DEC2 -->|"Human confirmation required"| CONFIRM2
+
+    DEC2 -->|"Stronger or fresher assurance required"| STEPUP2
+
+    DEC2 -->|"Outside authority or unsafe posture"| DENY2
+
+    ALLOW2 -->|"Policy approved"| EXEC2
+
+    EXEC2 --> AUDIT2
+
+    CONFIRM2 -->|"Decision recorded"| AUDIT2
+
+    STEPUP2 -->|"Decision recorded"| AUDIT2
+
+    DENY2 -->|"Original action stopped"| AUDIT2
+
+    DENY2 -.->|"Restricted recovery path"| FALLBACK2
+
+    FALLBACK2 -->|"Remediation does not override DENY"| NEW2
+
+    style HP2 fill:#FFF1CC,stroke:#D4A84F,color:#0B1F3A,stroke-width:3px
+
+    style PORT2 fill:#DCEBFF,stroke:#4D79A8,color:#0B1F3A,stroke-width:3px
+
+    style RES2 fill:#CFE1F7,stroke:#3C6694,color:#0B1F3A,stroke-width:3px
+
+    style TOOL2 fill:#E8EEF6,stroke:#667A91,color:#0B1F3A,stroke-width:3px
+
+    style MGMT2 fill:#E2E5F5,stroke:#616A9A,color:#202647,stroke-width:3px
+
+    style GW2 fill:#5A9F95,stroke:#134E48,color:#FFFFFF,stroke-width:4px
+
+    style DEC2 fill:#E8DDF5,stroke:#8064A2,color:#281A3B,stroke-width:3px
+
+    style ALLOW2 fill:#DDF3E4,stroke:#3D8B57,color:#173D24,stroke-width:3px
+
+    style CONFIRM2 fill:#FFF0BF,stroke:#C89527,color:#513A08,stroke-width:3px
+
+    style STEPUP2 fill:#FFE0B8,stroke:#CF792B,color:#542B09,stroke-width:3px
+
+    style DENY2 fill:#F8D7DA,stroke:#B5474D,color:#571A1E,stroke-width:3px
+
+    style EXEC2 fill:#D9EEF1,stroke:#3F7F88,color:#16383D,stroke-width:3px
+
+    style AUDIT2 fill:#E2E5F5,stroke:#616A9A,color:#202647,stroke-width:3px
+
+    style FALLBACK2 fill:#FFF1CC,stroke:#D4A84F,color:#513A08,stroke-width:3px
+
+    style NEW2 fill:#E8EEF6,stroke:#667A91,color:#0B1F3A,stroke-width:3px
+
+    classDef boldText font-weight:700;
+
+    class HP2,PORT2,RES2,TOOL2,MGMT2,GW2,DEC2,ALLOW2,CONFIRM2,STEPUP2,DENY2,EXEC2,AUDIT2,FALLBACK2,NEW2 boldText;

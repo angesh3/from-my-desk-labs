@@ -1,0 +1,11 @@
+%% Lab 002 — Revocation propagation
+flowchart TD
+    P[Parent envelope revoked] --> C1[Child envelope marked invalid]
+    C1 --> C2[Grandchild / tool hop invalid]
+    C2 --> D[Delegation chain_status: revoked]
+    D --> POL[Policy]
+    POL --> DENY[DENY parent_revoked]
+    DENY --> AUD[Audit evidence]
+    DENY --> FB[Fallback: human review / new delegation]
+    FB --> NE[New evaluation required]
+    NE -.->|never| AUTO[Automatic restore of revoked chain]

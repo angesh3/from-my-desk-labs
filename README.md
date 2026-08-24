@@ -6,7 +6,7 @@ This repository hosts the public companion site and any editions that include a 
 
 ```
 from-my-desk-labs/
-├── pyproject.toml          # installs the know_your_agent package
+├── pyproject.toml          # installs know_your_agent and delegated_authority
 ├── Dockerfile
 ├── docker-compose.yml
 ├── website/
@@ -14,13 +14,21 @@ from-my-desk-labs/
 │   ├── assets/source/      # non-public master brand files
 │   └── catalog/            # labs.yaml is the source of truth for discovery
 └── labs/
-    └── 001-know-your-agent/
-        ├── src/know_your_agent/   # uniquely named Python package
+    ├── 001-know-your-agent/
+    │   ├── src/know_your_agent/
+    │   ├── policies/
+    │   ├── examples/
+    │   ├── tests/
+    │   ├── diagrams/
+    │   └── static/
+    └── 002-delegated-authority/
+        ├── src/delegated_authority/
         ├── policies/
         ├── examples/
         ├── tests/
+        ├── docs/
         ├── diagrams/
-        └── static/         # lab GIF, architecture SVG, lab.js
+        └── static/
 ```
 
 ## Why the Python layout looks this way
@@ -44,6 +52,7 @@ Discovery is data-driven. Edit `website/catalog/labs.yaml`; do not hard-code edi
 | Lab | Title | What it demonstrates |
 | --- | --- | --- |
 | [001-know-your-agent](labs/001-know-your-agent) | Know Your Agent | Identity versus delegated authority. Four-way policy gate: ALLOW, CONFIRM, STEP_UP, DENY. Fictional paper-order simulation only. |
+| [002-delegated-authority](labs/002-delegated-authority) | KYA: Delegated Authority | Trust must narrow at every handoff. Parent-child delegation, APE, APSE, revocation, and restricted fallback. Never executes. |
 
 ## Local setup
 
@@ -63,6 +72,7 @@ Open:
 - http://127.0.0.1:8080/
 - http://127.0.0.1:8080/labs
 - http://127.0.0.1:8080/labs/know-your-agent
+- http://127.0.0.1:8080/labs/delegated-authority
 - http://127.0.0.1:8080/health
 
 ## Tests
@@ -128,8 +138,11 @@ Custom events are privacy-safe. They never include principal, agent, or account 
 | Event | Properties |
 | --- | --- |
 | `$pageview` | `$current_url`, `$pathname`, `page_title` only. Captured once after init. |
-| `lab_preset_selected` | `lab_id` (`001`), `preset_category` (`allow`, `confirm`, `step_up`, or `deny`) |
-| `policy_evaluation_completed` | `lab_id` (`001`), `decision` (`allow`, `confirm`, `step_up`, or `deny`), `reason_category` (generalized only: `ok`, `confirmation_required`, `step_up_required`, `amount_limit`, `identity`, `authority`, `scope`, `invalid_request`, or `other`) |
+| `lab_opened` | `lab_id`, `lab_slug` (Lab 002) |
+| `lab_preset_selected` | `lab_id`, `preset_category` (Lab 001) or `scenario_category` + `preset_id` (Lab 002) |
+| `policy_evaluation_completed` | `lab_id`, `decision`, `reason_category`; Lab 002 also `scenario_category`, `fallback_available` |
+| `fallback_previewed` | `lab_id`, `decision`, `fallback_type` (Lab 002) |
+| `architecture_viewed` | `lab_id`, `architecture_type` (Lab 002) |
 | `outbound_link_clicked` | `destination` (`github`, `linkedin_newsletter`, or `architecture`), `page_type` (`home`, `labs_index`, or `lab`) |
 
 ## Adding Lab 002

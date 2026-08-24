@@ -27,6 +27,8 @@ from from_my_desk.telemetry import public_telemetry_config, security_headers_for
 from know_your_agent.gateway import get_bundle, router as lab_router
 from know_your_agent.loader import PolicyConfigError
 from know_your_agent.rate_limit import SlidingWindowLimiter
+from delegated_authority.gateway import get_lab002_bundle, router as lab002_router
+from delegated_authority.loader import Lab002ConfigError
 
 mimetypes.add_type("image/webp", ".webp")
 mimetypes.add_type("image/svg+xml", ".svg")
@@ -63,7 +65,10 @@ async def lifespan(app: FastAPI):
         get_catalog()
         os.environ.setdefault("POLICY_DIR", str(settings.policy_dir))
         get_bundle()
-    except (CatalogError, PolicyConfigError, ResourceConfigError) as exc:
+        os.environ.setdefault("LAB002_DATA_DIR", str(settings.lab002_data_dir))
+        os.environ.setdefault("LAB002_POLICY_DIR", str(settings.lab002_policy_dir))
+        get_lab002_bundle()
+    except (CatalogError, PolicyConfigError, Lab002ConfigError, ResourceConfigError) as exc:
         raise RuntimeError(
             "Refusing to start with unsafe catalog, policy, or missing website resources."
         ) from exc
@@ -84,7 +89,11 @@ app = FastAPI(
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        if request.url.path in {"/evaluate", "/api/evaluate"} and request.method == "POST":
+        if request.url.path in {
+            "/evaluate",
+            "/api/evaluate",
+            "/api/labs/002/evaluate",
+        } and request.method == "POST":
             limiter = _limiter
             if limiter is not None:
                 client = request.client.host if request.client else "unknown"
@@ -143,7 +152,7 @@ def _page_context(request: Request, **extra: Any) -> Dict[str, Any]:
 @app.exception_handler(RequestValidationError)
 async def validation_handler(request: Request, exc: RequestValidationError):
     response = await request_validation_exception_handler(request, exc)
-    if request.url.path in {"/evaluate", "/api/evaluate"}:
+    if request.url.path in {"/evaluate", "/api/evaluate", "/api/labs/002/evaluate"}:
         return JSONResponse(
             status_code=422,
             content={
@@ -171,6 +180,7 @@ async def unhandled_handler(request: Request, exc: Exception):
 
 # API / health routes first so mounts cannot shadow them.
 app.include_router(lab_router)
+app.include_router(lab002_router)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -193,21 +203,32 @@ def _lab_by_slug(slug: str) -> LabEntry:
 @app.get("/labs/{slug}", response_class=HTMLResponse)
 def lab_page(request: Request, slug: str) -> HTMLResponse:
     entry = _lab_by_slug(slug)
-    if slug != "know-your-agent":
-        raise HTTPException(status_code=404, detail="This edition does not have an interactive page yet.")
-    policy = get_bundle().policy
-    return TEMPLATES.TemplateResponse(
-        request,
-        "lab.html",
-        _page_context(
+    if slug == "know-your-agent":
+        policy = get_bundle().policy
+        return TEMPLATES.TemplateResponse(
             request,
-            lab=entry,
-            policy_id=policy.policy_id,
-            allow_max=str(policy.allow_max),
-            confirm_max=str(policy.confirm_max),
-            step_up_max=str(policy.step_up_max),
-        ),
-    )
+            "lab.html",
+            _page_context(
+                request,
+                lab=entry,
+                policy_id=policy.policy_id,
+                allow_max=str(policy.allow_max),
+                confirm_max=str(policy.confirm_max),
+                step_up_max=str(policy.step_up_max),
+            ),
+        )
+    if slug == "delegated-authority":
+        gif_path = get_settings().lab002_static_dir / "delegated-authority-trust-workflow.gif"
+        return TEMPLATES.TemplateResponse(
+            request,
+            "lab002.html",
+            _page_context(
+                request,
+                lab=entry,
+                workflow_gif_available=gif_path.is_file(),
+            ),
+        )
+    raise HTTPException(status_code=404, detail="This edition does not have an interactive page yet.")
 
 
 # Static mounts last: specific lab assets, then global site assets.
@@ -215,6 +236,11 @@ app.mount(
     "/static/labs/001",
     StaticFiles(directory=str(_settings.lab_static_dir)),
     name="lab001-static",
+)
+app.mount(
+    "/static/labs/002",
+    StaticFiles(directory=str(_settings.lab002_static_dir)),
+    name="lab002-static",
 )
 app.mount(
     "/static",

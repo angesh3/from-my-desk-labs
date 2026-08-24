@@ -1,0 +1,18 @@
+%% Lab 002 — End-to-end architecture
+%% Colors: navy #0b1f33, gold #c4a35a
+flowchart LR
+    R[Reader] --> P[Lab page<br/>/labs/delegated-authority]
+    P --> S[GET /api/labs/002/scenarios]
+    P --> E[POST /api/labs/002/evaluate]
+    E --> TG[Trust Gateway]
+    TG --> ID[Identity]
+    TG --> DEL[Delegation]
+    TG --> APE[APE Profile]
+    TG --> APSE[APSE Posture]
+    TG --> POL[Policy]
+    POL --> DEC{Decision}
+    DEC --> AUD[Audit evidence]
+    DEC --> FB[Restricted fallback]
+    AUD --> OUT[Response to reader]
+    FB --> OUT
+    OUT --> X[execution: not_performed]

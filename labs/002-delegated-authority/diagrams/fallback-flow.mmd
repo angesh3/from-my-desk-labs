@@ -1,0 +1,12 @@
+%% Lab 002 — Restricted fallback
+flowchart TD
+    D[Original decision e.g. DENY] --> R[Reason code]
+    R --> F[Fallback recommendation]
+    F --> PERM[Permitted recovery ops]
+    F --> PROH[Prohibited: execute / override_deny]
+    F --> NEW[new_evaluation_required: true]
+    D --> AUD[Original audit unchanged]
+    NEW --> REG[Register / refresh / new delegation / review]
+    REG --> EVAL[Fresh POST evaluate]
+    EVAL --> D2[New decision]
+    D -.->|immutable| KEEP[Original DENY not converted to permission]

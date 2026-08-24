@@ -56,11 +56,32 @@ def _default_lab_static_dir() -> Path:
     return Path("/srv/labs/001-know-your-agent/static")
 
 
+def _default_lab002_static_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "002-delegated-authority" / "static"
+    return Path("/srv/labs/002-delegated-authority/static")
+
+
 def _default_policy_dir() -> Path:
     root = _source_repo_root()
     if root is not None:
         return root / "labs" / "001-know-your-agent" / "policies"
     return Path("/srv/labs/001-know-your-agent/policies")
+
+
+def _default_lab002_data_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "002-delegated-authority" / "examples"
+    return Path("/srv/labs/002-delegated-authority/examples")
+
+
+def _default_lab002_policy_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "002-delegated-authority" / "policies"
+    return Path("/srv/labs/002-delegated-authority/policies")
 
 
 class Settings:
@@ -75,11 +96,20 @@ class Settings:
         self.lab_static_dir = Path(
             os.environ.get("LAB_STATIC_DIR") or _default_lab_static_dir()
         )
+        self.lab002_static_dir = Path(
+            os.environ.get("LAB002_STATIC_DIR") or _default_lab002_static_dir()
+        )
         self.catalog_path = Path(
             os.environ.get("CATALOG_PATH") or _default_catalog_path()
         )
         self.policy_dir = Path(
             os.environ.get("POLICY_DIR") or _default_policy_dir()
+        )
+        self.lab002_data_dir = Path(
+            os.environ.get("LAB002_DATA_DIR") or _default_lab002_data_dir()
+        )
+        self.lab002_policy_dir = Path(
+            os.environ.get("LAB002_POLICY_DIR") or _default_lab002_policy_dir()
         )
         self.port = int(os.environ.get("PORT", "8080"))
         self.registry_mode = os.environ.get("REGISTRY_PUBLIC", "sanitized").strip().lower()
@@ -104,7 +134,7 @@ class Settings:
         self.rate_limit_per_minute = int(os.environ.get("RATE_LIMIT_PER_MINUTE", "60"))
 
 
-REQUIRED_TEMPLATE_FILES = ("base.html", "home.html", "labs.html", "lab.html")
+REQUIRED_TEMPLATE_FILES = ("base.html", "home.html", "labs.html", "lab.html", "lab002.html")
 REQUIRED_GLOBAL_STATIC_FILES = (
     "css/styles.css",
     "js/site.js",
@@ -115,7 +145,27 @@ REQUIRED_LAB_STATIC_FILES = (
     "architecture.svg",
     "know-your-agent-trust-workflow.gif",
 )
+REQUIRED_LAB002_STATIC_FILES = (
+    "delegated-authority-workflow.svg",
+    "system-architecture.svg",
+    "evaluation-flow.svg",
+    "fallback-flow.svg",
+    "revocation-flow.svg",
+    "lab.js",
+)
 REQUIRED_POLICY_FILES = ("desk-policy.yaml", "agent-registry.yaml")
+REQUIRED_LAB002_POLICY_FILES = (
+    "delegation-policy.yaml",
+    "posture-policy.yaml",
+    "fallback-policy.yaml",
+)
+REQUIRED_LAB002_DATA_FILES = (
+    "agents.yaml",
+    "profiles.yaml",
+    "posture.yaml",
+    "delegations.yaml",
+    "scenarios.yaml",
+)
 
 
 class ResourceConfigError(RuntimeError):
@@ -141,6 +191,11 @@ def validate_runtime_resources(settings: Settings) -> None:
         if not path.is_file():
             missing.append(f"lab_static:{rel}")
 
+    for rel in REQUIRED_LAB002_STATIC_FILES:
+        path = settings.lab002_static_dir / rel
+        if not path.is_file():
+            missing.append(f"lab002_static:{rel}")
+
     if not settings.catalog_path.is_file():
         missing.append("catalog:labs.yaml")
 
@@ -148,6 +203,16 @@ def validate_runtime_resources(settings: Settings) -> None:
         path = settings.policy_dir / name
         if not path.is_file():
             missing.append(f"policy:{name}")
+
+    for name in REQUIRED_LAB002_POLICY_FILES:
+        path = settings.lab002_policy_dir / name
+        if not path.is_file():
+            missing.append(f"lab002_policy:{name}")
+
+    for name in REQUIRED_LAB002_DATA_FILES:
+        path = settings.lab002_data_dir / name
+        if not path.is_file():
+            missing.append(f"lab002_data:{name}")
 
     if missing:
         raise ResourceConfigError(

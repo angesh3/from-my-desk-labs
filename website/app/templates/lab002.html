@@ -1,0 +1,402 @@
+{% extends "base.html" %}
+{% block title %}{{ lab.title }} — From My Desk{% endblock %}
+{% block description %}{{ lab.summary }}{% endblock %}
+{% block content %}
+<section class="wrap page-intro lab-intro">
+  <p class="eyebrow">{{ lab.edition_label }} · Know Your Agent</p>
+  <h1>{{ lab.title }}</h1>
+  {% if lab.subtitle %}<p class="lede">{{ lab.subtitle }}</p>{% endif %}
+  <p class="lede">
+    Lab 002 explores what happens when authority moves from a human to an agent,
+    sub-agent, and tool. Select a scenario to see how delegation, profiling,
+    posture, limits, revocation, and fallback influence the decision.
+  </p>
+  <p class="disclaimer" role="note">{{ lab.disclaimer or disclaimer }}</p>
+  <p class="actions">
+    <a class="button button-quiet" href="/labs/know-your-agent">Open Lab 001</a>
+  </p>
+</section>
+
+<section class="wrap workflow" aria-labelledby="workflow-heading">
+  <h2 id="workflow-heading">From handoff to decision</h2>
+  <figure class="workflow-figure lab002-workflow">
+    {% if workflow_gif_available %}
+    <img
+      class="workflow-gif"
+      src="/static/labs/002/delegated-authority-trust-workflow.gif"
+      width="800"
+      height="600"
+      alt="Animated workflow: authority narrows from Human Principal to Portfolio Agent to Research Agent to a requested tool, then the Trust Gateway evaluates identity, delegation, profile, posture, limits, and context before returning allow, confirm, step-up, or deny.">
+    {% endif %}
+    <img
+      class="workflow-static{% if not workflow_gif_available %} workflow-static-visible{% endif %}"
+      src="/static/labs/002/delegated-authority-workflow.svg"
+      width="1047"
+      height="1201"
+      alt="End-to-end workflow: Human Principal to Portfolio Agent to Research Agent to requested tool, into the Trust Gateway for identity, delegation, APE, and APSE checks, then a decision of allow, confirm, step-up, or deny with audit evidence and optional safe fallback."
+      data-analytics-destination="architecture"
+      data-architecture-type="lab002-delegated-authority-workflow">
+    <figcaption>
+      Authority narrows from the Human Principal to the Portfolio Agent, Research Agent,
+      and requested tool. The Trust Gateway evaluates identity, delegation, profile,
+      posture, limits, and context before returning a decision.
+      {% if not workflow_gif_available %}
+      <span class="asset-note"> Animated GIF not installed yet — showing the local end-to-end workflow diagram. See <code>docs/ASSETS.md</code>.</span>
+      {% endif %}
+    </figcaption>
+  </figure>
+</section>
+
+<section class="wrap howto" aria-labelledby="howto-heading">
+  <h2 id="howto-heading">How to use this Lab</h2>
+  <ol class="howto-steps">
+    <li><strong>Choose a scenario</strong> that matches the boundary you want to explore.</li>
+    <li><strong>Evaluate the request</strong> and watch identity, delegation, profile, and posture.</li>
+    <li><strong>Follow the decision and fallback</strong> — nothing is executed.</li>
+  </ol>
+  <p class="hint demo-hint">
+    Suggested demo order: Valid narrow delegation → Human confirmation required →
+    Stale posture evidence → Execution not delegated → Parent revoked.
+  </p>
+</section>
+
+<section class="wrap" aria-labelledby="chain-heading">
+  <h2 id="chain-heading">Authority must narrow</h2>
+  <p>Each handoff may only keep a subset of what the parent already holds.</p>
+  <div class="authority-chain" id="delegation-chain" role="list">
+    <article class="chain-node" role="listitem" data-node="human">
+      <p class="chain-role">Human Principal</p>
+      <ul>
+        <li>Research, propose, approve</li>
+        <li>Limit 20,000</li>
+        <li>Redelegation yes</li>
+        <li>Depth 2</li>
+      </ul>
+    </article>
+    <div class="chain-arrow" aria-hidden="true"><span>→</span></div>
+    <article class="chain-node" role="listitem" data-node="portfolio">
+      <p class="chain-role">Portfolio Agent</p>
+      <ul>
+        <li>Research, propose</li>
+        <li>Limit 15,000</li>
+        <li>Redelegation yes</li>
+        <li>Depth 1</li>
+      </ul>
+    </article>
+    <div class="chain-arrow" aria-hidden="true"><span>→</span></div>
+    <article class="chain-node" role="listitem" data-node="research">
+      <p class="chain-role">Research Agent</p>
+      <ul>
+        <li>Research only</li>
+        <li>Limit 5,000</li>
+        <li>Redelegation no</li>
+        <li>Depth 0</li>
+      </ul>
+    </article>
+    <div class="chain-arrow" aria-hidden="true"><span>→</span></div>
+    <article class="chain-node" role="listitem" data-node="tool">
+      <p class="chain-role">Requested Tool</p>
+      <ul>
+        <li>May act only within effective authority</li>
+      </ul>
+    </article>
+  </div>
+  <p class="chain-annotation" id="chain-annotation" aria-live="polite"></p>
+</section>
+
+<section class="wrap" aria-labelledby="presets-heading">
+  <h2 id="presets-heading">Scenario presets</h2>
+  <p>Each preset is a complete fictional evaluation. No transaction is executed.</p>
+
+  <h3 class="preset-group-title">Valid and recoverable</h3>
+  <div class="preset-grid" role="group" aria-label="Valid and recoverable scenarios">
+    <button type="button" class="preset-card" data-scenario="valid_narrow_delegation" data-category="valid_recoverable" data-node="research" data-annotation="Narrow research request stays inside effective authority." aria-pressed="false">
+      <span class="preset-title">Valid narrow delegation</span>
+      <span class="preset-desc">A research-only request within the effective envelope.</span>
+      <span class="preset-learn">Learn: healthy narrowing can still allow the action.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+    <button type="button" class="preset-card" data-scenario="confirmation_required" data-category="valid_recoverable" data-node="research" data-annotation="Authority is valid; amount needs human confirmation." aria-pressed="false">
+      <span class="preset-title">Human confirmation required</span>
+      <span class="preset-desc">Valid authority, but the amount crosses the confirmation threshold.</span>
+      <span class="preset-learn">Learn: confirmation does not repair missing authority.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+    <button type="button" class="preset-card" data-scenario="stale_posture" data-category="valid_recoverable" data-node="research" data-annotation="Authority is valid; posture evidence needs refresh." aria-pressed="false">
+      <span class="preset-title">Stale posture evidence</span>
+      <span class="preset-desc">Delegation is sound, but APSE evidence is no longer fresh.</span>
+      <span class="preset-learn">Learn: posture can challenge without inventing authority.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+    <button type="button" class="preset-card" data-scenario="unusual_context" data-category="valid_recoverable" data-node="research" data-annotation="Authority is valid; operating context is unusual." aria-pressed="false">
+      <span class="preset-title">Unusual but permitted context</span>
+      <span class="preset-desc">The envelope is valid; the operating context still needs review.</span>
+      <span class="preset-learn">Learn: context can require confirmation without a hard deny.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+  </div>
+
+  <h3 class="preset-group-title">Delegation failures</h3>
+  <div class="preset-grid" role="group" aria-label="Delegation failure scenarios">
+    <button type="button" class="preset-card" data-scenario="execution_not_delegated" data-category="delegation_failure" data-node="tool" data-annotation="Violation: Execution was requested, but only research was delegated." aria-pressed="false">
+      <span class="preset-title">Execution not delegated</span>
+      <span class="preset-desc">A research agent asks to execute.</span>
+      <span class="preset-learn">Learn: good identity cannot create missing capability.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+    <button type="button" class="preset-card" data-scenario="child_capability_exceeds_parent" data-category="delegation_failure" data-node="research" data-annotation="Violation: Child capability exceeds parent capability." aria-pressed="false">
+      <span class="preset-title">Child capability exceeds parent</span>
+      <span class="preset-desc">The child envelope claims more capabilities than the parent.</span>
+      <span class="preset-learn">Learn: child authority must be a subset.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+    <button type="button" class="preset-card" data-scenario="child_limit_exceeds_parent" data-category="delegation_failure" data-node="research" data-annotation="Violation: Child limit exceeds parent limit." aria-pressed="false">
+      <span class="preset-title">Child limit exceeds parent</span>
+      <span class="preset-desc">The child maximum amount is broader than the parent.</span>
+      <span class="preset-learn">Learn: limits must narrow or stay equal.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+    <button type="button" class="preset-card" data-scenario="child_expiry_exceeds_parent" data-category="delegation_failure" data-node="research" data-annotation="Violation: Child expiry exceeds parent expiry." aria-pressed="false">
+      <span class="preset-title">Child expiry exceeds parent</span>
+      <span class="preset-desc">The child remains valid after the parent expires.</span>
+      <span class="preset-learn">Learn: time windows cannot outlive the parent.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+    <button type="button" class="preset-card" data-scenario="delegation_depth_exceeded" data-category="delegation_failure" data-node="research" data-annotation="Violation: Delegation depth exceeded." aria-pressed="false">
+      <span class="preset-title">Delegation depth exceeded</span>
+      <span class="preset-desc">Another handoff is attempted after remaining depth is zero.</span>
+      <span class="preset-learn">Learn: redelegation depth is finite.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+  </div>
+
+  <h3 class="preset-group-title">Lifecycle failures</h3>
+  <div class="preset-grid" role="group" aria-label="Lifecycle failure scenarios">
+    <button type="button" class="preset-card" data-scenario="parent_expired" data-category="lifecycle_failure" data-node="portfolio" data-annotation="Violation: Parent delegation expired." aria-pressed="false">
+      <span class="preset-title">Parent expired</span>
+      <span class="preset-desc">Downstream authority collapses when the parent time window ends.</span>
+      <span class="preset-learn">Learn: expiry propagates down the chain.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+    <button type="button" class="preset-card" data-scenario="parent_revoked" data-category="lifecycle_failure" data-node="portfolio" data-annotation="Violation: Parent delegation revoked." aria-pressed="false">
+      <span class="preset-title">Parent revoked</span>
+      <span class="preset-desc">Revocation invalidates every downstream handoff.</span>
+      <span class="preset-learn">Learn: revocation is not repaired by confirmation.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+    <button type="button" class="preset-card" data-scenario="unknown_agent" data-category="lifecycle_failure" data-node="research" data-annotation="Violation: Unknown agent — registration required." aria-pressed="false">
+      <span class="preset-title">Unknown agent</span>
+      <span class="preset-desc">No trusted registration exists for the requester.</span>
+      <span class="preset-learn">Learn: unknown agents get restricted registration fallback.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+  </div>
+
+  <h3 class="preset-group-title">Profile and posture failures</h3>
+  <div class="preset-grid" role="group" aria-label="Profile and posture scenarios">
+    <button type="button" class="preset-card" data-scenario="profile_mismatch" data-category="profile_posture" data-node="research" data-annotation="Challenge: Profile mismatch needs human review." aria-pressed="false">
+      <span class="preset-title">Profile mismatch</span>
+      <span class="preset-desc">Declared, observed, and verified attributes conflict.</span>
+      <span class="preset-learn">Learn: profiling informs trust; it does not grant authority.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+    <button type="button" class="preset-card" data-scenario="noncompliant_model_version" data-category="profile_posture" data-node="research" data-annotation="Challenge: Model version is noncompliant." aria-pressed="false">
+      <span class="preset-title">Noncompliant model version</span>
+      <span class="preset-desc">Authority is otherwise valid; the runtime version needs upgrade.</span>
+      <span class="preset-learn">Learn: posture can require step-up without expanding scope.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+    <button type="button" class="preset-card" data-scenario="tool_inventory_changed" data-category="profile_posture" data-node="tool" data-annotation="Violation: Tool inventory changed unexpectedly." aria-pressed="false">
+      <span class="preset-title">Tool inventory changed</span>
+      <span class="preset-desc">Unexpected tools appear in the agent inventory.</span>
+      <span class="preset-learn">Learn: hard posture failures stop the original action.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+  </div>
+</section>
+
+<section class="wrap" aria-labelledby="summary-heading">
+  <h2 id="summary-heading">Evaluation input summary</h2>
+  <p>Readable fictional inputs for the selected scenario.</p>
+  <dl class="input-summary" id="input-summary">
+    <div><dt>Requested capability</dt><dd id="sum-capability">—</dd></div>
+    <div><dt>Requested resource</dt><dd id="sum-resource">—</dd></div>
+    <div><dt>Fictional amount</dt><dd id="sum-amount">—</dd></div>
+    <div><dt>Request time</dt><dd id="sum-time">—</dd></div>
+    <div><dt>Agent classification</dt><dd id="sum-class">—</dd></div>
+    <div><dt>Profile confidence</dt><dd id="sum-confidence">—</dd></div>
+    <div><dt>Posture status</dt><dd id="sum-posture">—</dd></div>
+    <div><dt>Parent delegation status</dt><dd id="sum-parent">—</dd></div>
+  </dl>
+  <details class="request-json">
+    <summary>View fictional request JSON</summary>
+    <pre id="request-json" tabindex="0">Select a scenario.</pre>
+  </details>
+  <p class="actions">
+    <button type="button" class="button" id="evaluate-btn" disabled>Evaluate delegated authority</button>
+  </p>
+</section>
+
+<section class="wrap diagram-panel" aria-labelledby="eval-flow-heading">
+  <h2 id="eval-flow-heading">Ordered policy evaluation</h2>
+  <p>
+    Identity, delegation, APE profile, and APSE posture are checked in order.
+    DENY outranks STEP_UP, CONFIRM, and ALLOW. Execution stays separate.
+  </p>
+  <figure class="diagram-figure">
+    <img
+      src="/static/labs/002/evaluation-flow.svg"
+      width="960"
+      height="640"
+      alt="Evaluation sequence: action request flows through identity, delegation, APE, APSE, then scope, limits, and context; candidate outcomes resolve with DENY over STEP_UP over CONFIRM over ALLOW; result goes to audit and fallback with execution not performed."
+      data-analytics-destination="architecture"
+      data-architecture-type="lab002-evaluation-flow">
+    <figcaption>
+      This diagram teaches the evaluation order. The interactive stepper below shows
+      the same stages for the selected scenario.
+    </figcaption>
+  </figure>
+</section>
+
+<section class="wrap" aria-labelledby="journey-heading">
+  <h2 id="journey-heading">Evaluation journey</h2>
+  <ol class="journey-stepper" id="journey-list" aria-live="polite">
+    <li class="journey-step" data-stage="identity">
+      <span class="journey-index" aria-hidden="true">1</span>
+      <div>
+        <p class="journey-title">Identity</p>
+        <p class="journey-status">Waiting</p>
+        <p class="journey-copy">Select a scenario and evaluate.</p>
+      </div>
+    </li>
+    <li class="journey-step" data-stage="delegation">
+      <span class="journey-index" aria-hidden="true">2</span>
+      <div>
+        <p class="journey-title">Delegation</p>
+        <p class="journey-status">Waiting</p>
+        <p class="journey-copy">Parent-child authority is checked next.</p>
+      </div>
+    </li>
+    <li class="journey-step" data-stage="ape">
+      <span class="journey-index" aria-hidden="true">3</span>
+      <div>
+        <p class="journey-title">APE Profile</p>
+        <p class="journey-status">Waiting</p>
+        <p class="journey-copy">Profiling informs trust; it never grants authority.</p>
+      </div>
+    </li>
+    <li class="journey-step" data-stage="apse">
+      <span class="journey-index" aria-hidden="true">4</span>
+      <div>
+        <p class="journey-title">APSE Posture</p>
+        <p class="journey-status">Waiting</p>
+        <p class="journey-copy">Posture may restrict existing authority only.</p>
+      </div>
+    </li>
+    <li class="journey-step" data-stage="policy">
+      <span class="journey-index" aria-hidden="true">5</span>
+      <div>
+        <p class="journey-title">Policy Decision</p>
+        <p class="journey-status">Waiting</p>
+        <p class="journey-copy">DENY outranks STEP_UP, CONFIRM, and ALLOW.</p>
+      </div>
+    </li>
+  </ol>
+  <p class="hint">Good identity, profile, or posture cannot create missing authority.</p>
+</section>
+
+<section class="wrap" aria-labelledby="result-heading">
+  <h2 id="result-heading">Decision result</h2>
+  <div id="result" class="result result-panel" aria-live="polite">
+    <p>Choose a scenario, then evaluate. The service returns a decision only — it does not execute any tool action.</p>
+  </div>
+</section>
+
+<section class="wrap" aria-labelledby="fallback-heading" id="fallback-section" hidden>
+  <h2 id="fallback-heading">Safe fallback</h2>
+  <p role="note" class="fallback-invariants">
+    The original decision remains unchanged. Fallback does not execute the protected action.
+    New evaluation required.
+  </p>
+  <div id="fallback-panel"></div>
+  <p class="actions">
+    <button type="button" class="button button-quiet" id="preview-fallback">Preview safe fallback</button>
+  </p>
+  <div id="fallback-preview" class="fallback-flow" hidden></div>
+</section>
+
+<section class="wrap diagram-panel" aria-labelledby="fallback-flow-heading">
+  <h2 id="fallback-flow-heading">Restricted fallback</h2>
+  <p>
+    After DENY or a recoverable challenge, fallback may prepare a recovery path.
+    It does not execute the protected action and does not change the original decision.
+  </p>
+  <figure class="diagram-figure">
+    <img
+      src="/static/labs/002/fallback-flow.svg"
+      width="960"
+      height="640"
+      alt="Restricted fallback flow: original decision is recorded, the protected action stays stopped, a recovery action may prepare a new request, and a new policy evaluation is required."
+      data-analytics-destination="architecture"
+      data-architecture-type="lab002-fallback-flow">
+    <figcaption>
+      Fallback never overrides DENY. It only opens a path to a new, separately evaluated request.
+    </figcaption>
+  </figure>
+</section>
+
+<section class="wrap diagram-panel" aria-labelledby="revocation-heading">
+  <h2 id="revocation-heading">Revocation propagates downstream</h2>
+  <p>
+    When a parent delegation is revoked or expires, every child handoff collapses.
+    Confirmation cannot repair a hard lifecycle failure.
+  </p>
+  <figure class="diagram-figure">
+    <img
+      src="/static/labs/002/revocation-flow.svg"
+      width="960"
+      height="640"
+      alt="Revocation flow: parent revocation or expiry invalidates the portfolio and research handoffs so the requested tool cannot act on the revoked chain."
+      data-analytics-destination="architecture"
+      data-architecture-type="lab002-revocation-flow">
+    <figcaption>
+      Try the Parent revoked or Parent expired presets to see this lifecycle rule in the decision panel.
+    </figcaption>
+  </figure>
+</section>
+
+<section class="wrap architecture" id="architecture" aria-labelledby="arch-heading">
+  <h2 id="arch-heading">System architecture</h2>
+  <p>
+    Inside the Trust Gateway: identity, delegation, APE profile, APSE posture,
+    management plane, and request context feed a policy decision. APE informs but
+    does not grant authority. APSE restricts but does not expand it. Evaluation
+    stays separate from execution.
+  </p>
+  <figure class="diagram-figure">
+    <img
+      src="/static/labs/002/system-architecture.svg"
+      width="960"
+      height="780"
+      alt="System architecture diagram showing agent action request into Trust Gateway with identity, delegation, APE, APSE, management plane, and context; decisions ALLOW, CONFIRM, STEP_UP, DENY; audit evidence; restricted fallback to a new evaluation; separate executor boundary with execution not performed."
+      data-analytics-destination="architecture"
+      data-architecture-type="lab002-system-architecture">
+    <figcaption>
+      Internal Trust Gateway architecture. Fallback never overrides DENY.
+      Every result produces audit evidence.
+    </figcaption>
+  </figure>
+  <p class="execution-boundary" role="note">
+    Every evaluation reports <code>execution: not_performed</code>. ALLOW is
+    short-lived and bound to the evaluated request.
+  </p>
+  <p class="actions">
+    <a class="button button-quiet" href="{{ lab.github_url }}" rel="noopener noreferrer">View source on GitHub</a>
+    <a class="button button-quiet" href="{{ lab.newsletter_url }}" rel="noopener noreferrer">Read the newsletter</a>
+    <a class="button button-quiet" href="/labs">From My Desk Labs</a>
+  </p>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="/static/labs/002/lab.js" defer></script>
+{% endblock %}

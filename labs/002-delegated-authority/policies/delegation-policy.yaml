@@ -1,0 +1,7 @@
+policy_id: lab002-delegation
+policy_version: lab002-delegation-1
+confirm_threshold: "5000.00"
+allow_ttl_seconds: 60
+notes: >
+  Child authority must be a subset of parent authority on capabilities,
+  resources, maximum amount, and expiry. Redelegation and depth are explicit.

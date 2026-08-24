@@ -1,0 +1,77 @@
+agents:
+  - agent_id: portfolio-agent-001
+    display_name: Portfolio Agent
+    principal_id: principal-demo-001
+    status: active
+    assurance_level: elevated
+    required_assurance: standard
+    management_status: managed
+    classification: Portfolio Agent
+    approved_model_version: portfolio-model-1.2
+    approved_tools: [market_data, proposal_builder]
+
+  - agent_id: research-agent-001
+    display_name: Research Agent
+    principal_id: principal-demo-001
+    status: active
+    assurance_level: standard
+    required_assurance: standard
+    management_status: managed
+    classification: Research Agent
+    approved_model_version: research-model-2.1
+    approved_tools: [market_data, document_reader]
+
+  - agent_id: research-agent-stale
+    display_name: Research Agent
+    principal_id: principal-demo-001
+    status: active
+    assurance_level: standard
+    required_assurance: standard
+    management_status: managed
+    classification: Research Agent
+    approved_model_version: research-model-2.1
+    approved_tools: [market_data, document_reader]
+
+  - agent_id: research-agent-version
+    display_name: Research Agent
+    principal_id: principal-demo-001
+    status: active
+    assurance_level: standard
+    required_assurance: standard
+    management_status: managed
+    classification: Research Agent
+    approved_model_version: research-model-2.1
+    approved_tools: [market_data, document_reader]
+
+  - agent_id: research-agent-tools
+    display_name: Research Agent
+    principal_id: principal-demo-001
+    status: active
+    assurance_level: standard
+    required_assurance: standard
+    management_status: managed
+    classification: Research Agent
+    approved_model_version: research-model-2.1
+    approved_tools: [market_data, document_reader]
+
+  - agent_id: research-agent-mismatch
+    display_name: Research Agent
+    principal_id: principal-demo-001
+    status: active
+    assurance_level: standard
+    required_assurance: standard
+    management_status: managed
+    classification: Research Agent
+    approved_model_version: research-model-2.1
+    approved_tools: [market_data, document_reader]
+
+  - agent_id: execution-profile-agent
+    display_name: Execution-Looking Agent
+    principal_id: principal-demo-001
+    status: active
+    assurance_level: standard
+    required_assurance: standard
+    management_status: managed
+    classification: Execution Agent
+    approved_model_version: exec-model-1.0
+    approved_tools: [order_router]
