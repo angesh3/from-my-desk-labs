@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+  <title id="title">Restricted recovery mode</title>
+  <desc id="desc">After deny or challenge, restricted recovery offers a separate path without executing the protected action.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#0b1f33"/>
+    </marker>
+  </defs>
+  <rect width="960" height="520" fill="#f7f4ec"/>
+  <text x="32" y="40" font-family="Georgia, serif" font-size="20" fill="#0b1f33">Restricted recovery</text>
+  <text x="32" y="64" font-family="Georgia, serif" font-size="13" fill="#5c5a54">Original decision unchanged — protected action not executed</text>
+
+  <g font-family="Georgia, serif" font-size="13" fill="#0b1f33">
+    <rect x="360" y="100" width="240" height="44" fill="#0b1f33"/>
+    <text x="480" y="127" text-anchor="middle" fill="#f7f4ec">Original decision recorded</text>
+
+    <path d="M480 144 V178" stroke="#0b1f33" marker-end="url(#arrow)"/>
+    <rect x="320" y="178" width="320" height="40" fill="#ffffff" stroke="#0b1f33"/>
+    <text x="480" y="203" text-anchor="middle">Protected action stopped</text>
+
+    <path d="M480 218 V252" stroke="#c9a227" marker-end="url(#arrow)"/>
+    <rect x="300" y="252" width="360" height="48" fill="#fff8e6" stroke="#c9a227" stroke-width="2"/>
+    <text x="480" y="280" text-anchor="middle">Restricted recovery path offered</text>
+
+    <path d="M480 300 V334" stroke="#0b1f33" marker-end="url(#arrow)"/>
+    <rect x="320" y="334" width="320" height="40" fill="#ffffff" stroke="#0b1f33"/>
+    <text x="480" y="359" text-anchor="middle">Register — refresh posture — request consent</text>
+
+    <path d="M480 374 V408" stroke="#0b1f33" marker-end="url(#arrow)"/>
+    <rect x="300" y="408" width="360" height="44" fill="#eef2f8" stroke="#0b1f33"/>
+    <text x="480" y="435" text-anchor="middle">New evaluation required before progress</text>
+  </g>
+</svg>

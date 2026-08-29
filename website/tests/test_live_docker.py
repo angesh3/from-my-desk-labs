@@ -60,6 +60,7 @@ def test_live_pages_and_assets():
         ("/labs", b"Labs"),
         ("/labs/know-your-agent", b"Know Your Agent"),
         ("/labs/delegated-authority", b"Delegated Authority"),
+        ("/labs/agent-access-control", b"Agent Access Control"),
     ):
         code, headers, body = _get(path)
         assert code == 200
@@ -107,6 +108,21 @@ def test_live_pages_and_assets():
         assert "image/svg+xml" in headers.get("Content-Type", ""), name
 
     code, headers, body = _get("/static/labs/002/lab.js")
+    assert code == 200
+    assert "javascript" in headers.get("Content-Type", "")
+
+    for name in (
+        "nac-comparison.svg",
+        "live-authority-evaluation.svg",
+        "management-plane.svg",
+        "restricted-mode.svg",
+        "reevaluation-change.svg",
+    ):
+        code, headers, body = _get(f"/static/labs/003/{name}")
+        assert code == 200, name
+        assert "image/svg+xml" in headers.get("Content-Type", ""), name
+
+    code, headers, body = _get("/static/labs/003/lab.js")
     assert code == 200
     assert "javascript" in headers.get("Content-Type", "")
 

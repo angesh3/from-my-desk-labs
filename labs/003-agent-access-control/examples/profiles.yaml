@@ -1,0 +1,297 @@
+profiles:
+  - agent_id: cq-portfolio-agent-001
+    classification: Portfolio Agent
+    confidence: high
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [read, propose, approve_trade]
+    expected_tools: [market_feed_reader, proposal_builder]
+    declared:
+      agent_type: portfolio
+      model: cq-portfolio-model-1.2
+      tools: [market_feed_reader, proposal_builder]
+      declared_capabilities: [read, propose, approve_trade]
+      owner: cq-principal-001
+    observed:
+      typical_data_access: [cedar-quill-public-research]
+      typical_tool_usage: [market_feed_reader]
+      typical_action_types: [read, propose]
+      typical_operating_period: business_hours
+      observed_execution_behavior: advisory
+    verified:
+      signed_manifest: true
+      approved_software_version: cq-portfolio-model-1.2
+      attested_runtime: true
+      registered_environment: cq-prod-east
+      verified_tool_inventory: [market_feed_reader, proposal_builder]
+
+  - agent_id: cq-research-agent-001
+    classification: Research Agent
+    confidence: high
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [read]
+    expected_tools: [market_feed_reader, document_reader]
+    declared:
+      agent_type: research
+      model: cq-research-model-2.1
+      tools: [market_feed_reader, document_reader]
+      declared_capabilities: [read]
+      owner: cq-principal-001
+    observed:
+      typical_data_access: [cedar-quill-public-research]
+      typical_tool_usage: [market_feed_reader, document_reader]
+      typical_action_types: [read]
+      typical_operating_period: business_hours
+      observed_execution_behavior: research_only
+    verified:
+      signed_manifest: true
+      approved_software_version: cq-research-model-2.1
+      attested_runtime: true
+      registered_environment: cq-prod-east
+      verified_tool_inventory: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-stale
+    classification: Research Agent
+    confidence: high
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [read]
+    expected_tools: [market_feed_reader, document_reader]
+    declared:
+      agent_type: research
+      model: cq-research-model-2.1
+      tools: [market_feed_reader, document_reader]
+      declared_capabilities: [read]
+      owner: cq-principal-001
+    observed:
+      typical_data_access: [cedar-quill-public-research]
+      typical_tool_usage: [market_feed_reader]
+      typical_action_types: [read]
+      typical_operating_period: business_hours
+      observed_execution_behavior: research_only
+    verified:
+      signed_manifest: true
+      approved_software_version: cq-research-model-2.1
+      attested_runtime: true
+      registered_environment: cq-prod-east
+      verified_tool_inventory: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-version
+    classification: Research Agent
+    confidence: high
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [read]
+    expected_tools: [market_feed_reader, document_reader]
+    declared:
+      agent_type: research
+      model: cq-research-model-2.0
+      tools: [market_feed_reader, document_reader]
+      declared_capabilities: [read]
+      owner: cq-principal-001
+    observed:
+      typical_data_access: [cedar-quill-public-research]
+      typical_tool_usage: [market_feed_reader]
+      typical_action_types: [read]
+      typical_operating_period: business_hours
+      observed_execution_behavior: research_only
+    verified:
+      signed_manifest: true
+      approved_software_version: cq-research-model-2.0
+      attested_runtime: true
+      registered_environment: cq-prod-east
+      verified_tool_inventory: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-tools
+    classification: Research Agent
+    confidence: high
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [read]
+    expected_tools: [market_feed_reader, document_reader]
+    declared:
+      agent_type: research
+      model: cq-research-model-2.1
+      tools: [market_feed_reader, document_reader]
+      declared_capabilities: [read]
+      owner: cq-principal-001
+    observed:
+      typical_data_access: [cedar-quill-public-research]
+      typical_tool_usage: [market_feed_reader, document_reader]
+      typical_action_types: [read]
+      typical_operating_period: business_hours
+      observed_execution_behavior: research_only
+    verified:
+      signed_manifest: true
+      approved_software_version: cq-research-model-2.1
+      attested_runtime: true
+      registered_environment: cq-prod-east
+      verified_tool_inventory: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-boundary
+    classification: Research Agent
+    confidence: high
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [read]
+    expected_tools: [market_feed_reader, document_reader]
+    declared:
+      agent_type: research
+      model: cq-research-model-2.1
+      tools: [market_feed_reader, document_reader]
+      declared_capabilities: [read]
+      owner: cq-principal-001
+    observed:
+      typical_data_access: [cedar-quill-public-research]
+      typical_tool_usage: [market_feed_reader]
+      typical_action_types: [read]
+      typical_operating_period: business_hours
+      observed_execution_behavior: research_only
+    verified:
+      signed_manifest: true
+      approved_software_version: cq-research-model-2.1
+      attested_runtime: true
+      registered_environment: cq-prod-east
+      verified_tool_inventory: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-purpose
+    classification: Research Agent
+    confidence: high
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [read]
+    expected_tools: [market_feed_reader, document_reader]
+    declared:
+      agent_type: research
+      model: cq-research-model-2.1
+      tools: [market_feed_reader, document_reader]
+      declared_capabilities: [read]
+      owner: cq-principal-001
+    observed:
+      typical_data_access: [cedar-quill-public-research]
+      typical_tool_usage: [market_feed_reader]
+      typical_action_types: [read]
+      typical_operating_period: business_hours
+      observed_execution_behavior: research_only
+    verified:
+      signed_manifest: true
+      approved_software_version: cq-research-model-2.1
+      attested_runtime: true
+      registered_environment: cq-prod-east
+      verified_tool_inventory: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-limit
+    classification: Research Agent
+    confidence: high
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [read]
+    expected_tools: [market_feed_reader, document_reader]
+    declared:
+      agent_type: research
+      model: cq-research-model-2.1
+      tools: [market_feed_reader, document_reader]
+      declared_capabilities: [read]
+      owner: cq-principal-001
+    observed:
+      typical_data_access: [cedar-quill-public-research]
+      typical_tool_usage: [market_feed_reader]
+      typical_action_types: [read]
+      typical_operating_period: business_hours
+      observed_execution_behavior: research_only
+    verified:
+      signed_manifest: true
+      approved_software_version: cq-research-model-2.1
+      attested_runtime: true
+      registered_environment: cq-prod-east
+      verified_tool_inventory: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-context
+    classification: Research Agent
+    confidence: high
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [read]
+    expected_tools: [market_feed_reader, document_reader]
+    declared:
+      agent_type: research
+      model: cq-research-model-2.1
+      tools: [market_feed_reader, document_reader]
+      declared_capabilities: [read]
+      owner: cq-principal-001
+    observed:
+      typical_data_access: [cedar-quill-public-research]
+      typical_tool_usage: [market_feed_reader]
+      typical_action_types: [read]
+      typical_operating_period: business_hours
+      observed_execution_behavior: research_only
+    verified:
+      signed_manifest: true
+      approved_software_version: cq-research-model-2.1
+      attested_runtime: true
+      registered_environment: cq-prod-east
+      verified_tool_inventory: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-sensitive
+    classification: Research Agent
+    confidence: high
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [read, propose]
+    expected_tools: [market_feed_reader, document_reader]
+    declared:
+      agent_type: research
+      model: cq-research-model-2.1
+      tools: [market_feed_reader, document_reader]
+      declared_capabilities: [read, propose]
+      owner: cq-principal-001
+    observed:
+      typical_data_access: [cedar-quill-public-research]
+      typical_tool_usage: [market_feed_reader]
+      typical_action_types: [read, propose]
+      typical_operating_period: business_hours
+      observed_execution_behavior: research_only
+    verified:
+      signed_manifest: true
+      approved_software_version: cq-research-model-2.1
+      attested_runtime: true
+      registered_environment: cq-prod-east
+      verified_tool_inventory: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-undelegated
+    classification: Research Agent
+    confidence: high
+    profile_status: known
+    profile_mismatch: false
+    profile_version: "1"
+    expected_capabilities: [read]
+    expected_tools: [market_feed_reader, document_reader]
+    declared:
+      agent_type: research
+      model: cq-research-model-2.1
+      tools: [market_feed_reader, document_reader]
+      declared_capabilities: [read]
+      owner: cq-principal-001
+    observed:
+      typical_data_access: [cedar-quill-public-research]
+      typical_tool_usage: [market_feed_reader]
+      typical_action_types: [read]
+      typical_operating_period: business_hours
+      observed_execution_behavior: research_only
+    verified:
+      signed_manifest: true
+      approved_software_version: cq-research-model-2.1
+      attested_runtime: true
+      registered_environment: cq-prod-east
+      verified_tool_inventory: [market_feed_reader, document_reader]

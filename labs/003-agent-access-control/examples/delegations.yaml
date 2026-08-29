@@ -1,0 +1,288 @@
+delegations:
+  - delegation_id: del-cq-human-portfolio
+    parent_delegation_id: null
+    principal_id: cq-principal-001
+    delegator_id: cq-principal-001
+    delegate_id: cq-portfolio-agent-001
+    capabilities: [read, propose, approve_trade]
+    resources: [cedar-quill-public-research, cedar-quill-confidential-positions]
+    permitted_purposes: [market_research, portfolio_analysis, trade_preparation]
+    maximum_data_classification: confidential
+    maximum_amount: "20000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-12-31T23:59:59Z"
+    may_redelegate: true
+    remaining_depth: 2
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-cq-portfolio-research
+    parent_delegation_id: del-cq-human-portfolio
+    principal_id: cq-principal-001
+    delegator_id: cq-portfolio-agent-001
+    delegate_id: cq-research-agent-001
+    capabilities: [read]
+    resources: [cedar-quill-public-research]
+    permitted_purposes: [market_research, portfolio_analysis]
+    maximum_data_classification: public
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-cq-portfolio-research-stale
+    parent_delegation_id: del-cq-human-portfolio
+    principal_id: cq-principal-001
+    delegator_id: cq-portfolio-agent-001
+    delegate_id: cq-research-agent-stale
+    capabilities: [read]
+    resources: [cedar-quill-public-research]
+    permitted_purposes: [market_research, portfolio_analysis]
+    maximum_data_classification: public
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-cq-portfolio-research-version
+    parent_delegation_id: del-cq-human-portfolio
+    principal_id: cq-principal-001
+    delegator_id: cq-portfolio-agent-001
+    delegate_id: cq-research-agent-version
+    capabilities: [read]
+    resources: [cedar-quill-public-research]
+    permitted_purposes: [market_research, portfolio_analysis]
+    maximum_data_classification: public
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-cq-portfolio-research-tools
+    parent_delegation_id: del-cq-human-portfolio
+    principal_id: cq-principal-001
+    delegator_id: cq-portfolio-agent-001
+    delegate_id: cq-research-agent-tools
+    capabilities: [read]
+    resources: [cedar-quill-public-research]
+    permitted_purposes: [market_research, portfolio_analysis]
+    maximum_data_classification: public
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-cq-portfolio-research-boundary
+    parent_delegation_id: del-cq-human-portfolio
+    principal_id: cq-principal-001
+    delegator_id: cq-portfolio-agent-001
+    delegate_id: cq-research-agent-boundary
+    capabilities: [read]
+    resources: [cedar-quill-public-research, cedar-quill-confidential-positions]
+    permitted_purposes: [market_research, portfolio_analysis]
+    maximum_data_classification: public
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-cq-portfolio-research-purpose
+    parent_delegation_id: del-cq-human-portfolio
+    principal_id: cq-principal-001
+    delegator_id: cq-portfolio-agent-001
+    delegate_id: cq-research-agent-purpose
+    capabilities: [read]
+    resources: [cedar-quill-public-research]
+    permitted_purposes: [market_research]
+    maximum_data_classification: public
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-cq-portfolio-research-limit
+    parent_delegation_id: del-cq-human-portfolio
+    principal_id: cq-principal-001
+    delegator_id: cq-portfolio-agent-001
+    delegate_id: cq-research-agent-limit
+    capabilities: [read]
+    resources: [cedar-quill-public-research]
+    permitted_purposes: [market_research, portfolio_analysis]
+    maximum_data_classification: public
+    maximum_amount: "10000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-cq-portfolio-research-context
+    parent_delegation_id: del-cq-human-portfolio
+    principal_id: cq-principal-001
+    delegator_id: cq-portfolio-agent-001
+    delegate_id: cq-research-agent-context
+    capabilities: [read]
+    resources: [cedar-quill-public-research]
+    permitted_purposes: [market_research, portfolio_analysis]
+    maximum_data_classification: public
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-cq-portfolio-research-sensitive
+    parent_delegation_id: del-cq-human-portfolio
+    principal_id: cq-principal-001
+    delegator_id: cq-portfolio-agent-001
+    delegate_id: cq-research-agent-sensitive
+    capabilities: [read, propose]
+    resources: [cedar-quill-public-research]
+    permitted_purposes: [market_research, portfolio_analysis]
+    maximum_data_classification: public
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-cq-portfolio-research-undelegated
+    parent_delegation_id: del-cq-human-portfolio
+    principal_id: cq-principal-001
+    delegator_id: cq-portfolio-agent-001
+    delegate_id: cq-research-agent-undelegated
+    capabilities: [read]
+    resources: [cedar-quill-public-research]
+    permitted_purposes: [market_research, portfolio_analysis]
+    maximum_data_classification: public
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-cq-parent-expired-child
+    parent_delegation_id: del-cq-human-portfolio-expired
+    principal_id: cq-principal-001
+    delegator_id: cq-portfolio-agent-001
+    delegate_id: cq-research-agent-001
+    capabilities: [read]
+    resources: [cedar-quill-public-research]
+    permitted_purposes: [market_research, portfolio_analysis]
+    maximum_data_classification: public
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-cq-human-portfolio-expired
+    parent_delegation_id: null
+    principal_id: cq-principal-001
+    delegator_id: cq-principal-001
+    delegate_id: cq-portfolio-agent-001
+    capabilities: [read, propose, approve_trade]
+    resources: [cedar-quill-public-research, cedar-quill-confidential-positions]
+    permitted_purposes: [market_research, portfolio_analysis, trade_preparation]
+    maximum_data_classification: confidential
+    maximum_amount: "20000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-03-01T23:59:59Z"
+    may_redelegate: true
+    remaining_depth: 2
+    required_assurance: standard
+    status: expired
+    version: "1"
+
+  - delegation_id: del-cq-parent-revoked-child
+    parent_delegation_id: del-cq-human-portfolio-revoked
+    principal_id: cq-principal-001
+    delegator_id: cq-portfolio-agent-001
+    delegate_id: cq-research-agent-001
+    capabilities: [read]
+    resources: [cedar-quill-public-research]
+    permitted_purposes: [market_research, portfolio_analysis]
+    maximum_data_classification: public
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"
+
+  - delegation_id: del-cq-human-portfolio-revoked
+    parent_delegation_id: null
+    principal_id: cq-principal-001
+    delegator_id: cq-principal-001
+    delegate_id: cq-portfolio-agent-001
+    capabilities: [read, propose, approve_trade]
+    resources: [cedar-quill-public-research, cedar-quill-confidential-positions]
+    permitted_purposes: [market_research, portfolio_analysis, trade_preparation]
+    maximum_data_classification: confidential
+    maximum_amount: "20000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-12-31T23:59:59Z"
+    may_redelegate: true
+    remaining_depth: 2
+    required_assurance: standard
+    status: revoked
+    version: "1"
+
+  - delegation_id: del-cq-portfolio-research-protected
+    parent_delegation_id: del-cq-human-portfolio
+    principal_id: cq-principal-001
+    delegator_id: cq-portfolio-agent-001
+    delegate_id: cq-research-agent-001
+    capabilities: [read]
+    resources: [cedar-quill-public-research]
+    permitted_purposes: [market_research, portfolio_analysis]
+    maximum_data_classification: public
+    maximum_amount: "5000.00"
+    valid_from: "2026-01-01T00:00:00Z"
+    valid_until: "2026-06-30T23:59:59Z"
+    may_redelegate: false
+    remaining_depth: 0
+    required_assurance: standard
+    status: active
+    version: "1"

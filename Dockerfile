@@ -16,6 +16,10 @@ COPY labs/002-delegated-authority/src /srv/labs/002-delegated-authority/src
 COPY labs/002-delegated-authority/policies /srv/labs/002-delegated-authority/policies
 COPY labs/002-delegated-authority/examples /srv/labs/002-delegated-authority/examples
 COPY labs/002-delegated-authority/static /srv/labs/002-delegated-authority/static
+COPY labs/003-agent-access-control/src /srv/labs/003-agent-access-control/src
+COPY labs/003-agent-access-control/policies /srv/labs/003-agent-access-control/policies
+COPY labs/003-agent-access-control/examples /srv/labs/003-agent-access-control/examples
+COPY labs/003-agent-access-control/static /srv/labs/003-agent-access-control/static
 
 RUN pip install --no-cache-dir .
 
@@ -27,6 +31,9 @@ ENV CATALOG_PATH=/srv/website/catalog/labs.yaml
 ENV POLICY_DIR=/srv/labs/001-know-your-agent/policies
 ENV LAB002_DATA_DIR=/srv/labs/002-delegated-authority/examples
 ENV LAB002_POLICY_DIR=/srv/labs/002-delegated-authority/policies
+ENV LAB003_STATIC_DIR=/srv/labs/003-agent-access-control/static
+ENV LAB003_DATA_DIR=/srv/labs/003-agent-access-control/examples
+ENV LAB003_POLICY_DIR=/srv/labs/003-agent-access-control/policies
 ENV APP_VERSION=0.3.0
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1

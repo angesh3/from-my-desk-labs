@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+  <title id="title">NAC comparison for agent access control</title>
+  <desc id="desc">Traditional network access control versus agent access control with management plane, authority evaluation, and restricted recovery.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#0b1f33"/>
+    </marker>
+  </defs>
+  <rect width="960" height="520" fill="#f7f4ec"/>
+  <text x="32" y="40" font-family="Georgia, serif" font-size="20" fill="#0b1f33">NAC vs Agent Access Control</text>
+  <text x="32" y="64" font-family="Georgia, serif" font-size="13" fill="#5c5a54">Identity alone is not enough — authority must be evaluated at every request</text>
+
+  <rect x="40" y="96" width="400" height="360" fill="#ffffff" stroke="#0b1f33" stroke-width="2"/>
+  <text x="240" y="128" text-anchor="middle" font-family="Georgia, serif" font-size="16" font-weight="bold" fill="#0b1f33">Traditional NAC</text>
+  <text x="60" y="168" font-family="Georgia, serif" font-size="13" fill="#0b1f33">Device on network</text>
+  <path d="M240 180 V210" stroke="#0b1f33" marker-end="url(#arrow)"/>
+  <rect x="120" y="210" width="240" height="40" fill="#eef2f8" stroke="#0b1f33"/>
+  <text x="240" y="235" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#0b1f33">Posture check</text>
+  <path d="M240 250 V280" stroke="#0b1f33" marker-end="url(#arrow)"/>
+  <rect x="120" y="280" width="240" height="40" fill="#eef2f8" stroke="#0b1f33"/>
+  <text x="240" y="305" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#0b1f33">Allow / deny segment</text>
+  <text x="60" y="360" font-family="Georgia, serif" font-size="12" fill="#5c5a54">One-time gate at join time</text>
+
+  <rect x="520" y="96" width="400" height="360" fill="#ffffff" stroke="#c9a227" stroke-width="2"/>
+  <text x="720" y="128" text-anchor="middle" font-family="Georgia, serif" font-size="16" font-weight="bold" fill="#0b1f33">Agent Access Control</text>
+  <rect x="560" y="150" width="320" height="36" fill="#0b1f33"/>
+  <text x="720" y="173" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#f7f4ec">Management plane</text>
+  <path d="M720 186 V210" stroke="#0b1f33" marker-end="url(#arrow)"/>
+  <rect x="560" y="210" width="320" height="36" fill="#ffffff" stroke="#0b1f33"/>
+  <text x="720" y="233" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#0b1f33">Live authority evaluation</text>
+  <path d="M720 246 V270" stroke="#0b1f33" marker-end="url(#arrow)"/>
+  <rect x="560" y="270" width="320" height="36" fill="#ffffff" stroke="#0b1f33"/>
+  <text x="720" y="293" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#0b1f33">Decision + audit</text>
+  <path d="M720 306 V330" stroke="#c9a227" stroke-dasharray="8 5" marker-end="url(#arrow)"/>
+  <text x="720" y="322" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#5c5a54">if eligible</text>
+  <rect x="560" y="330" width="320" height="36" fill="#fff8e6" stroke="#c9a227"/>
+  <text x="720" y="353" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#0b1f33">Restricted recovery (optional)</text>
+  <text x="540" y="410" font-family="Georgia, serif" font-size="12" fill="#5c5a54">Per-request: actor, authority, posture, context</text>
+</svg>

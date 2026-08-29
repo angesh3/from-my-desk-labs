@@ -6,7 +6,7 @@ This repository hosts the public companion site and any editions that include a 
 
 ```
 from-my-desk-labs/
-├── pyproject.toml          # installs know_your_agent and delegated_authority
+├── pyproject.toml          # installs know_your_agent, delegated_authority, agent_access_control
 ├── Dockerfile
 ├── docker-compose.yml
 ├── website/
@@ -21,13 +21,20 @@ from-my-desk-labs/
     │   ├── tests/
     │   ├── diagrams/
     │   └── static/
-    └── 002-delegated-authority/
-        ├── src/delegated_authority/
+    ├── 002-delegated-authority/
+    │   ├── src/delegated_authority/
+    │   ├── policies/
+    │   ├── examples/
+    │   ├── tests/
+    │   ├── docs/
+    │   ├── diagrams/
+    │   └── static/
+    └── 003-agent-access-control/
+        ├── src/agent_access_control/
         ├── policies/
         ├── examples/
         ├── tests/
         ├── docs/
-        ├── diagrams/
         └── static/
 ```
 
@@ -53,6 +60,7 @@ Discovery is data-driven. Edit `website/catalog/labs.yaml`; do not hard-code edi
 | --- | --- | --- |
 | [001-know-your-agent](labs/001-know-your-agent) | Know Your Agent | Identity versus delegated authority. Four-way policy gate: ALLOW, CONFIRM, STEP_UP, DENY. Fictional paper-order simulation only. |
 | [002-delegated-authority](labs/002-delegated-authority) | KYA: Delegated Authority | Trust must narrow at every handoff. Parent-child delegation, APE, APSE, revocation, and restricted fallback. Never executes. |
+| [003-agent-access-control](labs/003-agent-access-control) | Agent Access Control | Progressive Live Authority Evaluation across agent, principal, action, tool, resource, purpose, limits, delegation, posture, and context. Never executes. |
 
 ## Local setup
 
@@ -73,6 +81,7 @@ Open:
 - http://127.0.0.1:8080/labs
 - http://127.0.0.1:8080/labs/know-your-agent
 - http://127.0.0.1:8080/labs/delegated-authority
+- http://127.0.0.1:8080/labs/agent-access-control
 - http://127.0.0.1:8080/health
 
 ## Tests

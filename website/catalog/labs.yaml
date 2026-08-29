@@ -36,3 +36,22 @@ labs:
     interactive: true
     featured: false
     disclaimer: "Educational simulation with fictional principals, agents, delegations, and posture evidence. No real accounts, credentials, or transactions. Execution is never performed."
+
+  - id: "003"
+    edition_number: 3
+    slug: agent-access-control
+    title: "Agent Access Control"
+    subtitle: "When agents act on behalf of principals, every request needs live authority evaluation — not just a one-time network gate."
+    summary: "Walk through live authority evaluation for agent requests — registration, delegation, posture, and context checked per request, with canonical events and restricted recovery. Policy evaluation never executes a tool action."
+    status: published
+    tags:
+      - AI Agents
+      - Access Control
+      - Digital Trust
+      - Know Your Agent
+    lab_url: /labs/agent-access-control
+    newsletter_url: https://www.linkedin.com/newsletters/from-my-desk-7492634647890341890/
+    github_url: https://github.com/angesh3/from-my-desk-labs
+    interactive: true
+    featured: false
+    disclaimer: "Educational simulation with fictional Cedar Quill Markets principals, agents, delegations, and posture evidence. No real accounts, credentials, or transactions. Execution is never performed."

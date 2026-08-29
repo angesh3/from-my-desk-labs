@@ -1,0 +1,26 @@
+policy_version: lab003-access-1
+allow_ttl_seconds: 60
+confirm_threshold: "5000.00"
+protected_actions: [execute, approve_trade, transfer_funds]
+sensitive_actions: [propose, approve_trade]
+protected_tools: [order_gateway, custody_ledger, trade_approval_console]
+restricted_registration_tools: [registration_portal]
+public_registration_resources: [agent-registration-catalog]
+material_context_changes: [material_change]
+data_classifications:
+  public: 0
+  internal: 1
+  confidential: 2
+  restricted: 3
+hard_deny_codes:
+  - capability_not_delegated
+  - unknown_agent_protected_action
+  - tool_inventory_changed
+  - data_classification_exceeds_authority
+  - parent_delegation_expired
+  - parent_delegation_revoked
+  - purpose_not_permitted
+  - identity_invalid
+  - principal_mismatch
+  - agent_unknown
+  - delegation_chain_broken

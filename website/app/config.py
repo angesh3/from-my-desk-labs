@@ -84,6 +84,27 @@ def _default_lab002_policy_dir() -> Path:
     return Path("/srv/labs/002-delegated-authority/policies")
 
 
+def _default_lab003_data_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "003-agent-access-control" / "examples"
+    return Path("/srv/labs/003-agent-access-control/examples")
+
+
+def _default_lab003_policy_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "003-agent-access-control" / "policies"
+    return Path("/srv/labs/003-agent-access-control/policies")
+
+
+def _default_lab003_static_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "003-agent-access-control" / "static"
+    return Path("/srv/labs/003-agent-access-control/static")
+
+
 class Settings:
     def __init__(self) -> None:
         self.app_version = APP_VERSION
@@ -111,6 +132,15 @@ class Settings:
         self.lab002_policy_dir = Path(
             os.environ.get("LAB002_POLICY_DIR") or _default_lab002_policy_dir()
         )
+        self.lab003_data_dir = Path(
+            os.environ.get("LAB003_DATA_DIR") or _default_lab003_data_dir()
+        )
+        self.lab003_policy_dir = Path(
+            os.environ.get("LAB003_POLICY_DIR") or _default_lab003_policy_dir()
+        )
+        self.lab003_static_dir = Path(
+            os.environ.get("LAB003_STATIC_DIR") or _default_lab003_static_dir()
+        )
         self.port = int(os.environ.get("PORT", "8080"))
         self.registry_mode = os.environ.get("REGISTRY_PUBLIC", "sanitized").strip().lower()
         self.github_url = os.environ.get(
@@ -134,7 +164,14 @@ class Settings:
         self.rate_limit_per_minute = int(os.environ.get("RATE_LIMIT_PER_MINUTE", "60"))
 
 
-REQUIRED_TEMPLATE_FILES = ("base.html", "home.html", "labs.html", "lab.html", "lab002.html")
+REQUIRED_TEMPLATE_FILES = (
+    "base.html",
+    "home.html",
+    "labs.html",
+    "lab.html",
+    "lab002.html",
+    "lab003.html",
+)
 REQUIRED_GLOBAL_STATIC_FILES = (
     "css/styles.css",
     "js/site.js",
@@ -166,6 +203,16 @@ REQUIRED_LAB002_DATA_FILES = (
     "delegations.yaml",
     "scenarios.yaml",
 )
+REQUIRED_LAB003_POLICY_FILES = ("access-policy.yaml",)
+REQUIRED_LAB003_DATA_FILES = REQUIRED_LAB002_DATA_FILES
+REQUIRED_LAB003_STATIC_FILES = (
+    "lab.js",
+    "nac-comparison.svg",
+    "live-authority-evaluation.svg",
+    "management-plane.svg",
+    "restricted-mode.svg",
+    "reevaluation-change.svg",
+)
 
 
 class ResourceConfigError(RuntimeError):
@@ -196,6 +243,11 @@ def validate_runtime_resources(settings: Settings) -> None:
         if not path.is_file():
             missing.append(f"lab002_static:{rel}")
 
+    for rel in REQUIRED_LAB003_STATIC_FILES:
+        path = settings.lab003_static_dir / rel
+        if not path.is_file():
+            missing.append(f"lab003_static:{rel}")
+
     if not settings.catalog_path.is_file():
         missing.append("catalog:labs.yaml")
 
@@ -213,6 +265,16 @@ def validate_runtime_resources(settings: Settings) -> None:
         path = settings.lab002_data_dir / name
         if not path.is_file():
             missing.append(f"lab002_data:{name}")
+
+    for name in REQUIRED_LAB003_POLICY_FILES:
+        path = settings.lab003_policy_dir / name
+        if not path.is_file():
+            missing.append(f"lab003_policy:{name}")
+
+    for name in REQUIRED_LAB003_DATA_FILES:
+        path = settings.lab003_data_dir / name
+        if not path.is_file():
+            missing.append(f"lab003_data:{name}")
 
     if missing:
         raise ResourceConfigError(

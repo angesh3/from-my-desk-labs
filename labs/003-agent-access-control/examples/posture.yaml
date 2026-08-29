@@ -1,0 +1,113 @@
+posture:
+  - agent_id: cq-research-agent-001
+    posture_status: compliant
+    risk_level: low
+    model_version_status: approved
+    tool_inventory_status: expected
+    attestation_status: ok
+    evidence_freshness: current
+    recommended_treatment: continue
+    posture_version: "1"
+
+  - agent_id: cq-research-agent-stale
+    posture_status: stale
+    risk_level: medium
+    model_version_status: approved
+    tool_inventory_status: expected
+    attestation_status: ok
+    evidence_freshness: stale
+    recommended_treatment: step_up
+    reason_code: posture_evidence_stale
+    posture_version: "1"
+
+  - agent_id: cq-research-agent-version
+    posture_status: noncompliant
+    risk_level: medium
+    model_version_status: noncompliant
+    tool_inventory_status: expected
+    attestation_status: ok
+    evidence_freshness: current
+    recommended_treatment: step_up
+    reason_code: model_version_noncompliant
+    posture_version: "1"
+
+  - agent_id: cq-research-agent-tools
+    posture_status: noncompliant
+    risk_level: high
+    model_version_status: approved
+    tool_inventory_status: changed
+    attestation_status: ok
+    evidence_freshness: current
+    recommended_treatment: deny
+    reason_code: tool_inventory_changed
+    posture_version: "1"
+
+  - agent_id: cq-research-agent-boundary
+    posture_status: compliant
+    risk_level: low
+    model_version_status: approved
+    tool_inventory_status: expected
+    attestation_status: ok
+    evidence_freshness: current
+    recommended_treatment: continue
+    posture_version: "1"
+
+  - agent_id: cq-research-agent-purpose
+    posture_status: compliant
+    risk_level: low
+    model_version_status: approved
+    tool_inventory_status: expected
+    attestation_status: ok
+    evidence_freshness: current
+    recommended_treatment: continue
+    posture_version: "1"
+
+  - agent_id: cq-research-agent-limit
+    posture_status: compliant
+    risk_level: low
+    model_version_status: approved
+    tool_inventory_status: expected
+    attestation_status: ok
+    evidence_freshness: current
+    recommended_treatment: continue
+    posture_version: "1"
+
+  - agent_id: cq-research-agent-context
+    posture_status: compliant
+    risk_level: low
+    model_version_status: approved
+    tool_inventory_status: expected
+    attestation_status: ok
+    evidence_freshness: current
+    recommended_treatment: continue
+    posture_version: "1"
+
+  - agent_id: cq-research-agent-sensitive
+    posture_status: compliant
+    risk_level: low
+    model_version_status: approved
+    tool_inventory_status: expected
+    attestation_status: ok
+    evidence_freshness: current
+    recommended_treatment: continue
+    posture_version: "1"
+
+  - agent_id: cq-research-agent-undelegated
+    posture_status: compliant
+    risk_level: low
+    model_version_status: approved
+    tool_inventory_status: expected
+    attestation_status: ok
+    evidence_freshness: current
+    recommended_treatment: continue
+    posture_version: "1"
+
+  - agent_id: cq-portfolio-agent-001
+    posture_status: compliant
+    risk_level: low
+    model_version_status: approved
+    tool_inventory_status: expected
+    attestation_status: ok
+    evidence_freshness: current
+    recommended_treatment: continue
+    posture_version: "1"

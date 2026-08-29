@@ -1,10 +1,20 @@
+from __future__ import annotations
+
+import io
+import re
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
 from fastapi.testclient import TestClient
 
 from from_my_desk.main import app
 
 client = TestClient(app)
 
-PAGES = ("/", "/labs", "/labs/know-your-agent", "/labs/delegated-authority")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+LAB003_STATIC = REPO_ROOT / "labs" / "003-agent-access-control" / "static"
+
+PAGES = ("/", "/labs", "/labs/know-your-agent", "/labs/delegated-authority", "/labs/agent-access-control")
 FORBIDDEN_SNIPPETS = (
     "r2.dev",
     "r2.cloudflarestorage",
@@ -58,11 +68,13 @@ def test_catalog_renders_lab_cards():
     for html in (home, labs):
         assert "Know Your Agent: Identity Is Only the Beginning" in html
         assert "Delegated Authority" in html
+        assert "Agent Access Control" in html
         assert "Explore the interactive lab" in html or "Explore lab" in html
         assert "AI Agents" in html
         assert "Interactive demo" in html
         assert "/labs/know-your-agent" in html
         assert "/labs/delegated-authority" in html
+        assert "/labs/agent-access-control" in html
         assert "Not investment advice" in html or "No real accounts" in html
 
 
@@ -84,6 +96,35 @@ def test_lab002_page_basics():
     assert "How to use this Lab" in html
     assert "preset-card" in html
     assert "not_performed" in html
+
+
+def test_lab003_page_basics():
+    html = client.get("/labs/agent-access-control").text
+    assert "Agent Access Control" in html
+    assert "Run evaluation" in html
+    assert 'data-scenario="undelegated_capability"' in html
+    assert 'data-scenario="unknown_agent_registration"' in html
+    assert "/static/labs/003/nac-comparison.svg" in html
+    assert "/static/labs/003/live-authority-evaluation.svg" in html
+    assert "/static/labs/003/management-plane.svg" in html
+    assert "/static/labs/003/restricted-mode.svg" in html
+    assert "/static/labs/003/reevaluation-change.svg" in html
+    assert "/static/labs/003/lab.js" in html
+    assert "Open Lab 001" in html
+    assert "Open Lab 002" in html
+    assert "live-eval-stepper" in html
+    assert "How to use this Lab" in html
+    assert "preset-card" in html
+    assert "eval-mode" in html
+    assert "not_performed" in html
+    assert "guided-live-status" in html
+    assert "aria-live=\"polite\"" in html
+    assert "emerging Agent Authority Model" in html
+    assert "not presented as an established industry standard" in html
+    assert 'id="live-authority-evaluation"' in html
+    assert html.count('id="live-authority-evaluation"') == 1
+    assert 'id="live-eval-heading"' in html
+    assert 'tabindex="-1"' in html
 
 
 def test_lab_page_order_and_copy():
@@ -134,6 +175,12 @@ def test_static_assets():
         ("/static/labs/002/fallback-flow.svg", "image/svg+xml"),
         ("/static/labs/002/revocation-flow.svg", "image/svg+xml"),
         ("/static/labs/002/lab.js", "javascript"),
+        ("/static/labs/003/nac-comparison.svg", "image/svg+xml"),
+        ("/static/labs/003/live-authority-evaluation.svg", "image/svg+xml"),
+        ("/static/labs/003/management-plane.svg", "image/svg+xml"),
+        ("/static/labs/003/restricted-mode.svg", "image/svg+xml"),
+        ("/static/labs/003/reevaluation-change.svg", "image/svg+xml"),
+        ("/static/labs/003/lab.js", "javascript"),
     ]
     for url, content_type in assets:
         response = client.get(url)
@@ -155,3 +202,69 @@ def test_lab_javascript_presets():
     assert "unknown-bot" in js
     assert "kya-agent-revoked" in js
     assert "MAPLE" in js
+
+
+def test_lab003_javascript_guided_evaluating_state():
+    js = client.get("/static/labs/003/lab.js").text
+    assert "isEvaluating" in js
+    assert "EVALUATING_MS" in js
+    assert "guided-live-status" in js
+    assert "announceLive" in js
+
+
+def test_lab003_javascript_run_evaluation_navigation():
+    js = client.get("/static/labs/003/lab.js").text
+    assert "scrollToLiveAuthorityEvaluation" in js
+    assert "live-authority-evaluation" in js
+    assert "selected.scrollIntoView" not in js
+    assert "prefersReducedMotion" in js
+    assert "followProgress" in js
+    assert "followActivePhaseIfNeeded" in js
+    assert "isElementComfortablyVisible" in js
+
+
+def test_lab003_page_follow_progress_control():
+    html = client.get("/labs/agent-access-control").text
+    assert 'id="follow-progress"' in html
+    assert "Follow progress" in html
+    assert 'type="checkbox"' in html
+
+
+def test_lab003_diagram_urls_from_rendered_html():
+    html = client.get("/labs/agent-access-control").text
+    srcs = re.findall(r'src="(/static/labs/003/[^"]+\.svg)"', html)
+    assert len(srcs) == 5
+    expected = {
+        "/static/labs/003/nac-comparison.svg",
+        "/static/labs/003/live-authority-evaluation.svg",
+        "/static/labs/003/management-plane.svg",
+        "/static/labs/003/restricted-mode.svg",
+        "/static/labs/003/reevaluation-change.svg",
+    }
+    assert set(srcs) == expected
+    for url in srcs:
+        response = client.get(url)
+        assert response.status_code == 200, url
+        assert "image/svg+xml" in response.headers["content-type"], (
+            url,
+            response.headers["content-type"],
+        )
+        body = response.content
+        assert len(body) > 100, url
+        stripped = body.lstrip()
+        assert stripped.startswith(b"<?xml") or stripped.startswith(b"<svg"), url
+        body.decode("utf-8")
+        ET.parse(io.BytesIO(body))
+        filename = url.rsplit("/", 1)[-1]
+        source = LAB003_STATIC / filename
+        assert source.is_file(), filename
+        assert source.read_bytes() == body, filename
+
+
+def test_lab003_source_svgs_are_valid_utf8_xml():
+    for path in sorted(LAB003_STATIC.glob("*.svg")):
+        data = path.read_bytes()
+        data.decode("utf-8")
+        ET.parse(path)
+        assert b"<title" in data
+        assert b"<desc" in data
