@@ -34,7 +34,7 @@ def valid_lab(**overrides):
 
 def test_published_catalog_loads():
     labs = load_catalog(CATALOG)
-    assert len(labs) == 2
+    assert len(labs) == 3
     by_id = {lab.id: lab for lab in labs}
     assert by_id["001"].slug == "know-your-agent"
     assert by_id["001"].featured is True
@@ -45,6 +45,10 @@ def test_published_catalog_loads():
     assert by_id["002"].featured is False
     assert by_id["002"].interactive is True
     assert by_id["002"].lab_url == "/labs/delegated-authority"
+    assert by_id["003"].slug == "agent-access-control"
+    assert by_id["003"].featured is False
+    assert by_id["003"].interactive is True
+    assert by_id["003"].lab_url == "/labs/agent-access-control"
 
 
 def test_duplicate_id_rejected(tmp_path):

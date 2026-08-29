@@ -1,0 +1,121 @@
+agents:
+  - agent_id: cq-portfolio-agent-001
+    display_name: Cedar Quill Portfolio Agent
+    principal_id: cq-principal-001
+    status: active
+    assurance_level: elevated
+    required_assurance: standard
+    management_status: registered
+    classification: Portfolio Agent
+    approved_model_version: cq-portfolio-model-1.2
+    approved_tools: [market_feed_reader, proposal_builder]
+
+  - agent_id: cq-research-agent-001
+    display_name: Cedar Quill Research Agent
+    principal_id: cq-principal-001
+    status: active
+    assurance_level: standard
+    required_assurance: standard
+    management_status: registered
+    classification: Research Agent
+    approved_model_version: cq-research-model-2.1
+    approved_tools: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-stale
+    display_name: Cedar Quill Research Agent
+    principal_id: cq-principal-001
+    status: active
+    assurance_level: standard
+    required_assurance: standard
+    management_status: registered
+    classification: Research Agent
+    approved_model_version: cq-research-model-2.1
+    approved_tools: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-version
+    display_name: Cedar Quill Research Agent
+    principal_id: cq-principal-001
+    status: active
+    assurance_level: standard
+    required_assurance: standard
+    management_status: registered
+    classification: Research Agent
+    approved_model_version: cq-research-model-2.1
+    approved_tools: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-tools
+    display_name: Cedar Quill Research Agent
+    principal_id: cq-principal-001
+    status: active
+    assurance_level: standard
+    required_assurance: standard
+    management_status: registered
+    classification: Research Agent
+    approved_model_version: cq-research-model-2.1
+    approved_tools: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-boundary
+    display_name: Cedar Quill Research Agent
+    principal_id: cq-principal-001
+    status: active
+    assurance_level: standard
+    required_assurance: standard
+    management_status: registered
+    classification: Research Agent
+    approved_model_version: cq-research-model-2.1
+    approved_tools: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-purpose
+    display_name: Cedar Quill Research Agent
+    principal_id: cq-principal-001
+    status: active
+    assurance_level: standard
+    required_assurance: standard
+    management_status: registered
+    classification: Research Agent
+    approved_model_version: cq-research-model-2.1
+    approved_tools: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-limit
+    display_name: Cedar Quill Research Agent
+    principal_id: cq-principal-001
+    status: active
+    assurance_level: standard
+    required_assurance: standard
+    management_status: registered
+    classification: Research Agent
+    approved_model_version: cq-research-model-2.1
+    approved_tools: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-context
+    display_name: Cedar Quill Research Agent
+    principal_id: cq-principal-001
+    status: active
+    assurance_level: standard
+    required_assurance: standard
+    management_status: registered
+    classification: Research Agent
+    approved_model_version: cq-research-model-2.1
+    approved_tools: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-sensitive
+    display_name: Cedar Quill Research Agent
+    principal_id: cq-principal-001
+    status: active
+    assurance_level: standard
+    required_assurance: standard
+    management_status: registered
+    classification: Research Agent
+    approved_model_version: cq-research-model-2.1
+    approved_tools: [market_feed_reader, document_reader]
+
+  - agent_id: cq-research-agent-undelegated
+    display_name: Cedar Quill Research Agent
+    principal_id: cq-principal-001
+    status: active
+    assurance_level: standard
+    required_assurance: standard
+    management_status: registered
+    classification: Research Agent
+    approved_model_version: cq-research-model-2.1
+    approved_tools: [market_feed_reader, document_reader]

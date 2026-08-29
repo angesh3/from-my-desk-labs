@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 680" role="img" aria-labelledby="title desc">
+  <title id="title">Live authority evaluation flow</title>
+  <desc id="desc">Incoming request splits into parallel actor and request evaluation, converges into authority and current state checks, then produces a decision with a required audit record and an optional restricted recovery path.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#0b1f33"/>
+    </marker>
+    <marker id="arrow-dash" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#c9a227"/>
+    </marker>
+  </defs>
+  <rect width="960" height="680" fill="#f7f4ec"/>
+  <text x="32" y="40" font-family="Georgia, serif" font-size="20" fill="#0b1f33">Live authority evaluation</text>
+  <text x="32" y="64" font-family="Georgia, serif" font-size="13" fill="#5c5a54">DENY &gt; STEP_UP &gt; CONFIRM &gt; ALLOW — execution not performed</text>
+
+  <g font-family="Georgia, serif" font-size="13" fill="#0b1f33">
+    <rect x="360" y="88" width="240" height="44" fill="#0b1f33"/>
+    <text x="480" y="115" text-anchor="middle" fill="#f7f4ec">Incoming request</text>
+
+    <!-- Fork to Actor and Request -->
+    <path d="M480 132 L480 148" stroke="#0b1f33" fill="none"/>
+    <path d="M260 148 L660 148" stroke="#0b1f33" fill="none"/>
+    <path d="M260 148 L260 168" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+    <path d="M660 148 L660 168" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+
+    <rect x="170" y="168" width="180" height="56" fill="#ffffff" stroke="#0b1f33"/>
+    <text x="260" y="192" text-anchor="middle" font-weight="bold">Actor</text>
+    <text x="260" y="212" text-anchor="middle" font-size="12" fill="#5c5a54">Agent + Principal</text>
+
+    <rect x="550" y="168" width="220" height="56" fill="#ffffff" stroke="#0b1f33"/>
+    <text x="660" y="192" text-anchor="middle" font-weight="bold">Request</text>
+    <text x="660" y="212" text-anchor="middle" font-size="12" fill="#5c5a54">Action + Tool + Data + Purpose</text>
+
+    <!-- Converge into Authority -->
+    <path d="M260 224 L260 254 L480 254" stroke="#0b1f33" fill="none"/>
+    <path d="M660 224 L660 254 L480 254" stroke="#0b1f33" fill="none"/>
+    <path d="M480 254 L480 264" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+
+    <rect x="330" y="264" width="300" height="56" fill="#ffffff" stroke="#0b1f33"/>
+    <text x="480" y="290" text-anchor="middle" font-weight="bold">Authority</text>
+    <text x="480" y="310" text-anchor="middle" font-size="12" fill="#5c5a54">Limits + Delegation</text>
+
+    <path d="M480 320 V344" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+    <rect x="330" y="344" width="300" height="56" fill="#ffffff" stroke="#0b1f33"/>
+    <text x="480" y="370" text-anchor="middle" font-weight="bold">Current state</text>
+    <text x="480" y="390" text-anchor="middle" font-size="12" fill="#5c5a54">Posture + Context</text>
+
+    <path d="M480 400 V424" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+    <rect x="330" y="424" width="300" height="48" fill="#c9a227"/>
+    <text x="480" y="453" text-anchor="middle" fill="#0b1f33" font-weight="bold">Decision</text>
+
+    <!-- Decision to Audit (always) and Restricted path (optional) -->
+    <path d="M420 472 L420 492 L 300 492 L 300 512" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+    <path d="M540 472 L540 492 L 660 492 L 660 512" stroke="#c9a227" fill="none" stroke-dasharray="8 5" marker-end="url(#arrow-dash)"/>
+    <text x="540" y="486" text-anchor="middle" font-size="11" fill="#5c5a54">If recovery is permitted</text>
+
+    <rect x="210" y="512" width="180" height="52" fill="#eef2f8" stroke="#0b1f33"/>
+    <text x="300" y="536" text-anchor="middle" font-weight="bold">Audit record</text>
+    <text x="300" y="552" text-anchor="middle" font-size="11" fill="#5c5a54">Always recorded</text>
+
+    <rect x="570" y="512" width="180" height="52" fill="#fff8e6" stroke="#c9a227"/>
+    <text x="660" y="536" text-anchor="middle" font-weight="bold">Restricted path</text>
+    <text x="660" y="552" text-anchor="middle" font-size="11" fill="#5c5a54">Optional new path</text>
+
+    <text x="32" y="620" font-size="12" fill="#5c5a54">Skipped stages after a hard authority failure — canonical event order from server</text>
+  </g>
+</svg>

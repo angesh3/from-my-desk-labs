@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" role="img" aria-labelledby="title desc">
+  <title id="title">Re-evaluation after change</title>
+  <desc id="desc">Material context or posture change triggers step-up and requires a fresh policy evaluation.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#0b1f33"/>
+    </marker>
+  </defs>
+  <rect width="960" height="480" fill="#f7f4ec"/>
+  <text x="32" y="40" font-family="Georgia, serif" font-size="20" fill="#0b1f33">Re-evaluation after change</text>
+  <text x="32" y="64" font-family="Georgia, serif" font-size="13" fill="#5c5a54">Stale evidence or material context change requires fresh assurance</text>
+
+  <g font-family="Georgia, serif" font-size="13" fill="#0b1f33">
+    <rect x="120" y="120" width="200" height="48" fill="#ffffff" stroke="#0b1f33"/>
+    <text x="220" y="149" text-anchor="middle">Prior evaluation</text>
+
+    <path d="M320 144 H400" stroke="#0b1f33" marker-end="url(#arrow)"/>
+    <rect x="400" y="120" width="200" height="48" fill="#fff8e6" stroke="#c9a227"/>
+    <text x="500" y="149" text-anchor="middle">Material change detected</text>
+
+    <path d="M600 144 H680" stroke="#0b1f33" marker-end="url(#arrow)"/>
+    <rect x="680" y="120" width="200" height="48" fill="#ffffff" stroke="#0b1f33"/>
+    <text x="780" y="149" text-anchor="middle">STEP_UP required</text>
+
+    <path d="M480 168 V220" stroke="#0b1f33" marker-end="url(#arrow)"/>
+    <rect x="340" y="220" width="280" height="48" fill="#0b1f33"/>
+    <text x="480" y="249" text-anchor="middle" fill="#f7f4ec">Refresh posture or context evidence</text>
+
+    <path d="M480 268 V312" stroke="#0b1f33" marker-end="url(#arrow)"/>
+    <rect x="340" y="312" width="280" height="48" fill="#eef2f8" stroke="#0b1f33"/>
+    <text x="480" y="341" text-anchor="middle">New full policy evaluation</text>
+
+    <text x="32" y="420" font-size="12" fill="#5c5a54">ALLOW from a prior request does not carry forward after material change</text>
+  </g>
+</svg>

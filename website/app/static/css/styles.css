@@ -42,6 +42,18 @@ img { max-width: 100%; height: auto; }
   z-index: 10;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .wrap {
   width: min(960px, calc(100% - 2rem));
   margin: 0 auto;
@@ -460,7 +472,13 @@ pre {
   color: var(--muted);
   font-size: 0.92rem;
 }
-.preset-card .preset-learn { font-style: italic; }
+.preset-card .preset-learn,
+.preset-card .preset-takeaway {
+  font-style: italic;
+}
+.mode-option.follow-progress-option {
+  margin-top: 0.35rem;
+}
 .preset-card.is-selected {
   border-color: var(--navy);
   background: #eef2f8;
@@ -566,6 +584,116 @@ pre {
 .fallback-steps li span { color: var(--muted); }
 .fallback-note { margin: 0.35rem 0; font-weight: 600; color: var(--navy); }
 
+/* Lab 003 — live authority evaluation */
+.lab003-nac .workflow-figure img { aspect-ratio: 960 / 520; }
+.live-eval-panel {
+  border: 2px solid var(--navy);
+  background: #f3f6fb;
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+  scroll-margin-top: 2rem;
+}
+.mode-controls {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  padding: 0.85rem 1rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+.mode-controls h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  color: var(--navy);
+}
+.mode-option {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+  cursor: pointer;
+}
+.mode-option input { margin-top: 0.2rem; }
+.guided-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0 1rem;
+}
+.live-eval-stepper {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1rem;
+}
+.eval-group {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 0.85rem 0.95rem;
+}
+.eval-group-title {
+  margin: 0 0 0.65rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--navy);
+}
+.eval-events {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+.eval-event {
+  border-left: 4px solid var(--line);
+  padding: 0.55rem 0.75rem;
+  background: var(--ivory);
+  opacity: 0.45;
+}
+.eval-event.is-visible {
+  opacity: 1;
+}
+.eval-event.is-entering {
+  animation: lab003-reveal 0.35s ease-out;
+}
+.eval-event.is-pass { border-left-color: var(--allow); }
+.eval-event.is-challenge { border-left-color: var(--step); }
+.eval-event.is-fail { border-left-color: var(--deny); }
+.eval-event.is-skipped { border-left-color: var(--muted); opacity: 0.75; }
+.eval-event.is-evaluating {
+  border-left-color: var(--gold);
+  background: rgba(176, 141, 87, 0.08);
+}
+.eval-event.is-evaluating .eval-event-status {
+  color: var(--navy);
+  font-weight: 600;
+}
+.eval-event-title {
+  margin: 0;
+  font-weight: 700;
+  color: var(--navy);
+}
+.eval-event-status {
+  margin: 0.15rem 0;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+.eval-event-copy {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+.eval-event.is-pass .eval-event-status { color: var(--allow); }
+.eval-event.is-challenge .eval-event-status { color: var(--step); }
+.eval-event.is-fail .eval-event-status { color: var(--deny); }
+.management-summary { margin-bottom: 0; }
+@keyframes lab003-reveal {
+  from { transform: translateY(4px); opacity: 0.5; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 .input-summary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -605,4 +733,5 @@ pre {
   * { animation: none !important; transition: none !important; }
   .workflow-gif { display: none; }
   .workflow-static { display: block; }
+  .eval-event.is-entering { animation: none; }
 }

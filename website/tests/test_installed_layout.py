@@ -44,6 +44,9 @@ def test_non_editable_install_resolves_explicit_paths(tmp_path):
     env["POLICY_DIR"] = str(REPO_ROOT / "labs" / "001-know-your-agent" / "policies")
     env["LAB002_DATA_DIR"] = str(REPO_ROOT / "labs" / "002-delegated-authority" / "examples")
     env["LAB002_POLICY_DIR"] = str(REPO_ROOT / "labs" / "002-delegated-authority" / "policies")
+    env["LAB003_DATA_DIR"] = str(REPO_ROOT / "labs" / "003-agent-access-control" / "examples")
+    env["LAB003_POLICY_DIR"] = str(REPO_ROOT / "labs" / "003-agent-access-control" / "policies")
+    env["LAB003_STATIC_DIR"] = str(REPO_ROOT / "labs" / "003-agent-access-control" / "static")
     env["POSTHOG_ENABLED"] = "false"
     env["PYTHONDONTWRITEBYTECODE"] = "1"
 
@@ -72,12 +75,16 @@ assert 'Perspectives shaped by experience' in client.get('/').text
 assert client.get('/labs').status_code == 200
 assert client.get('/labs/know-your-agent').status_code == 200
 assert client.get('/labs/delegated-authority').status_code == 200
+assert client.get('/labs/agent-access-control').status_code == 200
 assert client.get('/static/labs/002/system-architecture.svg').status_code == 200
 assert client.get('/static/labs/002/delegated-authority-workflow.svg').status_code == 200
 assert client.get('/static/labs/002/evaluation-flow.svg').status_code == 200
 assert client.get('/static/labs/002/fallback-flow.svg').status_code == 200
 assert client.get('/static/labs/002/revocation-flow.svg').status_code == 200
 assert client.post('/api/labs/002/evaluate', json={{'scenario_id': 'valid_narrow_delegation'}}).json()['decision'] == 'allow'
+assert client.post('/api/labs/003/evaluate', json={{'scenario_id': 'managed_public_data_read'}}).json()['decision'] == 'allow'
+assert client.get('/static/labs/003/nac-comparison.svg').status_code == 200
+assert client.get('/static/labs/003/lab.js').status_code == 200
 css = client.get('/static/css/styles.css')
 assert css.status_code == 200
 assert '--navy:' in css.text

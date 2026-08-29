@@ -29,6 +29,8 @@ from know_your_agent.loader import PolicyConfigError
 from know_your_agent.rate_limit import SlidingWindowLimiter
 from delegated_authority.gateway import get_lab002_bundle, router as lab002_router
 from delegated_authority.loader import Lab002ConfigError
+from agent_access_control.gateway import get_lab003_bundle, router as lab003_router
+from agent_access_control.loader import Lab003ConfigError
 
 mimetypes.add_type("image/webp", ".webp")
 mimetypes.add_type("image/svg+xml", ".svg")
@@ -68,7 +70,10 @@ async def lifespan(app: FastAPI):
         os.environ.setdefault("LAB002_DATA_DIR", str(settings.lab002_data_dir))
         os.environ.setdefault("LAB002_POLICY_DIR", str(settings.lab002_policy_dir))
         get_lab002_bundle()
-    except (CatalogError, PolicyConfigError, Lab002ConfigError, ResourceConfigError) as exc:
+        os.environ.setdefault("LAB003_DATA_DIR", str(settings.lab003_data_dir))
+        os.environ.setdefault("LAB003_POLICY_DIR", str(settings.lab003_policy_dir))
+        get_lab003_bundle()
+    except (CatalogError, PolicyConfigError, Lab002ConfigError, Lab003ConfigError, ResourceConfigError) as exc:
         raise RuntimeError(
             "Refusing to start with unsafe catalog, policy, or missing website resources."
         ) from exc
@@ -93,6 +98,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             "/evaluate",
             "/api/evaluate",
             "/api/labs/002/evaluate",
+            "/api/labs/003/evaluate",
         } and request.method == "POST":
             limiter = _limiter
             if limiter is not None:
@@ -152,7 +158,12 @@ def _page_context(request: Request, **extra: Any) -> Dict[str, Any]:
 @app.exception_handler(RequestValidationError)
 async def validation_handler(request: Request, exc: RequestValidationError):
     response = await request_validation_exception_handler(request, exc)
-    if request.url.path in {"/evaluate", "/api/evaluate", "/api/labs/002/evaluate"}:
+    if request.url.path in {
+        "/evaluate",
+        "/api/evaluate",
+        "/api/labs/002/evaluate",
+        "/api/labs/003/evaluate",
+    }:
         return JSONResponse(
             status_code=422,
             content={
@@ -181,6 +192,7 @@ async def unhandled_handler(request: Request, exc: Exception):
 # API / health routes first so mounts cannot shadow them.
 app.include_router(lab_router)
 app.include_router(lab002_router)
+app.include_router(lab003_router)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -228,6 +240,12 @@ def lab_page(request: Request, slug: str) -> HTMLResponse:
                 workflow_gif_available=gif_path.is_file(),
             ),
         )
+    if slug == "agent-access-control":
+        return TEMPLATES.TemplateResponse(
+            request,
+            "lab003.html",
+            _page_context(request, lab=entry),
+        )
     raise HTTPException(status_code=404, detail="This edition does not have an interactive page yet.")
 
 
@@ -241,6 +259,11 @@ app.mount(
     "/static/labs/002",
     StaticFiles(directory=str(_settings.lab002_static_dir)),
     name="lab002-static",
+)
+app.mount(
+    "/static/labs/003",
+    StaticFiles(directory=str(_settings.lab003_static_dir)),
+    name="lab003-static",
 )
 app.mount(
     "/static",

@@ -14,6 +14,9 @@ services:
       POLICY_DIR: /srv/labs/001-know-your-agent/policies
       LAB002_DATA_DIR: /srv/labs/002-delegated-authority/examples
       LAB002_POLICY_DIR: /srv/labs/002-delegated-authority/policies
+      LAB003_STATIC_DIR: /srv/labs/003-agent-access-control/static
+      LAB003_DATA_DIR: /srv/labs/003-agent-access-control/examples
+      LAB003_POLICY_DIR: /srv/labs/003-agent-access-control/policies
       PORT: "8080"
       POSTHOG_ENABLED: "false"
       POSTHOG_KEY: ""

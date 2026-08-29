@@ -1,0 +1,312 @@
+scenarios:
+  - id: managed_public_data_read
+    title: Managed agent reads public data
+    short_description: Registered research agent reads public Cedar Quill Markets data within delegation.
+    category: valid_recoverable
+    expected_decision: allow
+    expected_reason_code: within_current_authority
+    request:
+      request_id: req-cq-001
+      principal_id: cq-principal-001
+      agent_id: cq-research-agent-001
+      requested_action: read
+      requested_tool: market_feed_reader
+      requested_resource: cedar-quill-public-research
+      data_classification: public
+      requested_amount: "500.00"
+      stated_purpose: market_research
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-cq-portfolio-research
+      context: normal
+      assurance_level: standard
+      restricted_operation: false
+
+  - id: sensitive_action_consent
+    title: Sensitive action requires consent
+    short_description: Valid authority, but propose action requires human consent.
+    category: valid_recoverable
+    expected_decision: confirm
+    expected_reason_code: human_consent_required
+    request:
+      request_id: req-cq-002
+      principal_id: cq-principal-001
+      agent_id: cq-research-agent-sensitive
+      requested_action: propose
+      requested_tool: document_reader
+      requested_resource: cedar-quill-public-research
+      data_classification: public
+      requested_amount: "500.00"
+      stated_purpose: portfolio_analysis
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-cq-portfolio-research-sensitive
+      context: normal
+      assurance_level: standard
+      restricted_operation: false
+
+  - id: stale_runtime_attestation
+    title: Stale runtime attestation
+    short_description: Authority valid but APSE attestation evidence is stale.
+    category: valid_recoverable
+    expected_decision: step_up
+    expected_reason_code: posture_evidence_stale
+    request:
+      request_id: req-cq-003
+      principal_id: cq-principal-001
+      agent_id: cq-research-agent-stale
+      requested_action: read
+      requested_tool: market_feed_reader
+      requested_resource: cedar-quill-public-research
+      data_classification: public
+      requested_amount: "500.00"
+      stated_purpose: market_research
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-cq-portfolio-research-stale
+      context: normal
+      assurance_level: standard
+      restricted_operation: false
+
+  - id: unapproved_model
+    title: Unapproved model version
+    short_description: Recoverable model version issue under otherwise valid authority.
+    category: valid_recoverable
+    expected_decision: step_up
+    expected_reason_code: model_version_noncompliant
+    request:
+      request_id: req-cq-004
+      principal_id: cq-principal-001
+      agent_id: cq-research-agent-version
+      requested_action: read
+      requested_tool: market_feed_reader
+      requested_resource: cedar-quill-public-research
+      data_classification: public
+      requested_amount: "500.00"
+      stated_purpose: market_research
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-cq-portfolio-research-version
+      context: normal
+      assurance_level: standard
+      restricted_operation: false
+
+  - id: undelegated_capability
+    title: Undelegated capability
+    short_description: Research agent requests execute outside effective authority.
+    category: delegation_failure
+    expected_decision: deny
+    expected_reason_code: capability_not_delegated
+    request:
+      request_id: req-cq-005
+      principal_id: cq-principal-001
+      agent_id: cq-research-agent-undelegated
+      requested_action: execute
+      requested_tool: market_feed_reader
+      requested_resource: cedar-quill-public-research
+      data_classification: public
+      requested_amount: "500.00"
+      stated_purpose: market_research
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-cq-portfolio-research-undelegated
+      context: normal
+      assurance_level: standard
+      restricted_operation: false
+
+  - id: unknown_agent_protected_tool
+    title: Unknown agent uses protected tool
+    short_description: Unregistered agent attempts a protected Cedar Quill Markets tool.
+    category: identity_failure
+    expected_decision: deny
+    expected_reason_code: unknown_agent_protected_action
+    request:
+      request_id: req-cq-006
+      principal_id: cq-principal-001
+      agent_id: cq-unknown-agent-999
+      requested_action: read
+      requested_tool: order_gateway
+      requested_resource: cedar-quill-public-research
+      data_classification: public
+      requested_amount: "100.00"
+      stated_purpose: market_research
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-cq-portfolio-research-protected
+      context: normal
+      assurance_level: standard
+      restricted_operation: false
+    overlays:
+      remove_agents: [cq-unknown-agent-999]
+
+  - id: unknown_agent_registration
+    title: Unknown agent restricted registration
+    short_description: Unregistered agent may use the restricted registration path only.
+    category: restricted_recovery
+    expected_decision: allow
+    expected_reason_code: restricted_registration_permitted
+    request:
+      request_id: req-cq-007
+      principal_id: cq-principal-001
+      agent_id: cq-unknown-agent-888
+      requested_action: register
+      requested_tool: registration_portal
+      requested_resource: agent-registration-catalog
+      data_classification: public
+      requested_amount: "0.00"
+      stated_purpose: agent_onboarding
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-cq-portfolio-research
+      context: normal
+      assurance_level: standard
+      restricted_operation: true
+    overlays:
+      remove_agents: [cq-unknown-agent-888]
+
+  - id: undeclared_tool
+    title: Undeclared tool in inventory
+    short_description: Agent requests a tool outside its approved inventory.
+    category: profile_posture
+    expected_decision: deny
+    expected_reason_code: tool_inventory_changed
+    request:
+      request_id: req-cq-008
+      principal_id: cq-principal-001
+      agent_id: cq-research-agent-tools
+      requested_action: read
+      requested_tool: shadow_scraper
+      requested_resource: cedar-quill-public-research
+      data_classification: public
+      requested_amount: "200.00"
+      stated_purpose: market_research
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-cq-portfolio-research-tools
+      context: normal
+      assurance_level: standard
+      restricted_operation: false
+
+  - id: data_boundary_violation
+    title: Data classification exceeds authority
+    short_description: Confidential data requested under public-only delegation.
+    category: resource_failure
+    expected_decision: deny
+    expected_reason_code: data_classification_exceeds_authority
+    request:
+      request_id: req-cq-009
+      principal_id: cq-principal-001
+      agent_id: cq-research-agent-boundary
+      requested_action: read
+      requested_tool: market_feed_reader
+      requested_resource: cedar-quill-confidential-positions
+      data_classification: confidential
+      requested_amount: "200.00"
+      stated_purpose: market_research
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-cq-portfolio-research-boundary
+      context: normal
+      assurance_level: standard
+      restricted_operation: false
+
+  - id: parent_delegation_expired
+    title: Parent delegation expired
+    short_description: Parent delegation expired; downstream authority is invalid.
+    category: lifecycle_failure
+    expected_decision: deny
+    expected_reason_code: parent_delegation_expired
+    request:
+      request_id: req-cq-010
+      principal_id: cq-principal-001
+      agent_id: cq-research-agent-001
+      requested_action: read
+      requested_tool: market_feed_reader
+      requested_resource: cedar-quill-public-research
+      data_classification: public
+      requested_amount: "100.00"
+      stated_purpose: market_research
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-cq-parent-expired-child
+      context: normal
+      assurance_level: standard
+      restricted_operation: false
+
+  - id: parent_delegation_revoked
+    title: Parent delegation revoked
+    short_description: Parent revocation invalidates downstream Cedar Quill authority.
+    category: lifecycle_failure
+    expected_decision: deny
+    expected_reason_code: parent_delegation_revoked
+    request:
+      request_id: req-cq-011
+      principal_id: cq-principal-001
+      agent_id: cq-research-agent-001
+      requested_action: read
+      requested_tool: market_feed_reader
+      requested_resource: cedar-quill-public-research
+      data_classification: public
+      requested_amount: "100.00"
+      stated_purpose: market_research
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-cq-parent-revoked-child
+      context: normal
+      assurance_level: standard
+      restricted_operation: false
+
+  - id: purpose_conflict
+    title: Purpose not permitted
+    short_description: Stated purpose conflicts with delegated permitted purposes.
+    category: purpose_failure
+    expected_decision: deny
+    expected_reason_code: purpose_not_permitted
+    request:
+      request_id: req-cq-012
+      principal_id: cq-principal-001
+      agent_id: cq-research-agent-purpose
+      requested_action: read
+      requested_tool: market_feed_reader
+      requested_resource: cedar-quill-public-research
+      data_classification: public
+      requested_amount: "200.00"
+      stated_purpose: portfolio_analysis
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-cq-portfolio-research-purpose
+      context: normal
+      assurance_level: standard
+      restricted_operation: false
+
+  - id: limit_requires_confirmation
+    title: Limit requires confirmation
+    short_description: Valid authority, amount above autonomous confirmation threshold.
+    category: valid_recoverable
+    expected_decision: confirm
+    expected_reason_code: limit_requires_confirmation
+    request:
+      request_id: req-cq-013
+      principal_id: cq-principal-001
+      agent_id: cq-research-agent-limit
+      requested_action: read
+      requested_tool: market_feed_reader
+      requested_resource: cedar-quill-public-research
+      data_classification: public
+      requested_amount: "7500.00"
+      stated_purpose: market_research
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-cq-portfolio-research-limit
+      context: normal
+      assurance_level: standard
+      restricted_operation: false
+
+  - id: material_context_change
+    title: Material context change
+    short_description: Material operating context change requires step-up assurance.
+    category: valid_recoverable
+    expected_decision: step_up
+    expected_reason_code: context_change_requires_step_up
+    request:
+      request_id: req-cq-014
+      principal_id: cq-principal-001
+      agent_id: cq-research-agent-context
+      requested_action: read
+      requested_tool: market_feed_reader
+      requested_resource: cedar-quill-public-research
+      data_classification: public
+      requested_amount: "500.00"
+      stated_purpose: market_research
+      request_time: "2026-03-15T14:00:00Z"
+      delegation_id: del-cq-portfolio-research-context
+      context: material_change
+      assurance_level: standard
+      restricted_operation: false

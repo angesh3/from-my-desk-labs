@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+  <title id="title">Agent management plane</title>
+  <desc id="desc">Registry, inventory, and profiles each inform the live authority evaluation gateway at request time. Management state does not grant authority by itself.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#0b1f33"/>
+    </marker>
+  </defs>
+  <rect width="960" height="520" fill="#f7f4ec"/>
+  <text x="32" y="40" font-family="Georgia, serif" font-size="20" fill="#0b1f33">Agent Management Plane</text>
+  <text x="32" y="64" font-family="Georgia, serif" font-size="13" fill="#5c5a54">Registration, inventory, and profile — separate from per-request authority</text>
+
+  <rect x="80" y="100" width="200" height="280" fill="#ffffff" stroke="#0b1f33"/>
+  <text x="180" y="130" text-anchor="middle" font-family="Georgia, serif" font-size="14" font-weight="bold" fill="#0b1f33">Registry</text>
+  <text x="100" y="165" font-family="Georgia, serif" font-size="12" fill="#5c5a54">Registered agents</text>
+  <text x="100" y="190" font-family="Georgia, serif" font-size="12" fill="#5c5a54">Unknown agents</text>
+  <text x="100" y="215" font-family="Georgia, serif" font-size="12" fill="#5c5a54">Restricted onboarding</text>
+
+  <rect x="380" y="100" width="200" height="280" fill="#ffffff" stroke="#0b1f33"/>
+  <text x="480" y="130" text-anchor="middle" font-family="Georgia, serif" font-size="14" font-weight="bold" fill="#0b1f33">Inventory</text>
+  <text x="400" y="165" font-family="Georgia, serif" font-size="12" fill="#5c5a54">Approved tools</text>
+  <text x="400" y="190" font-family="Georgia, serif" font-size="12" fill="#5c5a54">Model versions</text>
+  <text x="400" y="215" font-family="Georgia, serif" font-size="12" fill="#5c5a54">Classification</text>
+
+  <rect x="680" y="100" width="200" height="280" fill="#ffffff" stroke="#0b1f33"/>
+  <text x="780" y="130" text-anchor="middle" font-family="Georgia, serif" font-size="14" font-weight="bold" fill="#0b1f33">Profiles</text>
+  <text x="700" y="165" font-family="Georgia, serif" font-size="12" fill="#5c5a54">APE confidence</text>
+  <text x="700" y="190" font-family="Georgia, serif" font-size="12" fill="#5c5a54">Mismatch detection</text>
+  <text x="700" y="215" font-family="Georgia, serif" font-size="12" fill="#5c5a54">Management status</text>
+
+  <path d="M280 240 H380" stroke="#0b1f33" marker-end="url(#arrow)"/>
+  <path d="M580 240 H680" stroke="#0b1f33" marker-end="url(#arrow)"/>
+
+  <rect x="280" y="420" width="400" height="56" fill="#0b1f33"/>
+  <text x="480" y="453" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#f7f4ec">Live Authority Evaluation Gateway</text>
+  <path d="M180 380 L180 410 L320 410 L320 420" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+  <path d="M480 380 L480 420" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+  <path d="M780 380 L780 410 L640 410 L640 420" stroke="#0b1f33" fill="none" marker-end="url(#arrow)"/>
+</svg>

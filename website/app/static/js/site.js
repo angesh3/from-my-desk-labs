@@ -53,6 +53,7 @@
       lab_slug: true,
       preset_category: true,
       scenario_category: true,
+      evaluation_mode: true,
       preset_id: true,
       decision: true,
       reason_category: true,
