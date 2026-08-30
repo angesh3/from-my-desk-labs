@@ -71,7 +71,7 @@ assert 'site-packages' in str(pkg) or pkg != Path(r'''{templates}''').parent
 
 client = TestClient(main.app)
 assert client.get('/').status_code == 200
-assert 'Perspectives shaped by experience' in client.get('/').text
+assert 'Ideas I\'m working through' in client.get('/').text
 assert client.get('/labs').status_code == 200
 assert client.get('/labs/know-your-agent').status_code == 200
 assert client.get('/labs/delegated-authority').status_code == 200

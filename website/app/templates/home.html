@@ -1,93 +1,88 @@
 {% extends "base.html" %}
-{% block title %}From My Desk — Perspectives shaped by experience{% endblock %}
+{% block title %}From My Desk — Ideas I'm working through{% endblock %}
+{% block description %}From My Desk is where Angesh Vikram thinks through ideas at the intersection of AI, engineering, architecture, security, and leadership — sometimes in writing, sometimes through small interactive Labs.{% endblock %}
 {% block content %}
-<section class="hero wrap">
-  <p class="eyebrow">From My Desk</p>
-  <h1>Perspectives shaped by experience</h1>
-  <p class="lede">
-    From My Desk is a place to pause, reflect, and share practical perspectives
-    shaped by real-world experience—across leadership, artificial intelligence,
-    technology, innovation, digital trust, and continuous learning.
-  </p>
-  <p class="lede">
-    Some editions explore an idea or lesson. Others are accompanied by a working
-    lab, visual explanation, or technical spike that readers can examine and try
-    for themselves.
-  </p>
-  <p class="byline">Articles, field notes, visual explanations, and occasional interactive labs from Angesh Vikram.</p>
-</section>
+<div class="home-page">
+  <section class="home-band home-band--hero">
+    <div class="wrap hero">
+      <p class="eyebrow">From My Desk</p>
+      <h1>Ideas I'm working through</h1>
+      <p class="lede">
+        From My Desk is where I think through ideas at the intersection of AI, engineering,
+        architecture, security and leadership.
+      </p>
+      <p class="lede">
+        Sometimes an idea becomes an article. Sometimes I build a small Lab to see whether it
+        holds up in practice. The goal is not to present every answer as finished, but to make
+        the thinking visible enough to examine, question and improve.
+      </p>
+      <p class="byline">Written and built by Angesh Vikram.</p>
+    </div>
+  </section>
 
-<section class="wrap desk-index" aria-labelledby="desk-index-heading">
-  <h2 id="desk-index-heading" class="section-kicker">The Desk Index</h2>
-  <p class="lede">A growing collection of From My Desk editions — writing, notes, and, when they help, working demonstrations.</p>
-</section>
+  <section class="home-band home-band--desk-index" aria-labelledby="desk-index-heading">
+    <div class="wrap desk-index">
+      <h2 id="desk-index-heading" class="section-kicker">The Desk Index</h2>
+      <p class="lede">Start with the latest Lab, or browse the earlier articles, Labs and experiments that led to it.</p>
+    </div>
+  </section>
 
-{% if featured %}
-<section class="wrap featured-edition" aria-labelledby="featured-heading">
-  <article class="edition-feature">
-    <p class="eyebrow">Current edition · {{ featured.edition_label }}</p>
-    <h2 id="featured-heading">{{ featured.title }}</h2>
-    <p class="lede">{{ featured.subtitle }}</p>
-    {% if featured.summary != featured.subtitle %}
-    <p>{{ featured.summary }}</p>
-    {% endif %}
-    {% if featured.disclaimer %}
-    <p class="disclaimer" role="note">{{ featured.disclaimer }}</p>
-    {% endif %}
-    <p class="actions">
-      {% if featured.interactive %}
-      <a class="button" href="{{ featured.lab_url }}">Explore the interactive lab</a>
-      {% endif %}
-      <a class="button button-quiet" href="/labs">Browse the Desk Index</a>
-    </p>
-  </article>
-</section>
-{% endif %}
+  {% if latest_lab %}
+  <section class="home-band home-band--latest" aria-labelledby="latest-lab-heading">
+    <div class="wrap">
+      <article class="latest-lab-card edition-feature">
+        <p class="eyebrow">Latest Lab · {{ latest_lab.edition_label }}</p>
+        <h2 id="latest-lab-heading">{{ latest_lab.title }}</h2>
+        <p class="core-question">{{ latest_lab.homepage_lead_text }}</p>
+        {% if latest_lab.homepage_detail_text %}
+        <p>{{ latest_lab.homepage_detail_text }}</p>
+        {% endif %}
+        {% if latest_lab.homepage_safety_text %}
+        <p class="disclaimer" role="note">{{ latest_lab.homepage_safety_text }}</p>
+        {% endif %}
+        <p class="actions">
+          <a class="button" href="{{ latest_lab.lab_url }}">Explore {{ latest_lab.edition_label }}</a>
+          <a class="button button-quiet" href="/labs">Browse all Labs</a>
+        </p>
+      </article>
+    </div>
+  </section>
+  {% endif %}
 
-<section class="wrap collection" aria-labelledby="collection-heading">
-  <h2 id="collection-heading">From the Desk</h2>
-  <p>Published editions appear here as they are released. One edition today; the shelf is built for many.</p>
-  <div class="lab-grid">
-    {% for item in labs if item.status == "published" %}
-    <article class="lab-card">
-      <p class="eyebrow">{{ item.edition_label }}{% if item.featured %} · Featured{% endif %}</p>
-      <h3>{{ item.title }}</h3>
-      <p class="core-question">{{ item.subtitle }}</p>
-      {% if item.summary != item.subtitle %}
-      <p>{{ item.summary }}</p>
-      {% endif %}
-      <ul class="tag-list">
-        {% for tag in item.tags %}
-        <li>{{ tag }}</li>
+  {% if earlier_labs %}
+  <section class="home-band home-band--earlier" aria-labelledby="earlier-labs-heading">
+    <div class="wrap earlier-labs">
+      <h2 id="earlier-labs-heading">Earlier Labs</h2>
+      <div class="earlier-lab-grid">
+        {% for item in earlier_labs %}
+        <article class="earlier-lab-card">
+          <p class="eyebrow">{{ item.edition_label }}</p>
+          <h3 class="earlier-lab-card-title">{{ item.reader_title_text }}</h3>
+          <p>{{ item.homepage_earlier_text }}</p>
+          <p class="actions">
+            <a class="button button-quiet" href="{{ item.lab_url }}">Explore {{ item.edition_label }}</a>
+          </p>
+        </article>
         {% endfor %}
-      </ul>
-      <p class="card-meta">
-        <span class="status-pill">{{ item.status }}</span>
-        {% if item.interactive %}<span class="badge">Interactive demo</span>{% endif %}
-      </p>
-      {% if item.disclaimer %}
-      <p class="disclaimer" role="note">{{ item.disclaimer }}</p>
-      {% endif %}
-      <p class="actions">
-        <a class="button" href="{{ item.lab_url }}">Explore lab</a>
-        <a class="text-link" href="{{ item.newsletter_url }}" rel="noopener noreferrer">Read newsletter</a>
-      </p>
-    </article>
-    {% endfor %}
-  </div>
-</section>
+      </div>
+    </div>
+  </section>
+  {% endif %}
 
-<section class="wrap on-the-desk" aria-labelledby="on-desk-heading">
-  <h2 id="on-desk-heading">On the desk</h2>
-  <p>Future editions will appear here as they are published. No placeholder titles, dates, or links.</p>
-</section>
-
-<section class="wrap newsletter-cta" aria-labelledby="newsletter-heading">
-  <h2 id="newsletter-heading">From the newsletter</h2>
-  <p>From My Desk is written as a LinkedIn newsletter. This site hosts the editions that include a public companion — a lab, a visual, or a working spike.</p>
-  <p class="actions">
-    <a class="button" href="{{ newsletter_url }}" rel="noopener noreferrer">Subscribe on LinkedIn</a>
-    <a class="button button-quiet" href="{{ github_url }}" rel="noopener noreferrer">View source on GitHub</a>
-  </p>
-</section>
+  <section class="home-band home-band--follow" aria-labelledby="follow-heading">
+    <div class="wrap">
+      <div class="follow-panel">
+        <h2 id="follow-heading">Follow From My Desk</h2>
+        <p>
+          I publish the longer essays on LinkedIn. The Labs here are where I test some of those
+          ideas and make the architecture easier to walk through.
+        </p>
+        <p class="actions">
+          <a class="button button-light" href="{{ newsletter_url }}" rel="noopener noreferrer">Follow on LinkedIn</a>
+          <a class="button button-quiet button-light-outline" href="{{ github_url }}" rel="noopener noreferrer">View the source</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
 {% endblock %}

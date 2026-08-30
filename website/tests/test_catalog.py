@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from from_my_desk.catalog import CatalogError, load_catalog
+from from_my_desk.catalog import CatalogError, latest_lab, load_catalog, published_labs, sort_labs_by_edition
 
 CATALOG = Path(__file__).resolve().parents[1] / "catalog" / "labs.yaml"
 
@@ -37,11 +37,13 @@ def test_published_catalog_loads():
     assert len(labs) == 3
     by_id = {lab.id: lab for lab in labs}
     assert by_id["001"].slug == "know-your-agent"
-    assert by_id["001"].featured is True
+    assert by_id["001"].reader_title_text == "Know Your Agent"
+    assert by_id["001"].featured is False
     assert by_id["001"].interactive is True
     assert by_id["001"].disclaimer
     assert "Authorization" in by_id["001"].tags
     assert by_id["002"].slug == "delegated-authority"
+    assert by_id["002"].reader_title_text == "Delegated Authority"
     assert by_id["002"].featured is False
     assert by_id["002"].interactive is True
     assert by_id["002"].lab_url == "/labs/delegated-authority"
@@ -49,6 +51,99 @@ def test_published_catalog_loads():
     assert by_id["003"].featured is False
     assert by_id["003"].interactive is True
     assert by_id["003"].lab_url == "/labs/agent-access-control"
+
+
+def test_latest_lab_selects_highest_published_edition():
+    labs = load_catalog(CATALOG)
+    latest = latest_lab(labs)
+    assert latest is not None
+    assert latest.id == "003"
+    assert latest.edition_number == 3
+    assert latest.title == "Agent Access Control"
+
+
+def test_latest_lab_excludes_draft_and_on_the_desk(tmp_path):
+    dump(
+        tmp_path / "labs.yaml",
+        [
+            valid_lab(id="001", edition_number=1, status="published", featured=False),
+            valid_lab(
+                id="004",
+                edition_number=4,
+                slug="future-lab",
+                title="Future Lab",
+                status="draft",
+                featured=False,
+            ),
+            valid_lab(
+                id="005",
+                edition_number=5,
+                slug="on-desk",
+                title="On Desk Lab",
+                status="on_the_desk",
+                featured=False,
+            ),
+        ],
+    )
+    labs = load_catalog(tmp_path / "labs.yaml")
+    assert latest_lab(labs).id == "001"
+
+
+def test_latest_lab_returns_none_when_no_published_labs(tmp_path):
+    dump(tmp_path / "labs.yaml", [valid_lab(status="draft")])
+    labs = load_catalog(tmp_path / "labs.yaml")
+    assert latest_lab(labs) is None
+
+
+def test_published_labs_sorted_by_edition_number(tmp_path):
+    dump(
+        tmp_path / "labs.yaml",
+        [
+            valid_lab(id="001", edition_number=1, featured=False),
+            valid_lab(
+                id="002",
+                edition_number=2,
+                slug="delegated-authority",
+                title="Lab Two",
+                featured=False,
+            ),
+            valid_lab(
+                id="003",
+                edition_number=3,
+                slug="agent-access-control",
+                title="Lab Three",
+                featured=False,
+            ),
+        ],
+    )
+    labs = load_catalog(tmp_path / "labs.yaml")
+    ordered = sort_labs_by_edition(published_labs(labs))
+    assert [item.id for item in ordered] == ["003", "002", "001"]
+
+
+def test_latest_lab_prefers_edition_number_not_yaml_order(tmp_path):
+    dump(
+        tmp_path / "labs.yaml",
+        [
+            valid_lab(
+                id="003",
+                edition_number=3,
+                slug="agent-access-control",
+                title="Agent Access Control",
+                featured=False,
+            ),
+            valid_lab(id="001", edition_number=1, featured=False),
+            valid_lab(
+                id="004",
+                edition_number=4,
+                slug="future-lab",
+                title="Future Lab",
+                featured=False,
+            ),
+        ],
+    )
+    labs = load_catalog(tmp_path / "labs.yaml")
+    assert latest_lab(labs).id == "004"
 
 
 def test_duplicate_id_rejected(tmp_path):

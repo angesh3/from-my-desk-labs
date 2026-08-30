@@ -56,7 +56,7 @@ def _eval_payload(quantity: int, limit_price: str, confirmed: bool = False, mfa:
 
 def test_live_pages_and_assets():
     for path, needle in (
-        ("/", b"Perspectives shaped by experience"),
+        ("/", b"Ideas I'm working through"),
         ("/labs", b"Labs"),
         ("/labs/know-your-agent", b"Know Your Agent"),
         ("/labs/delegated-authority", b"Delegated Authority"),

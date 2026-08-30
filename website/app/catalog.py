@@ -47,10 +47,55 @@ class LabEntry:
     featured: bool
     published_date: Optional[str] = None
     disclaimer: Optional[str] = None
+    homepage_lead: Optional[str] = None
+    homepage_detail: Optional[str] = None
+    homepage_safety: Optional[str] = None
+    reader_title: Optional[str] = None
+    homepage_earlier_description: Optional[str] = None
 
     @property
     def edition_label(self) -> str:
         return "Lab {0:03d}".format(self.edition_number)
+
+    @property
+    def short_title(self) -> str:
+        if ":" in self.title:
+            return self.title.split(":", 1)[0].strip()
+        return self.title
+
+    @property
+    def reader_title_text(self) -> str:
+        if self.reader_title:
+            return self.reader_title.strip()
+        return self.short_title
+
+    @property
+    def homepage_earlier_text(self) -> str:
+        if self.homepage_earlier_description:
+            return self.homepage_earlier_description.strip()
+        return self.subtitle
+
+    @property
+    def homepage_lead_text(self) -> str:
+        return (self.homepage_lead or self.subtitle).strip()
+
+    @property
+    def homepage_detail_text(self) -> Optional[str]:
+        detail = (self.homepage_detail or "").strip()
+        if detail:
+            return detail
+        if self.summary != self.subtitle:
+            return self.summary
+        return None
+
+    @property
+    def homepage_safety_text(self) -> Optional[str]:
+        safety = (self.homepage_safety or "").strip()
+        if safety:
+            return safety
+        if self.disclaimer:
+            return self.disclaimer
+        return None
 
 
 def _require(raw: Dict[str, Any], field: str) -> Any:
@@ -97,6 +142,21 @@ def parse_entry(raw: Any) -> LabEntry:
     disclaimer = raw.get("disclaimer")
     if disclaimer is not None:
         disclaimer = str(disclaimer).strip() or None
+    homepage_lead = raw.get("homepage_lead")
+    if homepage_lead is not None:
+        homepage_lead = str(homepage_lead).strip() or None
+    homepage_detail = raw.get("homepage_detail")
+    if homepage_detail is not None:
+        homepage_detail = str(homepage_detail).strip() or None
+    homepage_safety = raw.get("homepage_safety")
+    if homepage_safety is not None:
+        homepage_safety = str(homepage_safety).strip() or None
+    reader_title = raw.get("reader_title")
+    if reader_title is not None:
+        reader_title = str(reader_title).strip() or None
+    homepage_earlier_description = raw.get("homepage_earlier_description")
+    if homepage_earlier_description is not None:
+        homepage_earlier_description = str(homepage_earlier_description).strip() or None
     return LabEntry(
         id=str(raw["id"]).strip(),
         edition_number=edition,
@@ -113,6 +173,11 @@ def parse_entry(raw: Any) -> LabEntry:
         featured=bool(raw["featured"]),
         published_date=published,
         disclaimer=disclaimer,
+        homepage_lead=homepage_lead,
+        homepage_detail=homepage_detail,
+        homepage_safety=homepage_safety,
+        reader_title=reader_title,
+        homepage_earlier_description=homepage_earlier_description,
     )
 
 
@@ -138,9 +203,25 @@ def load_catalog(path: Path) -> List[LabEntry]:
     return labs
 
 
+def published_labs(labs: List[LabEntry]) -> List[LabEntry]:
+    return [item for item in labs if item.status == "published"]
+
+
+def sort_labs_by_edition(labs: List[LabEntry], reverse: bool = True) -> List[LabEntry]:
+    return sorted(labs, key=lambda item: item.edition_number, reverse=reverse)
+
+
+def latest_lab(labs: List[LabEntry]) -> Optional[LabEntry]:
+    """Return the newest published lab by edition_number."""
+    published = published_labs(labs)
+    if not published:
+        return None
+    return max(published, key=lambda item: item.edition_number)
+
+
 def featured_lab(labs: List[LabEntry]) -> Optional[LabEntry]:
+    """Legacy featured flag; prefer latest_lab for homepage promotion."""
     for item in labs:
         if item.featured and item.status == "published":
             return item
-    published = [item for item in labs if item.status == "published"]
-    return published[0] if published else None
+    return latest_lab(labs)

@@ -16,7 +16,7 @@ from fastapi.templating import Jinja2Templates
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.routing import Mount
 
-from from_my_desk.catalog import CatalogError, LabEntry, featured_lab, load_catalog
+from from_my_desk.catalog import CatalogError, LabEntry, latest_lab, load_catalog, sort_labs_by_edition
 from from_my_desk.config import (
     APP_VERSION,
     ResourceConfigError,
@@ -84,8 +84,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="From My Desk",
     description=(
-        "Perspectives shaped by experience. Editorial publication with occasional "
-        "interactive labs. Individual labs may use fictional data for teaching."
+        "From My Desk — ideas at the intersection of AI, engineering, architecture, "
+        "security, and leadership, with occasional interactive labs."
     ),
     version=APP_VERSION,
     lifespan=lifespan,
@@ -137,15 +137,24 @@ def _page_context(request: Request, **extra: Any) -> Dict[str, Any]:
     settings = get_settings()
     host = request.url.hostname or ""
     labs = get_catalog()
-    current = featured_lab(labs)
+    published_sorted = sort_labs_by_edition(
+        [item for item in labs if item.status == "published"]
+    )
+    current_latest = latest_lab(labs)
+    earlier_labs = [
+        item for item in published_sorted if item.id != (current_latest.id if current_latest else None)
+    ]
     return {
         "request": request,
         "github_url": settings.github_url,
         "newsletter_url": settings.newsletter_url,
         "labs": labs,
-        "featured": current,
+        "published_labs": published_sorted,
+        "latest_lab": current_latest,
+        "earlier_labs": earlier_labs,
+        "featured": current_latest,
         "current_path": request.url.path,
-        "footer_note": "From My Desk · Perspectives shaped by experience",
+        "footer_note": "From My Desk · Written and built by Angesh Vikram",
         "disclaimer": (
             "Educational simulation with fictional companies, agents, accounts, "
             "tickers, and thresholds. Not investment advice. No order is executed."
