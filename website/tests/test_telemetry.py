@@ -369,7 +369,7 @@ def test_js_never_includes_sensitive_telemetry_fields():
 def test_pages_and_policy_unchanged_with_default_analytics(telemetry_env_cleanup):
     client = TestClient(app)
     assert client.get("/").status_code == 200
-    assert "Perspectives shaped by experience" in client.get("/").text
+    assert "Ideas I'm working through" in client.get("/").text
     assert client.get("/labs").status_code == 200
     lab = client.get("/labs/know-your-agent")
     assert lab.status_code == 200

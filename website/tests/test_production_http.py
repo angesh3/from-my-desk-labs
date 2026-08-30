@@ -12,7 +12,7 @@ from from_my_desk.main import app
 client = TestClient(app)
 
 PAGES = {
-    "/": "Perspectives shaped by experience",
+    "/": "Ideas I'm working through",
     "/labs": "Labs",
     "/labs/know-your-agent": "Know Your Agent",
     "/labs/delegated-authority": "Delegated Authority",

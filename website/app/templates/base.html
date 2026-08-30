@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}From My Desk{% endblock %}</title>
-  <meta name="description" content="{% block description %}Perspectives shaped by experience. Articles, field notes, visual explanations, and occasional interactive labs from Angesh Vikram.{% endblock %}">
+  <meta name="description" content="{% block description %}From My Desk — ideas at the intersection of AI, engineering, architecture, security, and leadership, with occasional interactive Labs by Angesh Vikram.{% endblock %}">
   <link rel="icon" type="image/png" href="/static/brand/favicon.png">
   <link rel="stylesheet" href="/static/css/styles.css">
 </head>
@@ -24,8 +24,8 @@
       <nav class="site-nav" aria-label="Primary">
         <a href="/" {% if current_path == "/" %}aria-current="page"{% endif %}>Home</a>
         <a href="/labs" {% if current_path == "/labs" %}aria-current="page"{% endif %}>Labs</a>
-        {% if featured %}
-        <a href="{{ featured.lab_url }}" {% if current_path == featured.lab_url %}aria-current="page"{% endif %}>{{ featured.title.split(":")[0] }}</a>
+        {% if latest_lab %}
+        <a href="{{ latest_lab.lab_url }}" {% if current_path == latest_lab.lab_url %}aria-current="page"{% endif %}>Latest Lab</a>
         {% endif %}
         <a href="{{ github_url }}" rel="noopener noreferrer">GitHub</a>
         <a href="{{ newsletter_url }}" rel="noopener noreferrer">Newsletter</a>

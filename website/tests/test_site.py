@@ -5,11 +5,24 @@ import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 
-from from_my_desk.main import app
+from from_my_desk.config import reset_settings_cache
+from from_my_desk.main import app, reset_catalog
+
+from .test_catalog import dump, valid_lab
 
 client = TestClient(app)
+
+
+@pytest.fixture(autouse=True)
+def reset_catalog_for_test():
+    reset_settings_cache()
+    reset_catalog()
+    yield
+    reset_settings_cache()
+    reset_catalog()
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 LAB003_STATIC = REPO_ROOT / "labs" / "003-agent-access-control" / "static"
@@ -39,43 +52,185 @@ def test_global_branding_and_navigation():
         assert 'aria-label="From My Desk home"' in html
         assert 'href="/"' in html
         assert 'href="/labs"' in html
-        assert "Know Your Agent" in html
         assert "GitHub" in html
         assert "Newsletter" in html
-        assert "Perspectives shaped by experience" in html or path != "/"
+        if path == "/":
+            assert "Latest Lab" in html
+            assert 'href="/labs/agent-access-control"' in html
+        if path == "/labs/know-your-agent":
+            assert "Know Your Agent" in html
+        elif path == "/labs/agent-access-control":
+            assert "Agent Access Control" in html
+        elif path == "/labs/delegated-authority":
+            assert "Delegated Authority" in html
+        else:
+            assert "From My Desk" in html or "Labs" in html
 
 
-def test_home_copy_is_publication_wide():
+def test_home_copy_is_personal_and_current():
     html = client.get("/").text
     lowered = html.lower()
-    assert "Perspectives shaped by experience" in html
-    assert "leadership" in lowered
-    assert "artificial intelligence" in lowered
-    assert "technology" in lowered
-    assert "innovation" in lowered
-    assert "digital trust" in lowered
-    assert "continuous learning" in lowered
-    assert "Angesh Vikram" in html
-    assert "control plane around AI agents" not in html
+    assert "Ideas I'm working through" in html
+    assert "intersection of ai, engineering, architecture, security" in lowered
+    assert "Written and built by Angesh Vikram." in html
+    assert "Perspectives shaped by experience" not in html
+    assert "leadership, artificial intelligence" not in lowered
+    assert "continuous learning" not in lowered
+    assert "Articles, field notes, visual explanations" not in html
     assert "control plane around AI agents" not in lowered
     assert "Each edition is educational" not in html
-    assert "Nothing here executes a financial transaction" not in html
+
+
+def test_homepage_features_latest_lab():
+    html = client.get("/").text
+    assert "Latest Lab" in html
+    assert "Current edition" not in html
+    assert "CURRENT EDITION" not in html
+    assert "Agent Access Control" in html
+    assert 'href="/labs/agent-access-control"' in html
+    assert "Explore Lab 003" in html
+    assert "Browse all Labs" in html
+    assert "What changes when an agent does more than connect" in html
+    assert "The scenarios are fictional, and the Lab never performs the protected action." in html
+
+
+def test_homepage_earlier_labs_ordered_newest_first():
+    html = client.get("/").text
+    assert "Earlier Labs" in html
+    earlier_block = html.split("Earlier Labs", 1)[1].split("Follow From My Desk", 1)[0]
+    lab002_pos = earlier_block.find("/labs/delegated-authority")
+    lab001_pos = earlier_block.find("/labs/know-your-agent")
+    assert lab002_pos < lab001_pos
+    assert "Delegated Authority" in earlier_block
+    assert "KYA" not in earlier_block
+    assert "/labs/agent-access-control" not in earlier_block
+
+
+def test_homepage_bottom_structure_and_cta():
+    html = client.get("/").text
+    assert "On the desk" not in html
+    assert "From the newsletter" not in html
+    assert "Future work lands here" not in html
+    assert "Follow From My Desk" in html
+    assert "Follow on LinkedIn" in html
+    assert "View the source" in html
+    assert "Subscribe on LinkedIn" not in html
+    assert "https://www.linkedin.com/newsletters/from-my-desk-7492634647890341890/" in html
+    assert "https://github.com/angesh3/from-my-desk-labs" in html
+    assert "Written and built by Angesh Vikram" in html
+    assert html.count("Explore Lab 003") == 1
+
+
+def test_homepage_latest_lab_excluded_from_earlier_labs():
+    html = client.get("/").text
+    earlier_block = html.split("Earlier Labs", 1)[1].split("Follow From My Desk", 1)[0]
+    assert "Agent Access Control" not in earlier_block
+
+
+def test_homepage_single_published_lab_has_no_earlier_section(tmp_path, monkeypatch):
+    catalog_path = tmp_path / "labs.yaml"
+    dump(
+        catalog_path,
+        [
+            valid_lab(id="003", edition_number=3, slug="agent-access-control", title="Agent Access Control", featured=False),
+        ],
+    )
+    monkeypatch.setenv("CATALOG_PATH", str(catalog_path))
+    reset_settings_cache()
+    reset_catalog()
+    html = client.get("/").text
+    assert "Earlier Labs" not in html
+    assert "Latest Lab" in html
+
+
+def test_homepage_draft_labs_excluded_from_earlier(tmp_path, monkeypatch):
+    catalog_path = tmp_path / "labs.yaml"
+    dump(
+        catalog_path,
+        [
+            valid_lab(id="001", edition_number=1, featured=False, reader_title="Know Your Agent"),
+            valid_lab(
+                id="003",
+                edition_number=3,
+                slug="agent-access-control",
+                title="Agent Access Control",
+                featured=False,
+            ),
+            valid_lab(
+                id="004",
+                edition_number=4,
+                slug="future-lab",
+                title="Future Lab",
+                lab_url="/labs/future-lab",
+                status="draft",
+                featured=False,
+            ),
+        ],
+    )
+    monkeypatch.setenv("CATALOG_PATH", str(catalog_path))
+    reset_settings_cache()
+    reset_catalog()
+    html = client.get("/").text
+    assert "Earlier Labs" in html
+    assert "Future Lab" not in html.split("Follow From My Desk", 1)[0]
+    assert "Know Your Agent" in html
+
+
+def test_homepage_latest_lab_selection_updates_with_catalog(tmp_path, monkeypatch):
+    catalog_path = tmp_path / "labs.yaml"
+    dump(
+        catalog_path,
+        [
+            valid_lab(id="001", edition_number=1, featured=False),
+            valid_lab(
+                id="003",
+                edition_number=3,
+                slug="agent-access-control",
+                title="Agent Access Control",
+                featured=False,
+            ),
+            valid_lab(
+                id="004",
+                edition_number=4,
+                slug="future-lab",
+                title="Future Lab",
+                lab_url="/labs/future-lab",
+                featured=False,
+            ),
+        ],
+    )
+    monkeypatch.setenv("CATALOG_PATH", str(catalog_path))
+    reset_settings_cache()
+    reset_catalog()
+    html = client.get("/").text
+    assert "Future Lab" in html
+    assert 'href="/labs/future-lab"' in html
+    assert "Latest Lab · Lab 004" in html
+
+
+def test_labs_index_ordered_newest_first():
+    html = client.get("/labs").text
+    lab003_pos = html.find("/labs/agent-access-control")
+    lab002_pos = html.find("/labs/delegated-authority")
+    lab001_pos = html.find("/labs/know-your-agent")
+    assert lab003_pos < lab002_pos < lab001_pos
 
 
 def test_catalog_renders_lab_cards():
     home = client.get("/").text
     labs = client.get("/labs").text
-    for html in (home, labs):
-        assert "Know Your Agent: Identity Is Only the Beginning" in html
-        assert "Delegated Authority" in html
-        assert "Agent Access Control" in html
-        assert "Explore the interactive lab" in html or "Explore lab" in html
-        assert "AI Agents" in html
-        assert "Interactive demo" in html
-        assert "/labs/know-your-agent" in html
-        assert "/labs/delegated-authority" in html
-        assert "/labs/agent-access-control" in html
-        assert "Not investment advice" in html or "No real accounts" in html
+    assert "Agent Access Control" in home
+    assert "/labs/agent-access-control" in home
+    assert "Know Your Agent" in labs
+    assert "Delegated Authority" in labs
+    assert "Agent Access Control" in labs
+    assert "Explore lab" in labs or "Explore Lab" in labs
+    assert "AI Agents" in labs
+    assert "Interactive demo" in labs
+    assert "/labs/know-your-agent" in labs
+    assert "/labs/delegated-authority" in labs
+    assert "/labs/agent-access-control" in labs
+    assert "Not investment advice" in labs or "No real accounts" in labs
 
 
 def test_lab002_page_basics():

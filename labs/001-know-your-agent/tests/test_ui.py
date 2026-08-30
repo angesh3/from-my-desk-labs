@@ -9,8 +9,8 @@ def test_home_page():
     response = client.get("/")
     assert response.status_code == 200
     assert "From My Desk" in response.text
-    assert "Perspectives shaped by experience" in response.text
-    assert "leadership" in response.text.lower()
+    assert "Ideas I'm working through" in response.text
+    assert "Angesh Vikram" in response.text
     assert 'href="/static/css/styles.css"' in response.text
     assert "/static/brand/from-my-desk-logo.webp" in response.text
 
