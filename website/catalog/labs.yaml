@@ -59,6 +59,34 @@ labs:
     interactive: true
     featured: false
     disclaimer: "Educational simulation with fictional Cedar Quill Markets principals, agents, delegations, and posture evidence. No real accounts, credentials, or transactions. Execution is never performed."
+    reader_title: "Agent Access Control"
+    homepage_earlier_description: "What changes when an agent does more than connect and begins acting through tools, data and delegated authority?"
     homepage_lead: "What changes when an agent does more than connect to a system and begins acting through tools, data and delegated authority?"
     homepage_detail: "Follow a request as identity, intent, authority, posture and context are evaluated. Try managed, unknown and noncompliant agent scenarios, then see why the result becomes ALLOW, CONFIRM, STEP_UP or DENY."
     homepage_safety: "The scenarios are fictional, and the Lab never performs the protected action."
+
+  - id: "004"
+    edition_number: 4
+    slug: agent-escalation-boundary
+    title: "The Agent Escalation Boundary"
+    subtitle: "Authorization tells an agent what it may do. Judgment determines when it should not continue alone."
+    summary: "Explore when an authorized agent should proceed, clarify, escalate or stop as uncertainty and potential impact change."
+    status: published
+    tags:
+      - Agent Governance
+      - Agent Authority
+      - Human Oversight
+      - Security
+      - Escalation
+      - Responsible AI
+    lab_url: /labs/agent-escalation-boundary
+    newsletter_url: "[EDITION_4_NEWSLETTER_URL]"
+    github_url: https://github.com/angesh3/from-my-desk-labs
+    interactive: true
+    featured: false
+    disclaimer: "This Lab is an educational policy prototype using fictional data. It does not make real security decisions and should not be used as a production authorization or incident-response system. Execution is never performed."
+    reader_title: "The Agent Escalation Boundary"
+    homepage_lead: "An agent can be authorized to act and still need to pause. When should it proceed, clarify, escalate, or stop?"
+    homepage_detail: "Adjust evidence, impact, reversibility and time sensitivity for a fictional security-operations case, then see why the execution judgment changes."
+    homepage_safety: "The scenarios are fictional, and the Lab never performs a real security action."
+    homepage_earlier_description: "A trustworthy agent is not one that always finishes the task. It recognizes when continuing alone would be unsafe."

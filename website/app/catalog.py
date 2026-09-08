@@ -97,6 +97,21 @@ class LabEntry:
             return self.disclaimer
         return None
 
+    @property
+    def newsletter_is_placeholder(self) -> bool:
+        url = (self.newsletter_url or "").strip()
+        return url.startswith("[") and url.endswith("_NEWSLETTER_URL]")
+
+    @property
+    def published_newsletter_url(self) -> Optional[str]:
+        if self.newsletter_is_placeholder:
+            return None
+        url = (self.newsletter_url or "").strip()
+        parsed = urlparse(url)
+        if parsed.scheme == "https" and parsed.netloc:
+            return url
+        return None
+
 
 def _require(raw: Dict[str, Any], field: str) -> Any:
     if field not in raw or raw[field] in (None, ""):
@@ -106,6 +121,8 @@ def _require(raw: Dict[str, Any], field: str) -> Any:
 
 def _valid_url(value: str) -> bool:
     if value.startswith("/"):
+        return True
+    if value.startswith("[") and value.endswith("_NEWSLETTER_URL]"):
         return True
     parsed = urlparse(value)
     return parsed.scheme in {"http", "https"} and bool(parsed.netloc)

@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "from-my-desk-labs"
-version = "0.3.0"
+version = "0.4.0"
 description = "From My Desk publication and interactive labs"
 requires-python = ">=3.11"
 
 [tool.setuptools]
-packages = ["from_my_desk", "know_your_agent", "delegated_authority", "agent_access_control"]
+packages = ["from_my_desk", "know_your_agent", "delegated_authority", "agent_access_control", "agent_escalation_boundary"]
 include-package-data = true
 
 [tool.setuptools.package-dir]
@@ -17,6 +17,7 @@ from_my_desk = "website/app"
 know_your_agent = "labs/001-know-your-agent/src/know_your_agent"
 delegated_authority = "labs/002-delegated-authority/src/delegated_authority"
 agent_access_control = "labs/003-agent-access-control/src/agent_access_control"
+agent_escalation_boundary = "labs/004-agent-escalation-boundary/src/agent_escalation_boundary"
 
 [tool.setuptools.package-data]
 from_my_desk = [

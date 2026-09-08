@@ -1,0 +1,115 @@
+presets:
+  - id: clear_session_revoke
+    title: Clear, low-impact session revoke
+    short_description: Confirmed malicious session; policy explicitly permits revoke.
+    expected_execution_outcome: proceed
+    category: proceed
+    request:
+      goal_clarity: clear
+      evidence_confidence: high
+      potential_impact: moderate
+      reversibility: easily_reversible
+      policy_coverage: explicitly_covered
+      time_sensitivity: moderate
+      human_availability: available_shortly
+      authorization_outcome: allow
+      agent_id: cq-soc-response-agent-01
+      principal_id: cq-soc-lead-morgan
+      requested_action: revoke_suspicious_session
+      target_account: alex.rivera@cedarquill.example
+      delegated_capability: revoke_sessions
+      business_context: Single session from a known-malicious IP with matching device fingerprint.
+      confirmation_satisfied: false
+      stronger_auth_completed: false
+
+  - id: ambiguous_secure_account
+    title: Ambiguous “secure the account” request
+    short_description: Goal does not specify monitor, challenge, revoke, or suspend.
+    expected_execution_outcome: clarify
+    category: clarify
+    request:
+      goal_clarity: ambiguous
+      evidence_confidence: medium
+      potential_impact: moderate
+      reversibility: partially_reversible
+      policy_coverage: partially_covered
+      time_sensitivity: moderate
+      human_availability: available_now
+      authorization_outcome: allow
+      agent_id: cq-soc-response-agent-01
+      principal_id: cq-soc-lead-morgan
+      requested_action: revoke_suspicious_session
+      target_account: jordan.lee@cedarquill.example
+      delegated_capability: revoke_sessions
+      business_context: Operator asked the agent to “secure the employee account” without naming the control.
+      confirmation_satisfied: false
+      stronger_auth_completed: false
+
+  - id: conflicting_executive_case
+    title: Conflicting evidence on executive account
+    short_description: Active customer meeting, possible travel, unusual sensitive-file access.
+    expected_execution_outcome: escalate
+    category: escalate
+    request:
+      goal_clarity: clear
+      evidence_confidence: conflicting
+      potential_impact: critical
+      reversibility: difficult_to_reverse
+      policy_coverage: partially_covered
+      time_sensitivity: urgent
+      human_availability: available_now
+      authorization_outcome: allow
+      agent_id: cq-soc-response-agent-01
+      principal_id: cq-soc-lead-morgan
+      requested_action: temporarily_suspend_access
+      target_account: priya.shah@cedarquill.example
+      delegated_capability: temporarily_suspend_access
+      business_context: Unusual login location and new device during an important customer meeting; travel may be legitimate.
+      confirmation_satisfied: false
+      stronger_auth_completed: false
+
+  - id: prohibited_account_deletion
+    title: Prohibited permanent deletion
+    short_description: Agent only has session-revoke authority; deletion is out of bounds.
+    expected_execution_outcome: stop
+    category: stop
+    request:
+      goal_clarity: clear
+      evidence_confidence: high
+      potential_impact: critical
+      reversibility: irreversible
+      policy_coverage: prohibited
+      time_sensitivity: urgent
+      human_availability: available_now
+      authorization_outcome: allow
+      agent_id: cq-soc-response-agent-01
+      principal_id: cq-soc-lead-morgan
+      requested_action: permanently_delete_account
+      target_account: alex.rivera@cedarquill.example
+      delegated_capability: revoke_sessions
+      business_context: Operator asked to permanently delete the account after a phishing report.
+      confirmation_satisfied: false
+      stronger_auth_completed: false
+
+  - id: immediate_threat_bounded
+    title: Immediate threat with bounded response
+    short_description: Revoke suspicious session and notify lead; full suspension awaits approval.
+    expected_execution_outcome: escalate
+    category: escalate_bounded
+    request:
+      goal_clarity: clear
+      evidence_confidence: conflicting
+      potential_impact: high
+      reversibility: partially_reversible
+      policy_coverage: explicitly_covered
+      time_sensitivity: immediate_threat
+      human_availability: delayed
+      authorization_outcome: allow
+      agent_id: cq-soc-response-agent-01
+      principal_id: cq-soc-lead-morgan
+      requested_action: revoke_suspicious_session
+      target_account: casey.nguyen@cedarquill.example
+      delegated_capability: revoke_sessions
+      business_context: Live suspicious session with conflicting travel evidence; production workflows may be affected by full suspension.
+      confirmation_satisfied: false
+      stronger_auth_completed: false

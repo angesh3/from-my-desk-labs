@@ -1,0 +1,10 @@
+policy_version: lab004-escalation-v1
+precedence:
+  - stop
+  - escalate
+  - clarify
+  - proceed
+notes:
+  - Authorization outcomes (allow, confirm, step_up, deny) are inputs, not outputs.
+  - Immediate threat may permit bounded protective action without expanding authority.
+  - Educational prototype only; never performs real security actions.

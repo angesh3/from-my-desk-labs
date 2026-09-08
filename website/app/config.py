@@ -6,7 +6,7 @@ import os
 from functools import lru_cache
 from pathlib import Path
 
-APP_VERSION = "0.3.0"
+APP_VERSION = "0.4.0"
 APP_NAME = "from-my-desk"
 
 PACKAGE_DIR = Path(__file__).resolve().parent
@@ -105,6 +105,27 @@ def _default_lab003_static_dir() -> Path:
     return Path("/srv/labs/003-agent-access-control/static")
 
 
+def _default_lab004_data_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "004-agent-escalation-boundary" / "examples"
+    return Path("/srv/labs/004-agent-escalation-boundary/examples")
+
+
+def _default_lab004_policy_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "004-agent-escalation-boundary" / "policies"
+    return Path("/srv/labs/004-agent-escalation-boundary/policies")
+
+
+def _default_lab004_static_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "004-agent-escalation-boundary" / "static"
+    return Path("/srv/labs/004-agent-escalation-boundary/static")
+
+
 class Settings:
     def __init__(self) -> None:
         self.app_version = APP_VERSION
@@ -141,6 +162,15 @@ class Settings:
         self.lab003_static_dir = Path(
             os.environ.get("LAB003_STATIC_DIR") or _default_lab003_static_dir()
         )
+        self.lab004_data_dir = Path(
+            os.environ.get("LAB004_DATA_DIR") or _default_lab004_data_dir()
+        )
+        self.lab004_policy_dir = Path(
+            os.environ.get("LAB004_POLICY_DIR") or _default_lab004_policy_dir()
+        )
+        self.lab004_static_dir = Path(
+            os.environ.get("LAB004_STATIC_DIR") or _default_lab004_static_dir()
+        )
         self.port = int(os.environ.get("PORT", "8080"))
         self.registry_mode = os.environ.get("REGISTRY_PUBLIC", "sanitized").strip().lower()
         self.github_url = os.environ.get(
@@ -171,6 +201,7 @@ REQUIRED_TEMPLATE_FILES = (
     "lab.html",
     "lab002.html",
     "lab003.html",
+    "lab004.html",
 )
 REQUIRED_GLOBAL_STATIC_FILES = (
     "css/styles.css",
@@ -213,6 +244,12 @@ REQUIRED_LAB003_STATIC_FILES = (
     "restricted-mode.svg",
     "reevaluation-change.svg",
 )
+REQUIRED_LAB004_POLICY_FILES = ("escalation-policy.yaml",)
+REQUIRED_LAB004_DATA_FILES = ("presets.yaml",)
+REQUIRED_LAB004_STATIC_FILES = (
+    "lab.js",
+    "escalation-boundary.svg",
+)
 
 
 class ResourceConfigError(RuntimeError):
@@ -248,6 +285,11 @@ def validate_runtime_resources(settings: Settings) -> None:
         if not path.is_file():
             missing.append(f"lab003_static:{rel}")
 
+    for rel in REQUIRED_LAB004_STATIC_FILES:
+        path = settings.lab004_static_dir / rel
+        if not path.is_file():
+            missing.append(f"lab004_static:{rel}")
+
     if not settings.catalog_path.is_file():
         missing.append("catalog:labs.yaml")
 
@@ -275,6 +317,16 @@ def validate_runtime_resources(settings: Settings) -> None:
         path = settings.lab003_data_dir / name
         if not path.is_file():
             missing.append(f"lab003_data:{name}")
+
+    for name in REQUIRED_LAB004_POLICY_FILES:
+        path = settings.lab004_policy_dir / name
+        if not path.is_file():
+            missing.append(f"lab004_policy:{name}")
+
+    for name in REQUIRED_LAB004_DATA_FILES:
+        path = settings.lab004_data_dir / name
+        if not path.is_file():
+            missing.append(f"lab004_data:{name}")
 
     if missing:
         raise ResourceConfigError(

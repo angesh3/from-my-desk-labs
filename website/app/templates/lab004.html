@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+{% block title %}{{ lab.title }} — From My Desk{% endblock %}
+{% block description %}{{ lab.summary }}{% endblock %}
+{% block content %}
+<section class="wrap page-intro lab-intro">
+  <p class="eyebrow">{{ lab.edition_label }} · The Agent Escalation Boundary</p>
+  <h1>{{ lab.title }}</h1>
+  {% if lab.subtitle %}<p class="lede">{{ lab.subtitle }}</p>{% endif %}
+  <p class="lede">
+    An agent can be authorized to act and still need to pause.
+    This Lab explores the point at which an agent should proceed independently,
+    ask for clarification, escalate the decision, or stop completely.
+  </p>
+  <p class="disclaimer" role="note">{{ lab.disclaimer or disclaimer }}</p>
+  <p class="actions">
+    <a class="button button-quiet" href="/labs/agent-access-control">Previous Lab: Agent Access Control</a>
+    <a class="button button-quiet" href="/labs">Browse all Labs</a>
+  </p>
+</section>
+
+<section class="wrap lab004-distinction" aria-labelledby="distinction-heading">
+  <h2 id="distinction-heading">Two questions, not one</h2>
+  <div class="lab004-question-grid">
+    <article class="lab004-question-card">
+      <h3>Authorization asks</h3>
+      <p class="core-question">May this agent perform this action?</p>
+      <p>Outcomes: ALLOW · CONFIRM · STEP_UP · DENY</p>
+    </article>
+    <article class="lab004-question-card">
+      <h3>Execution judgment asks</h3>
+      <p class="core-question">Should this agent continue alone under the conditions that exist now?</p>
+      <p>Outcomes: PROCEED · CLARIFY · ESCALATE · STOP</p>
+    </article>
+  </div>
+</section>
+
+<section class="wrap" aria-labelledby="scenario-heading">
+  <h2 id="scenario-heading">Scenario</h2>
+  <p>
+    A Cedar Quill Markets security operations agent detects signs that an employee account
+    may be compromised. The agent has delegated authority to revoke sessions and temporarily
+    suspend access, but the available evidence and business context may conflict.
+  </p>
+  <p class="hint">
+    Unusual login location, a newly observed device, sensitive-file access, an important
+    customer meeting in progress, possible legitimate travel, production-workflow impact,
+    attacker-continuation risk, and a defined incident-response escalation contact.
+  </p>
+</section>
+
+<section class="wrap" aria-labelledby="presets-heading">
+  <h2 id="presets-heading">Presets</h2>
+  <p>Select a preset to fill every control, then run judgment — or adjust the factors yourself.</p>
+  <div class="preset-grid" role="group" aria-label="Escalation presets">
+    <button type="button" class="preset-card" data-preset="clear_session_revoke" aria-pressed="false">
+      <span class="preset-title">Clear session revoke</span>
+      <span class="preset-desc">Confirmed malicious session; policy explicitly permits revoke.</span>
+      <span class="preset-takeaway">Watch for: PROCEED when the boundary is clear and reversible.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+    <button type="button" class="preset-card" data-preset="ambiguous_secure_account" aria-pressed="false">
+      <span class="preset-title">Ambiguous secure-account ask</span>
+      <span class="preset-desc">“Secure the account” without naming the control.</span>
+      <span class="preset-takeaway">Watch for: CLARIFY before choosing a concrete action.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+    <button type="button" class="preset-card" data-preset="conflicting_executive_case" aria-pressed="false">
+      <span class="preset-title">Conflicting executive case</span>
+      <span class="preset-desc">Active customer meeting, possible travel, unusual file access.</span>
+      <span class="preset-takeaway">Watch for: ESCALATE when evidence and impact collide.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+    <button type="button" class="preset-card" data-preset="prohibited_account_deletion" aria-pressed="false">
+      <span class="preset-title">Prohibited deletion</span>
+      <span class="preset-desc">Permanent deletion with only session-revoke authority.</span>
+      <span class="preset-takeaway">Watch for: STOP when capability or policy forbids the action.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+    <button type="button" class="preset-card" data-preset="immediate_threat_bounded" aria-pressed="false">
+      <span class="preset-title">Immediate threat, bounded path</span>
+      <span class="preset-desc">Protective session revoke while full suspension awaits approval.</span>
+      <span class="preset-takeaway">Watch for: ESCALATE with a bounded protective action.</span>
+      <span class="preset-selected-label" hidden>Selected</span>
+    </button>
+  </div>
+</section>
+
+<section class="wrap" aria-labelledby="controls-heading">
+  <h2 id="controls-heading">Judgment factors</h2>
+  <form id="lab004-form" class="lab004-form">
+    <fieldset class="lab004-fieldset">
+      <legend>Situation factors</legend>
+      <div class="lab004-grid">
+        <label>Goal clarity
+          <select name="goal_clarity" id="goal_clarity">
+            <option value="clear">Clear</option>
+            <option value="partially_clear">Partially clear</option>
+            <option value="ambiguous">Ambiguous</option>
+          </select>
+        </label>
+        <label>Evidence confidence
+          <select name="evidence_confidence" id="evidence_confidence">
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+            <option value="conflicting">Conflicting</option>
+          </select>
+        </label>
+        <label>Potential impact
+          <select name="potential_impact" id="potential_impact">
+            <option value="low">Low</option>
+            <option value="moderate" selected>Moderate</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+          </select>
+        </label>
+        <label>Reversibility
+          <select name="reversibility" id="reversibility">
+            <option value="easily_reversible">Easily reversible</option>
+            <option value="partially_reversible">Partially reversible</option>
+            <option value="difficult_to_reverse">Difficult to reverse</option>
+            <option value="irreversible">Irreversible</option>
+          </select>
+        </label>
+        <label>Policy coverage
+          <select name="policy_coverage" id="policy_coverage">
+            <option value="explicitly_covered">Explicitly covered</option>
+            <option value="partially_covered">Partially covered</option>
+            <option value="not_covered">Not covered</option>
+            <option value="prohibited">Prohibited</option>
+          </select>
+        </label>
+        <label>Time sensitivity
+          <select name="time_sensitivity" id="time_sensitivity">
+            <option value="low">Low</option>
+            <option value="moderate" selected>Moderate</option>
+            <option value="urgent">Urgent</option>
+            <option value="immediate_threat">Immediate threat</option>
+          </select>
+        </label>
+        <label>Human availability
+          <select name="human_availability" id="human_availability">
+            <option value="available_now">Available now</option>
+            <option value="available_shortly" selected>Available shortly</option>
+            <option value="delayed">Delayed</option>
+            <option value="unavailable">Unavailable</option>
+          </select>
+        </label>
+        <label>Authorization outcome
+          <select name="authorization_outcome" id="authorization_outcome">
+            <option value="allow" selected>ALLOW</option>
+            <option value="confirm">CONFIRM</option>
+            <option value="step_up">STEP_UP</option>
+            <option value="deny">DENY</option>
+          </select>
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="lab004-fieldset">
+      <legend>Context and authority</legend>
+      <div class="lab004-grid">
+        <label>Agent identity
+          <input name="agent_id" id="agent_id" value="cq-soc-response-agent-01" autocomplete="off">
+        </label>
+        <label>Principal / owner
+          <input name="principal_id" id="principal_id" value="cq-soc-lead-morgan" autocomplete="off">
+        </label>
+        <label>Requested action
+          <select name="requested_action" id="requested_action">
+            <option value="revoke_suspicious_session">Revoke suspicious session</option>
+            <option value="require_stronger_authentication">Require stronger authentication</option>
+            <option value="temporarily_suspend_access">Temporarily suspend access</option>
+            <option value="permanently_delete_account">Permanently delete account</option>
+            <option value="preserve_evidence">Preserve evidence</option>
+          </select>
+        </label>
+        <label>Target account
+          <input name="target_account" id="target_account" value="alex.rivera@cedarquill.example" autocomplete="off">
+        </label>
+        <label>Delegated capability
+          <select name="delegated_capability" id="delegated_capability">
+            <option value="revoke_sessions">Revoke sessions</option>
+            <option value="temporarily_suspend_access">Temporarily suspend access</option>
+            <option value="require_stronger_authentication">Require stronger authentication</option>
+            <option value="preserve_evidence">Preserve evidence</option>
+          </select>
+        </label>
+        <label class="lab004-span-2">Business context
+          <textarea name="business_context" id="business_context" rows="3">Fictional Cedar Quill Markets investigation.</textarea>
+        </label>
+        <label class="lab004-check">
+          <input type="checkbox" name="confirmation_satisfied" id="confirmation_satisfied">
+          Confirmation satisfied (for CONFIRM)
+        </label>
+        <label class="lab004-check">
+          <input type="checkbox" name="stronger_auth_completed" id="stronger_auth_completed">
+          Stronger authentication completed (for STEP_UP)
+        </label>
+      </div>
+    </fieldset>
+
+    <p class="actions">
+      <button type="submit" class="button" id="evaluate-btn">Run execution judgment</button>
+    </p>
+  </form>
+</section>
+
+<section class="wrap" aria-labelledby="result-heading">
+  <h2 id="result-heading">Decision</h2>
+  <div id="result" class="result result-panel lab004-result" aria-live="polite">
+    <p>Adjust the situation above, or choose a preset, then run judgment. No real security action is performed.</p>
+  </div>
+</section>
+
+<section class="wrap diagram-panel" aria-labelledby="flow-heading">
+  <h2 id="flow-heading">Decision summary</h2>
+  <p>
+    Context and authority feed uncertainty and consequence evaluation. The agent then selects
+    an execution posture and records why it proceeded or paused.
+  </p>
+  <figure class="diagram-figure">
+    <img
+      src="/static/labs/004/escalation-boundary.svg"
+      width="960"
+      height="420"
+      alt="Flow from context and authority through uncertainty evaluation to proceed, clarify, escalate, or stop, then explain and record."
+      data-analytics-destination="architecture"
+      data-architecture-type="lab004-escalation-boundary">
+  </figure>
+</section>
+
+<section class="wrap architecture" id="architecture" aria-labelledby="teaching-heading">
+  <h2 id="teaching-heading">Teaching notes</h2>
+  <p>
+    Authorization answers whether an action is permitted. Execution judgment answers whether
+    the agent should finish that action alone given evidence, impact, reversibility, time, and
+    human availability. A trustworthy agent recognizes when continuing alone would be unsafe.
+  </p>
+  <p class="execution-boundary" role="note">
+    Every evaluation reports <code>execution: not_performed</code>. This Lab is an educational
+    policy prototype using fictional data. It does not make real security decisions and should
+    not be used as a production authorization or incident-response system.
+  </p>
+  <p class="actions">
+    {% if lab.published_newsletter_url %}
+    <a class="button button-quiet" href="{{ lab.published_newsletter_url }}" rel="noopener noreferrer" data-lab004-newsletter>Read the companion newsletter</a>
+    {% else %}
+    <span class="hint" role="note">The companion Edition 4 newsletter will be linked here after publication.</span>
+    {% endif %}
+    <a class="button button-quiet" href="{{ lab.github_url }}" rel="noopener noreferrer">View source on GitHub</a>
+    <a class="button button-quiet" href="/labs">From My Desk Labs</a>
+  </p>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="/static/labs/004/lab.js" defer></script>
+{% endblock %}

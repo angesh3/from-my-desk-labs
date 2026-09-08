@@ -16,6 +16,8 @@ PAGES = {
     "/labs": "Labs",
     "/labs/know-your-agent": "Know Your Agent",
     "/labs/delegated-authority": "Delegated Authority",
+    "/labs/agent-access-control": "Agent Access Control",
+    "/labs/agent-escalation-boundary": "Escalation Boundary",
 }
 
 ASSET_URL_RE = re.compile(
