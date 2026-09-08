@@ -61,6 +61,7 @@ def test_live_pages_and_assets():
         ("/labs/know-your-agent", b"Know Your Agent"),
         ("/labs/delegated-authority", b"Delegated Authority"),
         ("/labs/agent-access-control", b"Agent Access Control"),
+        ("/labs/agent-escalation-boundary", b"Escalation Boundary"),
     ):
         code, headers, body = _get(path)
         assert code == 200
@@ -123,6 +124,17 @@ def test_live_pages_and_assets():
         assert "image/svg+xml" in headers.get("Content-Type", ""), name
 
     code, headers, body = _get("/static/labs/003/lab.js")
+    assert code == 200
+    assert "javascript" in headers.get("Content-Type", "")
+
+    code, headers, body = _get("/static/labs/004/escalation-boundary.svg")
+    assert code == 200
+    assert "image/svg+xml" in headers.get("Content-Type", "")
+    body.decode("utf-8")
+    assert b"<svg" in body
+    assert b"PROCEED" in body
+
+    code, headers, body = _get("/static/labs/004/lab.js")
     assert code == 200
     assert "javascript" in headers.get("Content-Type", "")
 

@@ -26,8 +26,9 @@ def reset_catalog_for_test():
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 LAB003_STATIC = REPO_ROOT / "labs" / "003-agent-access-control" / "static"
+LAB004_STATIC = REPO_ROOT / "labs" / "004-agent-escalation-boundary" / "static"
 
-PAGES = ("/", "/labs", "/labs/know-your-agent", "/labs/delegated-authority", "/labs/agent-access-control")
+PAGES = ("/", "/labs", "/labs/know-your-agent", "/labs/delegated-authority", "/labs/agent-access-control", "/labs/agent-escalation-boundary")
 FORBIDDEN_SNIPPETS = (
     "r2.dev",
     "r2.cloudflarestorage",
@@ -56,13 +57,15 @@ def test_global_branding_and_navigation():
         assert "Newsletter" in html
         if path == "/":
             assert "Latest Lab" in html
-            assert 'href="/labs/agent-access-control"' in html
+            assert 'href="/labs/agent-escalation-boundary"' in html
         if path == "/labs/know-your-agent":
             assert "Know Your Agent" in html
         elif path == "/labs/agent-access-control":
             assert "Agent Access Control" in html
         elif path == "/labs/delegated-authority":
             assert "Delegated Authority" in html
+        elif path == "/labs/agent-escalation-boundary":
+            assert "Escalation Boundary" in html
         else:
             assert "From My Desk" in html or "Labs" in html
 
@@ -86,24 +89,25 @@ def test_homepage_features_latest_lab():
     assert "Latest Lab" in html
     assert "Current edition" not in html
     assert "CURRENT EDITION" not in html
-    assert "Agent Access Control" in html
-    assert 'href="/labs/agent-access-control"' in html
-    assert "Explore Lab 003" in html
+    assert "The Agent Escalation Boundary" in html
+    assert 'href="/labs/agent-escalation-boundary"' in html
+    assert "Explore Lab 004" in html
     assert "Browse all Labs" in html
-    assert "What changes when an agent does more than connect" in html
-    assert "The scenarios are fictional, and the Lab never performs the protected action." in html
+    assert "An agent can be authorized to act and still need to pause" in html
 
 
 def test_homepage_earlier_labs_ordered_newest_first():
     html = client.get("/").text
     assert "Earlier Labs" in html
     earlier_block = html.split("Earlier Labs", 1)[1].split("Follow From My Desk", 1)[0]
+    lab003_pos = earlier_block.find("/labs/agent-access-control")
     lab002_pos = earlier_block.find("/labs/delegated-authority")
     lab001_pos = earlier_block.find("/labs/know-your-agent")
-    assert lab002_pos < lab001_pos
+    assert lab003_pos < lab002_pos < lab001_pos
     assert "Delegated Authority" in earlier_block
+    assert "Agent Access Control" in earlier_block
     assert "KYA" not in earlier_block
-    assert "/labs/agent-access-control" not in earlier_block
+    assert "/labs/agent-escalation-boundary" not in earlier_block
 
 
 def test_homepage_bottom_structure_and_cta():
@@ -118,13 +122,13 @@ def test_homepage_bottom_structure_and_cta():
     assert "https://www.linkedin.com/newsletters/from-my-desk-7492634647890341890/" in html
     assert "https://github.com/angesh3/from-my-desk-labs" in html
     assert "Written and built by Angesh Vikram" in html
-    assert html.count("Explore Lab 003") == 1
+    assert html.count("Explore Lab 004") == 1
 
 
 def test_homepage_latest_lab_excluded_from_earlier_labs():
     html = client.get("/").text
     earlier_block = html.split("Earlier Labs", 1)[1].split("Follow From My Desk", 1)[0]
-    assert "Agent Access Control" not in earlier_block
+    assert "The Agent Escalation Boundary" not in earlier_block
 
 
 def test_homepage_single_published_lab_has_no_earlier_section(tmp_path, monkeypatch):
@@ -210,27 +214,96 @@ def test_homepage_latest_lab_selection_updates_with_catalog(tmp_path, monkeypatc
 
 def test_labs_index_ordered_newest_first():
     html = client.get("/labs").text
+    lab004_pos = html.find("/labs/agent-escalation-boundary")
     lab003_pos = html.find("/labs/agent-access-control")
     lab002_pos = html.find("/labs/delegated-authority")
     lab001_pos = html.find("/labs/know-your-agent")
-    assert lab003_pos < lab002_pos < lab001_pos
+    assert lab004_pos < lab003_pos < lab002_pos < lab001_pos
 
 
 def test_catalog_renders_lab_cards():
     home = client.get("/").text
     labs = client.get("/labs").text
-    assert "Agent Access Control" in home
-    assert "/labs/agent-access-control" in home
+    assert "The Agent Escalation Boundary" in home
+    assert "/labs/agent-escalation-boundary" in home
     assert "Know Your Agent" in labs
     assert "Delegated Authority" in labs
     assert "Agent Access Control" in labs
+    assert "The Agent Escalation Boundary" in labs
     assert "Explore lab" in labs or "Explore Lab" in labs
-    assert "AI Agents" in labs
+    assert "AI Agents" in labs or "Agent Governance" in labs
     assert "Interactive demo" in labs
     assert "/labs/know-your-agent" in labs
     assert "/labs/delegated-authority" in labs
     assert "/labs/agent-access-control" in labs
-    assert "Not investment advice" in labs or "No real accounts" in labs
+    assert "/labs/agent-escalation-boundary" in labs
+    assert "Not investment advice" in labs or "No real accounts" in labs or "educational policy prototype" in labs.lower()
+
+
+def test_lab004_page_basics():
+    html = client.get("/labs/agent-escalation-boundary").text
+    assert "The Agent Escalation Boundary" in html
+    assert "Run execution judgment" in html
+    assert 'data-preset="clear_session_revoke"' in html
+    assert 'data-preset="immediate_threat_bounded"' in html
+    assert "/static/labs/004/escalation-boundary.svg" in html
+    assert "/static/labs/004/lab.js" in html
+    assert "PROCEED" in html
+    assert "CLARIFY" in html
+    assert "ESCALATE" in html
+    assert "STOP" in html
+    assert "EDITION_4_NEWSLETTER_URL" not in html
+    assert "[EDITION_4_NEWSLETTER_URL]" not in html
+    assert "The companion Edition 4 newsletter will be linked here after publication." in html
+    assert "Read the companion newsletter" not in html
+    assert "Previous Lab: Agent Access Control" in html
+    assert 'href="/labs/agent-access-control"' in html
+    assert "not_performed" in html
+    assert 'alt="Flow from context and authority through uncertainty evaluation to proceed, clarify, escalate, or stop, then explain and record."' in html
+
+
+def test_lab004_newsletter_button_when_published(monkeypatch, tmp_path):
+    catalog = tmp_path / "labs.yaml"
+    dump(
+        catalog,
+        [
+            valid_lab(
+                id="004",
+                edition_number=4,
+                slug="agent-escalation-boundary",
+                title="The Agent Escalation Boundary",
+                lab_url="/labs/agent-escalation-boundary",
+                newsletter_url="https://www.linkedin.com/newsletters/from-my-desk-example/",
+                featured=True,
+            )
+        ],
+    )
+    monkeypatch.setenv("CATALOG_PATH", str(catalog))
+    reset_settings_cache()
+    reset_catalog()
+    html = client.get("/labs/agent-escalation-boundary").text
+    assert "Read the companion newsletter" in html
+    assert 'href="https://www.linkedin.com/newsletters/from-my-desk-example/"' in html
+    assert 'rel="noopener noreferrer"' in html
+    assert "data-lab004-newsletter" in html
+    assert "The companion Edition 4 newsletter will be linked here after publication." not in html
+    assert "EDITION_4_NEWSLETTER_URL" not in html
+
+
+def test_labs_index_hides_placeholder_newsletter():
+    html = client.get("/labs").text
+    assert "EDITION_4_NEWSLETTER_URL" not in html
+    assert "[EDITION_4_NEWSLETTER_URL]" not in html
+
+
+def test_lab004_api_evaluate_smoke():
+    response = client.post(
+        "/api/labs/004/evaluate-preset/clear_session_revoke"
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["execution_outcome"] == "proceed"
+    assert body["execution"] == "not_performed"
 
 
 def test_lab002_page_basics():
@@ -336,6 +409,8 @@ def test_static_assets():
         ("/static/labs/003/restricted-mode.svg", "image/svg+xml"),
         ("/static/labs/003/reevaluation-change.svg", "image/svg+xml"),
         ("/static/labs/003/lab.js", "javascript"),
+        ("/static/labs/004/escalation-boundary.svg", "image/svg+xml"),
+        ("/static/labs/004/lab.js", "javascript"),
     ]
     for url, content_type in assets:
         response = client.get(url)
@@ -423,3 +498,34 @@ def test_lab003_source_svgs_are_valid_utf8_xml():
         ET.parse(path)
         assert b"<title" in data
         assert b"<desc" in data
+
+
+def test_lab004_diagram_url_from_rendered_html():
+    html = client.get("/labs/agent-escalation-boundary").text
+    srcs = re.findall(r'src="(/static/labs/004/[^"]+\.svg)"', html)
+    assert srcs == ["/static/labs/004/escalation-boundary.svg"]
+    response = client.get(srcs[0])
+    assert response.status_code == 200
+    assert "image/svg+xml" in response.headers["content-type"]
+    body = response.content
+    assert len(body) > 100
+    stripped = body.lstrip()
+    assert stripped.startswith(b"<?xml") or stripped.startswith(b"<svg")
+    body.decode("utf-8")
+    ET.parse(io.BytesIO(body))
+    source = LAB004_STATIC / "escalation-boundary.svg"
+    assert source.is_file()
+    assert source.read_bytes() == body
+
+
+def test_lab004_source_svg_is_valid_utf8_xml():
+    path = LAB004_STATIC / "escalation-boundary.svg"
+    data = path.read_bytes()
+    data.decode("utf-8")
+    ET.parse(path)
+    assert b"<title" in data
+    assert b"<desc" in data
+    assert b"PROCEED" in data
+    assert b"CLARIFY" in data
+    assert b"ESCALATE" in data
+    assert b"STOP" in data

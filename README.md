@@ -36,6 +36,13 @@ from-my-desk-labs/
         ├── tests/
         ├── docs/
         └── static/
+    └── 004-agent-escalation-boundary/
+        ├── src/agent_escalation_boundary/
+        ├── policies/
+        ├── examples/
+        ├── tests/
+        ├── docs/
+        └── static/
 ```
 
 ## Why the Python layout looks this way
@@ -43,9 +50,8 @@ from-my-desk-labs/
 There is **one FastAPI application** and **one Docker container**.
 
 - Global HTTP pages, templates, catalog, and brand assets live under `website/app/`.
-- Lab 001 domain code lives in the importable package `know_your_agent` at `labs/001-know-your-agent/src/know_your_agent/`.
-- The numbered editorial directory cannot itself be a Python package (it contains a hyphen).
-- The website imports the lab with `from know_your_agent.gateway import ...`.
+- Lab domain packages are installed from `pyproject.toml` (`know_your_agent`, `delegated_authority`, `agent_access_control`, `agent_escalation_boundary`).
+- The numbered editorial directories cannot themselves be Python packages (they contain a hyphen).
 - Packages are installed from `pyproject.toml`. Local development may use `pip install -e .`. The production image uses a non-editable `pip install .`.
 - No multi-directory `PYTHONPATH` and no `sys.path` mutation.
 - Uvicorn starts as `uvicorn from_my_desk.main:app`.
@@ -61,6 +67,7 @@ Discovery is data-driven. Edit `website/catalog/labs.yaml`; do not hard-code edi
 | [001-know-your-agent](labs/001-know-your-agent) | Know Your Agent | Identity versus delegated authority. Four-way policy gate: ALLOW, CONFIRM, STEP_UP, DENY. Fictional paper-order simulation only. |
 | [002-delegated-authority](labs/002-delegated-authority) | KYA: Delegated Authority | Trust must narrow at every handoff. Parent-child delegation, APE, APSE, revocation, and restricted fallback. Never executes. |
 | [003-agent-access-control](labs/003-agent-access-control) | Agent Access Control | Progressive Live Authority Evaluation across agent, principal, action, tool, resource, purpose, limits, delegation, posture, and context. Never executes. |
+| [004-agent-escalation-boundary](labs/004-agent-escalation-boundary) | The Agent Escalation Boundary | Separates authorization (ALLOW/CONFIRM/STEP_UP/DENY) from execution judgment (PROCEED/CLARIFY/ESCALATE/STOP). Never executes. |
 
 ## Local setup
 

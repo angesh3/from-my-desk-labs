@@ -17,12 +17,15 @@ services:
       LAB003_STATIC_DIR: /srv/labs/003-agent-access-control/static
       LAB003_DATA_DIR: /srv/labs/003-agent-access-control/examples
       LAB003_POLICY_DIR: /srv/labs/003-agent-access-control/policies
+      LAB004_STATIC_DIR: /srv/labs/004-agent-escalation-boundary/static
+      LAB004_DATA_DIR: /srv/labs/004-agent-escalation-boundary/examples
+      LAB004_POLICY_DIR: /srv/labs/004-agent-escalation-boundary/policies
       PORT: "8080"
       POSTHOG_ENABLED: "false"
       POSTHOG_KEY: ""
       POSTHOG_HOST: https://us.i.posthog.com
       REGISTRY_PUBLIC: sanitized
-      APP_VERSION: "0.3.0"
+      APP_VERSION: "0.4.0"
     healthcheck:
       test:
         [

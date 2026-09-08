@@ -34,7 +34,9 @@
     {% endif %}
     <p class="actions">
       <a class="button" href="{{ latest_lab.lab_url }}">Explore {{ latest_lab.edition_label }}</a>
-      <a class="text-link" href="{{ latest_lab.newsletter_url }}" rel="noopener noreferrer">Read newsletter</a>
+      {% if latest_lab.published_newsletter_url %}
+      <a class="text-link" href="{{ latest_lab.published_newsletter_url }}" rel="noopener noreferrer">Read newsletter</a>
+      {% endif %}
       <a class="text-link" href="{{ latest_lab.github_url }}" rel="noopener noreferrer">View source</a>
     </p>
   </article>
@@ -66,7 +68,9 @@
       {% endif %}
       <p class="actions">
         <a class="button" href="{{ item.lab_url }}">Explore lab</a>
-        <a class="text-link" href="{{ item.newsletter_url }}" rel="noopener noreferrer">Read newsletter</a>
+        {% if item.published_newsletter_url %}
+        <a class="text-link" href="{{ item.published_newsletter_url }}" rel="noopener noreferrer">Read newsletter</a>
+        {% endif %}
         <a class="text-link" href="{{ item.github_url }}" rel="noopener noreferrer">View source</a>
       </p>
     </article>

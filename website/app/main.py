@@ -31,6 +31,8 @@ from delegated_authority.gateway import get_lab002_bundle, router as lab002_rout
 from delegated_authority.loader import Lab002ConfigError
 from agent_access_control.gateway import get_lab003_bundle, router as lab003_router
 from agent_access_control.loader import Lab003ConfigError
+from agent_escalation_boundary.gateway import get_lab004_bundle, router as lab004_router
+from agent_escalation_boundary.loader import Lab004ConfigError
 
 mimetypes.add_type("image/webp", ".webp")
 mimetypes.add_type("image/svg+xml", ".svg")
@@ -73,7 +75,17 @@ async def lifespan(app: FastAPI):
         os.environ.setdefault("LAB003_DATA_DIR", str(settings.lab003_data_dir))
         os.environ.setdefault("LAB003_POLICY_DIR", str(settings.lab003_policy_dir))
         get_lab003_bundle()
-    except (CatalogError, PolicyConfigError, Lab002ConfigError, Lab003ConfigError, ResourceConfigError) as exc:
+        os.environ.setdefault("LAB004_DATA_DIR", str(settings.lab004_data_dir))
+        os.environ.setdefault("LAB004_POLICY_DIR", str(settings.lab004_policy_dir))
+        get_lab004_bundle()
+    except (
+        CatalogError,
+        PolicyConfigError,
+        Lab002ConfigError,
+        Lab003ConfigError,
+        Lab004ConfigError,
+        ResourceConfigError,
+    ) as exc:
         raise RuntimeError(
             "Refusing to start with unsafe catalog, policy, or missing website resources."
         ) from exc
@@ -99,6 +111,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             "/api/evaluate",
             "/api/labs/002/evaluate",
             "/api/labs/003/evaluate",
+            "/api/labs/004/evaluate",
         } and request.method == "POST":
             limiter = _limiter
             if limiter is not None:
@@ -172,6 +185,7 @@ async def validation_handler(request: Request, exc: RequestValidationError):
         "/api/evaluate",
         "/api/labs/002/evaluate",
         "/api/labs/003/evaluate",
+        "/api/labs/004/evaluate",
     }:
         return JSONResponse(
             status_code=422,
@@ -202,6 +216,7 @@ async def unhandled_handler(request: Request, exc: Exception):
 app.include_router(lab_router)
 app.include_router(lab002_router)
 app.include_router(lab003_router)
+app.include_router(lab004_router)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -255,6 +270,12 @@ def lab_page(request: Request, slug: str) -> HTMLResponse:
             "lab003.html",
             _page_context(request, lab=entry),
         )
+    if slug == "agent-escalation-boundary":
+        return TEMPLATES.TemplateResponse(
+            request,
+            "lab004.html",
+            _page_context(request, lab=entry),
+        )
     raise HTTPException(status_code=404, detail="This edition does not have an interactive page yet.")
 
 
@@ -273,6 +294,11 @@ app.mount(
     "/static/labs/003",
     StaticFiles(directory=str(_settings.lab003_static_dir)),
     name="lab003-static",
+)
+app.mount(
+    "/static/labs/004",
+    StaticFiles(directory=str(_settings.lab004_static_dir)),
+    name="lab004-static",
 )
 app.mount(
     "/static",

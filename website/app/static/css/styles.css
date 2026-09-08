@@ -437,6 +437,9 @@ pre {
 .diagram-figure img[src*="system-architecture"] {
   aspect-ratio: 960 / 780;
 }
+.diagram-figure img[src*="escalation-boundary"] {
+  aspect-ratio: 960 / 420;
+}
 .execution-boundary {
   color: var(--navy);
   font-size: 0.98rem;
@@ -803,8 +806,87 @@ pre {
 }
 .request-json pre { max-height: 280px; }
 
+.lab004-question-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.lab004-question-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 1.1rem 1.2rem;
+}
+.lab004-question-card h3 {
+  margin: 0 0 0.45rem;
+  font-size: 1rem;
+  color: var(--navy);
+}
+.lab004-form {
+  display: grid;
+  gap: 1rem;
+}
+.lab004-fieldset {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  padding: 1rem 1.1rem 1.2rem;
+  margin: 0;
+}
+.lab004-fieldset legend {
+  padding: 0 0.35rem;
+  color: var(--navy);
+  font-weight: 700;
+}
+.lab004-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem 1rem;
+}
+.lab004-grid label {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+.lab004-grid select,
+.lab004-grid input,
+.lab004-grid textarea {
+  font: inherit;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  background: var(--ivory);
+  padding: 0.45rem 0.55rem;
+  width: 100%;
+}
+.lab004-span-2 { grid-column: 1 / -1; }
+.lab004-check {
+  display: flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  grid-template-columns: none !important;
+}
+.lab004-check input { width: auto; }
+.lab004-result h3 {
+  margin: 1rem 0 0.35rem;
+  font-size: 1rem;
+  color: var(--navy);
+}
+.lab004-outcome-proceed .decision-label { color: var(--allow); }
+.lab004-outcome-clarify .decision-label { color: #2b5a9e; }
+.lab004-outcome-escalate .decision-label { color: var(--step); }
+.lab004-outcome-stop .decision-label { color: var(--deny); }
+.lab004-bounded {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  background: #fff8e6;
+  border: 1px solid var(--gold);
+}
+
 @media (max-width: 768px) {
   .earlier-lab-grid {
+    grid-template-columns: 1fr;
+  }
+  .lab004-question-grid,
+  .lab004-grid {
     grid-template-columns: 1fr;
   }
 }

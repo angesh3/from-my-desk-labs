@@ -34,7 +34,7 @@ def valid_lab(**overrides):
 
 def test_published_catalog_loads():
     labs = load_catalog(CATALOG)
-    assert len(labs) == 3
+    assert len(labs) == 4
     by_id = {lab.id: lab for lab in labs}
     assert by_id["001"].slug == "know-your-agent"
     assert by_id["001"].reader_title_text == "Know Your Agent"
@@ -51,15 +51,43 @@ def test_published_catalog_loads():
     assert by_id["003"].featured is False
     assert by_id["003"].interactive is True
     assert by_id["003"].lab_url == "/labs/agent-access-control"
+    assert by_id["004"].slug == "agent-escalation-boundary"
+    assert by_id["004"].lab_url == "/labs/agent-escalation-boundary"
+    assert by_id["004"].newsletter_url == "[EDITION_4_NEWSLETTER_URL]"
+    assert by_id["004"].newsletter_is_placeholder is True
+    assert by_id["004"].published_newsletter_url is None
+    assert by_id["004"].edition_number == 4
+    assert by_id["001"].newsletter_is_placeholder is False
+    assert by_id["001"].published_newsletter_url is not None
+
+
+def test_newsletter_placeholder_accepted(tmp_path):
+    dump(
+        tmp_path / "labs.yaml",
+        [valid_lab(newsletter_url="[EDITION_9_NEWSLETTER_URL]")],
+    )
+    labs = load_catalog(tmp_path / "labs.yaml")
+    assert labs[0].newsletter_is_placeholder is True
+    assert labs[0].published_newsletter_url is None
+
+
+def test_published_newsletter_url_requires_https(tmp_path):
+    dump(
+        tmp_path / "labs.yaml",
+        [valid_lab(newsletter_url="http://example.com/newsletter")],
+    )
+    labs = load_catalog(tmp_path / "labs.yaml")
+    assert labs[0].newsletter_is_placeholder is False
+    assert labs[0].published_newsletter_url is None
 
 
 def test_latest_lab_selects_highest_published_edition():
     labs = load_catalog(CATALOG)
     latest = latest_lab(labs)
     assert latest is not None
-    assert latest.id == "003"
-    assert latest.edition_number == 3
-    assert latest.title == "Agent Access Control"
+    assert latest.id == "004"
+    assert latest.edition_number == 4
+    assert latest.title == "The Agent Escalation Boundary"
 
 
 def test_latest_lab_excludes_draft_and_on_the_desk(tmp_path):
