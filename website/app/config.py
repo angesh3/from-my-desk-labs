@@ -126,6 +126,27 @@ def _default_lab004_static_dir() -> Path:
     return Path("/srv/labs/004-agent-escalation-boundary/static")
 
 
+def _default_lab005_data_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "005-verifiable-action-receipts" / "examples"
+    return Path("/srv/labs/005-verifiable-action-receipts/examples")
+
+
+def _default_lab005_policy_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "005-verifiable-action-receipts" / "policies"
+    return Path("/srv/labs/005-verifiable-action-receipts/policies")
+
+
+def _default_lab005_static_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "005-verifiable-action-receipts" / "static"
+    return Path("/srv/labs/005-verifiable-action-receipts/static")
+
+
 class Settings:
     def __init__(self) -> None:
         self.app_version = APP_VERSION
@@ -171,6 +192,15 @@ class Settings:
         self.lab004_static_dir = Path(
             os.environ.get("LAB004_STATIC_DIR") or _default_lab004_static_dir()
         )
+        self.lab005_data_dir = Path(
+            os.environ.get("LAB005_DATA_DIR") or _default_lab005_data_dir()
+        )
+        self.lab005_policy_dir = Path(
+            os.environ.get("LAB005_POLICY_DIR") or _default_lab005_policy_dir()
+        )
+        self.lab005_static_dir = Path(
+            os.environ.get("LAB005_STATIC_DIR") or _default_lab005_static_dir()
+        )
         self.port = int(os.environ.get("PORT", "8080"))
         self.registry_mode = os.environ.get("REGISTRY_PUBLIC", "sanitized").strip().lower()
         self.github_url = os.environ.get(
@@ -202,6 +232,7 @@ REQUIRED_TEMPLATE_FILES = (
     "lab002.html",
     "lab003.html",
     "lab004.html",
+    "lab005.html",
 )
 REQUIRED_GLOBAL_STATIC_FILES = (
     "css/styles.css",
@@ -250,6 +281,12 @@ REQUIRED_LAB004_STATIC_FILES = (
     "lab.js",
     "escalation-boundary.svg",
 )
+REQUIRED_LAB005_POLICY_FILES = ("receipt-policy.yaml",)
+REQUIRED_LAB005_DATA_FILES = ("presets.yaml",)
+REQUIRED_LAB005_STATIC_FILES = (
+    "lab.js",
+    "receipt-chain.svg",
+)
 
 
 class ResourceConfigError(RuntimeError):
@@ -290,6 +327,11 @@ def validate_runtime_resources(settings: Settings) -> None:
         if not path.is_file():
             missing.append(f"lab004_static:{rel}")
 
+    for rel in REQUIRED_LAB005_STATIC_FILES:
+        path = settings.lab005_static_dir / rel
+        if not path.is_file():
+            missing.append(f"lab005_static:{rel}")
+
     if not settings.catalog_path.is_file():
         missing.append("catalog:labs.yaml")
 
@@ -327,6 +369,16 @@ def validate_runtime_resources(settings: Settings) -> None:
         path = settings.lab004_data_dir / name
         if not path.is_file():
             missing.append(f"lab004_data:{name}")
+
+    for name in REQUIRED_LAB005_POLICY_FILES:
+        path = settings.lab005_policy_dir / name
+        if not path.is_file():
+            missing.append(f"lab005_policy:{name}")
+
+    for name in REQUIRED_LAB005_DATA_FILES:
+        path = settings.lab005_data_dir / name
+        if not path.is_file():
+            missing.append(f"lab005_data:{name}")
 
     if missing:
         raise ResourceConfigError(

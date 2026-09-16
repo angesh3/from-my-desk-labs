@@ -1,0 +1,5 @@
+policy_version: lab005-receipt-v1
+description: >
+  Educational receipt sealing rules for Cedar Quill Markets.
+  Authorization and execution judgment remain distinct concepts.
+  Integrity verification checks content and chain linkage only.

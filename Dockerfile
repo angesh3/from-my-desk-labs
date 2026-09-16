@@ -24,6 +24,10 @@ COPY labs/004-agent-escalation-boundary/src /srv/labs/004-agent-escalation-bound
 COPY labs/004-agent-escalation-boundary/policies /srv/labs/004-agent-escalation-boundary/policies
 COPY labs/004-agent-escalation-boundary/examples /srv/labs/004-agent-escalation-boundary/examples
 COPY labs/004-agent-escalation-boundary/static /srv/labs/004-agent-escalation-boundary/static
+COPY labs/005-verifiable-action-receipts/src /srv/labs/005-verifiable-action-receipts/src
+COPY labs/005-verifiable-action-receipts/policies /srv/labs/005-verifiable-action-receipts/policies
+COPY labs/005-verifiable-action-receipts/examples /srv/labs/005-verifiable-action-receipts/examples
+COPY labs/005-verifiable-action-receipts/static /srv/labs/005-verifiable-action-receipts/static
 
 RUN pip install --no-cache-dir .
 
@@ -41,6 +45,9 @@ ENV LAB003_POLICY_DIR=/srv/labs/003-agent-access-control/policies
 ENV LAB004_STATIC_DIR=/srv/labs/004-agent-escalation-boundary/static
 ENV LAB004_DATA_DIR=/srv/labs/004-agent-escalation-boundary/examples
 ENV LAB004_POLICY_DIR=/srv/labs/004-agent-escalation-boundary/policies
+ENV LAB005_STATIC_DIR=/srv/labs/005-verifiable-action-receipts/static
+ENV LAB005_DATA_DIR=/srv/labs/005-verifiable-action-receipts/examples
+ENV LAB005_POLICY_DIR=/srv/labs/005-verifiable-action-receipts/policies
 ENV APP_VERSION=0.4.0
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1

@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+{% block title %}{{ lab.title }} — From My Desk{% endblock %}
+{% block description %}{{ lab.summary }}{% endblock %}
+{% block content %}
+<section class="wrap page-intro lab-intro lab005-intro">
+  <p class="eyebrow">{{ lab.edition_label }} · Verifiable Action Receipts</p>
+  <h1 class="lab005-hero-title">
+    <span class="lab005-title-line">Can We Prove What the Agent</span>
+    <span class="lab005-title-line">Actually Did?</span>
+  </h1>
+  {% if lab.subtitle %}<p class="lede">{{ lab.subtitle }}</p>{% endif %}
+  <p class="lede">
+    An agent’s claim that it completed a task is not enough.
+    A trustworthy system should preserve evidence connecting intent, authority,
+    judgment, execution, and outcome.
+  </p>
+  <p class="disclaimer" role="note">{{ lab.disclaimer or disclaimer }}</p>
+  <p class="actions">
+    <a class="button button-quiet" href="/labs/agent-escalation-boundary">Previous Lab: The Agent Escalation Boundary</a>
+    <a class="button button-quiet" href="/labs">Browse all Labs</a>
+  </p>
+</section>
+
+<section class="wrap lab005-distinction" aria-labelledby="log-vs-receipt-heading">
+  <h2 id="log-vs-receipt-heading">A log is not a receipt</h2>
+  <div class="lab005-question-grid">
+    <article class="lab005-question-card">
+      <h3>Activity log asks</h3>
+      <p class="core-question">What event was recorded?</p>
+      <p>Example: <code>10:42:11 session revoked</code></p>
+    </article>
+    <article class="lab005-question-card">
+      <h3>Action receipt asks</h3>
+      <p class="core-question">Who acted, under which authority, based on what evidence, through which tool, and what changed?</p>
+      <p>It binds request, identity, decision, human involvement, and outcome together.</p>
+    </article>
+  </div>
+</section>
+
+<section class="wrap" aria-labelledby="motivation-heading">
+  <h2 id="motivation-heading">Why reconstruction is hard</h2>
+  <p>
+    Complex agent activity can span multiple agents, evaluation runs, tools,
+    credentials, and systems. Reconstructing what happened requires correlating
+    evidence across the full action chain—not only reading a single activity line.
+  </p>
+  <p class="hint">
+    This Lab uses fictional Cedar Quill Markets data. It never claims to reconstruct
+    or prevent any specific real-world incident.
+  </p>
+</section>
+
+<section class="wrap" aria-labelledby="presets-heading">
+  <h2 id="presets-heading">Presets</h2>
+  <p>Select a preset to fill the receipt builder, then generate a hash-protected receipt.</p>
+  <div class="preset-grid" role="group" aria-label="Receipt presets">
+    <button type="button" class="preset-card" data-preset="authorized_and_recorded" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Authorized and recorded</strong>
+      <span>Clear revoke with explicit capability.</span>
+      <em>Watch for: PROCEED · VERIFIED</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="human_approval_recorded" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Human approval recorded</strong>
+      <span>CONFIRM satisfied with an approval reference.</span>
+      <em>Watch for: PROCEED · VERIFIED</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="clarified_before_action" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Clarified before action</strong>
+      <span>“Secure the account” becomes an explicit revoke.</span>
+      <em>Watch for: CLARIFY then follow-up · VERIFIED</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="escalated_without_execution" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Escalated without execution</strong>
+      <span>Conflicting evidence; no tool action.</span>
+      <em>Watch for: ESCALATE · not_performed · VERIFIED</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="tampered_receipt" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Tampered receipt</strong>
+      <span>A hash-protected receipt is altered after hashing.</span>
+      <em>Watch for: TAMPERED</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="broken_chain" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Broken receipt chain</strong>
+      <span>Previous-hash linkage does not match.</span>
+      <em>Watch for: CHAIN BROKEN</em>
+    </button>
+  </div>
+</section>
+
+<section class="wrap" aria-labelledby="builder-heading">
+  <h2 id="builder-heading">Receipt builder</h2>
+  <p>Inspect or adjust the fictional fields, then generate a receipt hash. No real action is performed.</p>
+  <form id="lab005-form" class="lab005-form">
+    <fieldset class="lab005-fieldset">
+      <legend>Request and identity</legend>
+      <div class="lab005-grid">
+        <label>Request ID
+          <input id="request_id" name="request_id" maxlength="120" required value="req-cq-005-001">
+        </label>
+        <label>Correlation ID
+          <input id="correlation_id" name="correlation_id" maxlength="120" required value="corr-cq-demo-01">
+        </label>
+        <label>Agent identity
+          <input id="agent_identity" name="agent_identity" maxlength="120" required value="cq-soc-response-agent-01">
+        </label>
+        <label>Principal identity
+          <input id="principal_identity" name="principal_identity" maxlength="120" required value="cq-soc-lead-morgan">
+        </label>
+        <label>Target resource
+          <input id="target_resource" name="target_resource" maxlength="500" required value="alex.rivera@cedarquill.example">
+        </label>
+        <label>Requested action
+          <select id="requested_action" name="requested_action" required>
+            <option value="revoke_suspicious_session" selected>Revoke suspicious session</option>
+            <option value="temporarily_suspend_access">Temporarily suspend access</option>
+            <option value="secure_the_account">Secure the account</option>
+            <option value="preserve_evidence">Preserve evidence</option>
+            <option value="require_stronger_authentication">Require stronger authentication</option>
+            <option value="permanently_delete_account">Permanently delete account</option>
+          </select>
+        </label>
+        <label>Delegated capability
+          <select id="delegated_capability" name="delegated_capability" required>
+            <option value="revoke_sessions" selected>Revoke sessions</option>
+            <option value="temporarily_suspend_access">Temporarily suspend access</option>
+            <option value="preserve_evidence">Preserve evidence</option>
+            <option value="require_stronger_authentication">Require stronger authentication</option>
+          </select>
+        </label>
+        <label>Authority source
+          <select id="authority_source" name="authority_source">
+            <option value="cq-delegation-register" selected>Cedar Quill delegation register</option>
+          </select>
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="lab005-fieldset">
+      <legend>Policy and judgment</legend>
+      <div class="lab005-grid">
+        <label>Policy ID
+          <select id="policy_id" name="policy_id">
+            <option value="cq-soc-response-policy" selected>Cedar Quill SOC response policy</option>
+          </select>
+        </label>
+        <label>Policy version
+          <input id="policy_version" name="policy_version" maxlength="120" value="lab005-receipt-v1">
+        </label>
+        <label>Authorization outcome
+          <select id="authorization_outcome" name="authorization_outcome">
+            <option value="allow" selected>ALLOW</option>
+            <option value="confirm">CONFIRM</option>
+            <option value="step_up">STEP_UP</option>
+            <option value="deny">DENY</option>
+          </select>
+        </label>
+        <label>Execution judgment
+          <select id="execution_judgment" name="execution_judgment">
+            <option value="proceed" selected>PROCEED</option>
+            <option value="clarify">CLARIFY</option>
+            <option value="escalate">ESCALATE</option>
+            <option value="stop">STOP</option>
+          </select>
+        </label>
+        <label>Human involvement
+          <select id="human_involvement" name="human_involvement">
+            <option value="none" selected>None</option>
+            <option value="clarification">Clarification</option>
+            <option value="approval">Approval</option>
+            <option value="modification">Modification</option>
+            <option value="rejection">Rejection</option>
+            <option value="escalation">Escalation</option>
+          </select>
+        </label>
+        <label>Approval reference
+          <input id="approval_reference" name="approval_reference" maxlength="120" value="">
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="lab005-fieldset">
+      <legend>Evidence, tool, and integrity demo controls</legend>
+      <div class="lab005-grid">
+        <label class="lab005-span-2">Evidence references
+          <select id="evidence_references" name="evidence_references" multiple size="5" aria-describedby="evidence-hint">
+            <option value="evid-login-geo-mismatch" selected>Login geography mismatch</option>
+            <option value="evid-device-fingerprint-new" selected>New device fingerprint</option>
+            <option value="evid-threat-intel-ip">Threat-intel IP match</option>
+            <option value="evid-unusual-file-access">Unusual file access</option>
+            <option value="evid-active-customer-meeting">Active customer meeting</option>
+            <option value="evid-operator-chat-turn-1">Operator chat turn 1</option>
+            <option value="evid-operator-chat-turn-2">Operator chat turn 2</option>
+            <option value="evid-travel-calendar-possible">Possible travel on calendar</option>
+            <option value="evid-customer-meeting-live">Live customer meeting</option>
+            <option value="evid-case-opened">Investigation case opened</option>
+          </select>
+          <span id="evidence-hint" class="hint">Hold Command or Control to select multiple. Machine IDs are kept in the receipt.</span>
+        </label>
+        <label class="lab005-span-2">Evidence summary
+          <textarea id="evidence_summary" name="evidence_summary" rows="2" maxlength="500">High-confidence fictional session indicators.</textarea>
+        </label>
+        <label class="lab005-span-2">Original request
+          <input id="original_request" name="original_request" maxlength="500" value="">
+        </label>
+        <label class="lab005-span-2">Clarification note
+          <input id="clarification_note" name="clarification_note" maxlength="500" value="">
+        </label>
+        <label>Simulated tool
+          <select id="simulated_tool" name="simulated_tool">
+            <option value="">None</option>
+            <option value="cq-session-control" selected>Cedar Quill session control</option>
+            <option value="cq-access-control">Cedar Quill access control</option>
+            <option value="cq-evidence-vault">Cedar Quill evidence vault</option>
+          </select>
+        </label>
+        <label>Simulated tool action
+          <select id="simulated_tool_action" name="simulated_tool_action">
+            <option value="">None</option>
+            <option value="revoke_session" selected>Revoke session</option>
+            <option value="temporary_suspend">Temporary suspend</option>
+            <option value="preserve_case_bundle">Preserve case bundle</option>
+          </select>
+        </label>
+        <label class="lab005-span-2">Observed outcome
+          <input id="observed_outcome" name="observed_outcome" maxlength="500" value="Suspicious session token marked revoked in the fictional session store.">
+        </label>
+        <label class="lab005-span-2">Reason codes
+          <select id="reason_codes" name="reason_codes" multiple size="5" aria-describedby="reason-hint">
+            <option value="auth.allow" selected>Authorization allowed</option>
+            <option value="auth.confirm">Authorization required confirmation</option>
+            <option value="judgment.proceed" selected>Judgment: proceed</option>
+            <option value="judgment.clarify">Judgment: clarify</option>
+            <option value="judgment.escalate">Judgment: escalate</option>
+            <option value="judgment.proceed_after_clarify">Judgment: proceed after clarify</option>
+            <option value="human.approval_recorded">Human approval recorded</option>
+            <option value="tool.session_revoke_simulated">Tool: session revoke simulated</option>
+            <option value="request.ambiguous_goal">Request: ambiguous goal</option>
+            <option value="evidence.conflicting">Evidence: conflicting</option>
+            <option value="impact.high">Impact: high</option>
+            <option value="demo.integrity_failure">Demo: integrity failure</option>
+            <option value="demo.chain_break">Demo: chain break</option>
+          </select>
+          <span id="reason-hint" class="hint">Hold Command or Control to select multiple. Canonical codes stay in Raw JSON.</span>
+        </label>
+        <label class="lab005-span-2">Explanation
+          <textarea id="explanation" name="explanation" rows="2" maxlength="2000">Authorization allowed the revoke and execution judgment chose PROCEED.</textarea>
+        </label>
+        <label class="lab005-span-2">Previous receipt hash
+          <input id="previous_receipt_hash" name="previous_receipt_hash" maxlength="128" value="" class="lab005-mono">
+        </label>
+        <label>Force tamper field
+          <select id="force_tamper_field" name="force_tamper_field">
+            <option value="">None</option>
+            <option value="observed_outcome">Observed outcome</option>
+            <option value="authorization_outcome">Authorization outcome</option>
+          </select>
+        </label>
+        <label>Force tamper value
+          <input id="force_tamper_value" name="force_tamper_value" maxlength="500" value="">
+        </label>
+        <label class="lab005-check">
+          <input id="force_broken_chain" name="force_broken_chain" type="checkbox">
+          Force broken previous-receipt chain
+        </label>
+      </div>
+    </fieldset>
+
+    <p class="actions">
+      <button id="generate-btn" class="button" type="submit">Generate action receipt</button>
+    </p>
+  </form>
+</section>
+
+<section class="wrap result-panel" aria-labelledby="result-heading">
+  <h2 id="result-heading">Receipt result</h2>
+  <div id="result" class="result lab005-result" aria-live="polite">
+    <p>Select a preset or adjust the builder, then generate a receipt. No real security action is performed.</p>
+  </div>
+</section>
+
+<section class="wrap diagram-panel" aria-labelledby="flow-heading">
+  <h2 id="flow-heading">Receipt chain</h2>
+  <p>
+    Request, authority, decision, execution, and outcome feed a hash-protected receipt.
+    Human approval can enter at the decision boundary when confirmation is required.
+  </p>
+  <figure class="diagram-figure">
+    <img
+      src="/static/labs/005/receipt-chain.svg"
+      width="960"
+      height="420"
+      alt="Flow from request through authority, decision, execution, and outcome into a verifiable action receipt, with optional human approval."
+      data-analytics-destination="architecture"
+      data-architecture-type="lab005-receipt-chain">
+  </figure>
+</section>
+
+<section class="wrap architecture" id="architecture" aria-labelledby="teaching-heading">
+  <h2 id="teaching-heading">Teaching notes</h2>
+  <p>
+    Logs are evidence sources, not automatically complete receipts. A useful receipt
+    connects the request, identities, delegated authority, policy decision, human
+    involvement, simulated tool activity, and observed outcome.
+  </p>
+  <p>
+    Receipt integrity is different from decision correctness. A VERIFIED receipt can
+    document a denied or stopped action. A matching hash shows content has not changed
+    relative to a trusted reference; it does not by itself prove who created the receipt.
+  </p>
+  <p>
+    Production-grade non-repudiation needs protected signing keys, trusted timestamps,
+    identity-bound signatures, durable storage, access controls, privacy controls, and
+    retention policies—beyond a self-contained educational SHA-256 seal.
+  </p>
+  <p class="execution-boundary" role="note">
+    Every evaluation reports <code>execution: not_performed</code> for the real system.
+    Fictional tool activity may be recorded on the receipt as <code>simulated</code>
+    for teaching. This Lab uses fictional data and must not be used as a production
+    audit or incident-response system.
+  </p>
+  <p class="lab005-footer-note hint" role="note">
+    {% if lab.published_newsletter_url %}
+    <a class="button button-quiet" href="{{ lab.published_newsletter_url }}" rel="noopener noreferrer" data-lab005-newsletter>Read the companion newsletter</a>
+    {% else %}
+    The companion Edition 5 newsletter will be linked here after publication.
+    {% endif %}
+  </p>
+  <p class="actions lab005-footer-actions">
+    <a class="button button-quiet" href="{{ lab.github_url }}" rel="noopener noreferrer">View source on GitHub</a>
+    <a class="button button-quiet" href="/labs">From My Desk Labs</a>
+  </p>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="/static/labs/005/lab.js" defer></script>
+{% endblock %}

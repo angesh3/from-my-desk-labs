@@ -34,7 +34,7 @@ def valid_lab(**overrides):
 
 def test_published_catalog_loads():
     labs = load_catalog(CATALOG)
-    assert len(labs) == 4
+    assert len(labs) == 5
     by_id = {lab.id: lab for lab in labs}
     assert by_id["001"].slug == "know-your-agent"
     assert by_id["001"].reader_title_text == "Know Your Agent"
@@ -57,6 +57,12 @@ def test_published_catalog_loads():
     assert by_id["004"].newsletter_is_placeholder is True
     assert by_id["004"].published_newsletter_url is None
     assert by_id["004"].edition_number == 4
+    assert by_id["005"].slug == "verifiable-action-receipts"
+    assert by_id["005"].lab_url == "/labs/verifiable-action-receipts"
+    assert by_id["005"].newsletter_url == "[EDITION_5_NEWSLETTER_URL]"
+    assert by_id["005"].newsletter_is_placeholder is True
+    assert by_id["005"].published_newsletter_url is None
+    assert by_id["005"].edition_number == 5
     assert by_id["001"].newsletter_is_placeholder is False
     assert by_id["001"].published_newsletter_url is not None
 
@@ -85,9 +91,9 @@ def test_latest_lab_selects_highest_published_edition():
     labs = load_catalog(CATALOG)
     latest = latest_lab(labs)
     assert latest is not None
-    assert latest.id == "004"
-    assert latest.edition_number == 4
-    assert latest.title == "The Agent Escalation Boundary"
+    assert latest.id == "005"
+    assert latest.edition_number == 5
+    assert latest.title == "Can We Prove What the Agent Actually Did?"
 
 
 def test_latest_lab_excludes_draft_and_on_the_desk(tmp_path):
