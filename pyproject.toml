@@ -9,7 +9,7 @@ description = "From My Desk publication and interactive labs"
 requires-python = ">=3.11"
 
 [tool.setuptools]
-packages = ["from_my_desk", "know_your_agent", "delegated_authority", "agent_access_control", "agent_escalation_boundary"]
+packages = ["from_my_desk", "know_your_agent", "delegated_authority", "agent_access_control", "agent_escalation_boundary", "verifiable_action_receipts"]
 include-package-data = true
 
 [tool.setuptools.package-dir]
@@ -18,6 +18,7 @@ know_your_agent = "labs/001-know-your-agent/src/know_your_agent"
 delegated_authority = "labs/002-delegated-authority/src/delegated_authority"
 agent_access_control = "labs/003-agent-access-control/src/agent_access_control"
 agent_escalation_boundary = "labs/004-agent-escalation-boundary/src/agent_escalation_boundary"
+verifiable_action_receipts = "labs/005-verifiable-action-receipts/src/verifiable_action_receipts"
 
 [tool.setuptools.package-data]
 from_my_desk = [

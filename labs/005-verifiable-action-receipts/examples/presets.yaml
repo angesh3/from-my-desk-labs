@@ -1,0 +1,235 @@
+presets:
+  - id: authorized_and_recorded
+    title: Authorized and recorded
+    short_description: Clear session revoke with explicit capability and high-confidence evidence.
+    expected_execution_judgment: proceed
+    expected_integrity: verified
+    category: verified
+    request:
+      request_id: req-cq-005-001
+      correlation_id: corr-cq-session-revoke-01
+      agent_identity: cq-soc-response-agent-01
+      principal_identity: cq-soc-lead-morgan
+      target_resource: alex.rivera@cedarquill.example
+      requested_action: revoke_suspicious_session
+      delegated_capability: revoke_sessions
+      authority_source: cq-delegation-register
+      policy_id: cq-soc-response-policy
+      policy_version: lab005-receipt-v1
+      authorization_outcome: allow
+      execution_judgment: proceed
+      evidence_references:
+        - evid-login-geo-mismatch
+        - evid-device-fingerprint-new
+        - evid-threat-intel-ip
+      evidence_summary: High-confidence malicious session indicators aligned across login, device, and threat intel.
+      human_involvement: none
+      simulated_tool: cq-session-control
+      simulated_tool_action: revoke_session
+      observed_outcome: Suspicious session token marked revoked in the fictional session store.
+      reason_codes:
+        - auth.allow
+        - judgment.proceed
+        - tool.session_revoke_simulated
+      explanation: Authorization allowed the revoke and execution judgment chose PROCEED for a reversible, explicitly covered action.
+      created_at: "2026-09-16T15:00:00Z"
+      receipt_id: rcpt-authorized-001
+
+  - id: human_approval_recorded
+    title: Human approval recorded
+    short_description: Temporary suspension requires CONFIRM; human approval unlocks simulated execution.
+    expected_execution_judgment: proceed
+    expected_integrity: verified
+    category: verified
+    request:
+      request_id: req-cq-005-002
+      correlation_id: corr-cq-suspend-02
+      agent_identity: cq-soc-response-agent-01
+      principal_identity: cq-soc-lead-morgan
+      target_resource: priya.shah@cedarquill.example
+      requested_action: temporarily_suspend_access
+      delegated_capability: temporarily_suspend_access
+      authorization_outcome: confirm
+      execution_judgment: proceed
+      evidence_references:
+        - evid-unusual-file-access
+        - evid-active-customer-meeting
+      evidence_summary: Sensitive access during a customer meeting; human confirmation required before suspension.
+      human_involvement: approval
+      approval_reference: cq-ir-approval-7741
+      simulated_tool: cq-access-control
+      simulated_tool_action: temporary_suspend
+      observed_outcome: Temporary access suspension recorded in the fictional access-control system.
+      reason_codes:
+        - auth.confirm
+        - human.approval_recorded
+        - judgment.proceed
+      explanation: CONFIRM was satisfied with approval reference cq-ir-approval-7741 before the fictional suspension was simulated.
+      created_at: "2026-09-16T15:05:00Z"
+      receipt_id: rcpt-human-approval-001
+
+  - id: clarified_before_action
+    title: Clarified before action
+    short_description: Ambiguous “secure the account” request is clarified before a recorded revoke.
+    expected_execution_judgment: clarify
+    expected_integrity: verified
+    category: clarify
+    request:
+      request_id: req-cq-005-003a
+      correlation_id: corr-cq-secure-account-03
+      agent_identity: cq-soc-response-agent-01
+      principal_identity: cq-soc-lead-morgan
+      target_resource: jordan.lee@cedarquill.example
+      requested_action: secure_the_account
+      delegated_capability: revoke_sessions
+      authorization_outcome: allow
+      execution_judgment: clarify
+      evidence_references:
+        - evid-operator-chat-turn-1
+      evidence_summary: Operator asked to “secure the account” without naming the control.
+      human_involvement: clarification
+      original_request: Secure the account.
+      clarification_note: Which control should be used—monitor, challenge, revoke, or suspend?
+      observed_outcome: Clarification requested; no tool action performed.
+      reason_codes:
+        - judgment.clarify
+        - request.ambiguous_goal
+      explanation: The original request was too ambiguous to execute. The receipt preserves the ask and the clarification question.
+      created_at: "2026-09-16T15:10:00Z"
+      receipt_id: rcpt-clarify-001
+    follow_up_request:
+      request_id: req-cq-005-003b
+      correlation_id: corr-cq-secure-account-03
+      agent_identity: cq-soc-response-agent-01
+      principal_identity: cq-soc-lead-morgan
+      target_resource: jordan.lee@cedarquill.example
+      requested_action: revoke_suspicious_session
+      delegated_capability: revoke_sessions
+      authorization_outcome: allow
+      execution_judgment: proceed
+      evidence_references:
+        - evid-operator-chat-turn-1
+        - evid-operator-chat-turn-2
+      evidence_summary: Operator clarified that session revocation is the intended control.
+      human_involvement: clarification
+      original_request: Secure the account.
+      clarification_note: Operator selected session revocation.
+      simulated_tool: cq-session-control
+      simulated_tool_action: revoke_session
+      observed_outcome: Suspicious session revoked after clarification (fictional).
+      reason_codes:
+        - judgment.proceed_after_clarify
+        - tool.session_revoke_simulated
+      explanation: Follow-up receipt records the clarified action without erasing the original ambiguous request.
+      created_at: "2026-09-16T15:11:00Z"
+      receipt_id: rcpt-clarify-followup-001
+
+  - id: escalated_without_execution
+    title: Escalated without execution
+    short_description: Conflicting evidence and high impact; agent escalates and records why it did not act.
+    expected_execution_judgment: escalate
+    expected_integrity: verified
+    category: escalate
+    request:
+      request_id: req-cq-005-004
+      correlation_id: corr-cq-executive-04
+      agent_identity: cq-soc-response-agent-01
+      principal_identity: cq-soc-lead-morgan
+      target_resource: priya.shah@cedarquill.example
+      requested_action: temporarily_suspend_access
+      delegated_capability: temporarily_suspend_access
+      authorization_outcome: allow
+      execution_judgment: escalate
+      evidence_references:
+        - evid-login-geo-mismatch
+        - evid-travel-calendar-possible
+        - evid-customer-meeting-live
+      evidence_summary: Conflicting travel and meeting context against unusual access signals.
+      human_involvement: escalation
+      observed_outcome: Escalated to cq-soc-incident-lead@cedarquill.example; no tool action performed.
+      reason_codes:
+        - judgment.escalate
+        - evidence.conflicting
+        - impact.high
+      explanation: Authorization may permit suspension, but conflicting evidence and business impact require human judgment. Execution was not performed.
+      created_at: "2026-09-16T15:15:00Z"
+      receipt_id: rcpt-escalate-001
+
+  - id: tampered_receipt
+    title: Tampered receipt
+    short_description: A valid receipt is altered after sealing; verification returns TAMPERED.
+    expected_execution_judgment: proceed
+    expected_integrity: tampered
+    category: tampered
+    request:
+      request_id: req-cq-005-005
+      correlation_id: corr-cq-tamper-05
+      agent_identity: cq-soc-response-agent-01
+      principal_identity: cq-soc-lead-morgan
+      target_resource: alex.rivera@cedarquill.example
+      requested_action: revoke_suspicious_session
+      delegated_capability: revoke_sessions
+      authorization_outcome: allow
+      execution_judgment: proceed
+      evidence_references:
+        - evid-threat-intel-ip
+      evidence_summary: Baseline authorized revoke used to demonstrate integrity failure after alteration.
+      human_involvement: none
+      simulated_tool: cq-session-control
+      simulated_tool_action: revoke_session
+      observed_outcome: Suspicious session token marked revoked in the fictional session store.
+      force_tamper_field: observed_outcome
+      force_tamper_value: Session revoke quietly expanded to permanent account deletion.
+      reason_codes:
+        - demo.integrity_failure
+      explanation: After sealing, observed_outcome was altered. Verification must detect the change.
+      created_at: "2026-09-16T15:20:00Z"
+      receipt_id: rcpt-tampered-001
+
+  - id: broken_chain
+    title: Broken receipt chain
+    short_description: Content hash may verify, but previous_receipt_hash does not match the prior receipt.
+    expected_execution_judgment: proceed
+    expected_integrity: chain_broken
+    category: chain
+    prior_receipt_seed:
+      request_id: req-cq-005-006a
+      correlation_id: corr-cq-chain-06
+      agent_identity: cq-soc-response-agent-01
+      principal_identity: cq-soc-lead-morgan
+      target_resource: alex.rivera@cedarquill.example
+      requested_action: preserve_evidence
+      delegated_capability: preserve_evidence
+      authorization_outcome: allow
+      execution_judgment: proceed
+      evidence_references:
+        - evid-case-opened
+      evidence_summary: Prior receipt in the fictional investigation chain.
+      simulated_tool: cq-evidence-vault
+      simulated_tool_action: preserve_case_bundle
+      observed_outcome: Evidence bundle preserved (fictional).
+      created_at: "2026-09-16T15:24:00Z"
+      receipt_id: rcpt-chain-prior-001
+    request:
+      request_id: req-cq-005-006b
+      correlation_id: corr-cq-chain-06
+      agent_identity: cq-soc-response-agent-01
+      principal_identity: cq-soc-lead-morgan
+      target_resource: alex.rivera@cedarquill.example
+      requested_action: revoke_suspicious_session
+      delegated_capability: revoke_sessions
+      authorization_outcome: allow
+      execution_judgment: proceed
+      evidence_references:
+        - evid-case-opened
+        - evid-threat-intel-ip
+      evidence_summary: Follow-on revoke that claims an incorrect previous receipt hash.
+      simulated_tool: cq-session-control
+      simulated_tool_action: revoke_session
+      observed_outcome: Suspicious session revoked (fictional).
+      force_broken_chain: true
+      reason_codes:
+        - demo.chain_break
+      explanation: previous_receipt_hash was set to a value that does not match the prior receipt.
+      created_at: "2026-09-16T15:25:00Z"
+      receipt_id: rcpt-chain-current-001

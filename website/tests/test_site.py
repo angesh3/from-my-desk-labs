@@ -27,8 +27,9 @@ def reset_catalog_for_test():
 REPO_ROOT = Path(__file__).resolve().parents[2]
 LAB003_STATIC = REPO_ROOT / "labs" / "003-agent-access-control" / "static"
 LAB004_STATIC = REPO_ROOT / "labs" / "004-agent-escalation-boundary" / "static"
+LAB005_STATIC = REPO_ROOT / "labs" / "005-verifiable-action-receipts" / "static"
 
-PAGES = ("/", "/labs", "/labs/know-your-agent", "/labs/delegated-authority", "/labs/agent-access-control", "/labs/agent-escalation-boundary")
+PAGES = ("/", "/labs", "/labs/know-your-agent", "/labs/delegated-authority", "/labs/agent-access-control", "/labs/agent-escalation-boundary", "/labs/verifiable-action-receipts")
 FORBIDDEN_SNIPPETS = (
     "r2.dev",
     "r2.cloudflarestorage",
@@ -57,7 +58,7 @@ def test_global_branding_and_navigation():
         assert "Newsletter" in html
         if path == "/":
             assert "Latest Lab" in html
-            assert 'href="/labs/agent-escalation-boundary"' in html
+            assert 'href="/labs/verifiable-action-receipts"' in html
         if path == "/labs/know-your-agent":
             assert "Know Your Agent" in html
         elif path == "/labs/agent-access-control":
@@ -66,6 +67,8 @@ def test_global_branding_and_navigation():
             assert "Delegated Authority" in html
         elif path == "/labs/agent-escalation-boundary":
             assert "Escalation Boundary" in html
+        elif path == "/labs/verifiable-action-receipts":
+            assert "Can We Prove What the Agent Actually Did?" in html
         else:
             assert "From My Desk" in html or "Labs" in html
 
@@ -89,25 +92,27 @@ def test_homepage_features_latest_lab():
     assert "Latest Lab" in html
     assert "Current edition" not in html
     assert "CURRENT EDITION" not in html
-    assert "The Agent Escalation Boundary" in html
-    assert 'href="/labs/agent-escalation-boundary"' in html
-    assert "Explore Lab 004" in html
+    assert "Can We Prove What the Agent Actually Did?" in html
+    assert 'href="/labs/verifiable-action-receipts"' in html
+    assert "Explore Lab 005" in html
     assert "Browse all Labs" in html
-    assert "An agent can be authorized to act and still need to pause" in html
+    assert "An agent’s claim that it finished a task is not enough" in html
 
 
 def test_homepage_earlier_labs_ordered_newest_first():
     html = client.get("/").text
     assert "Earlier Labs" in html
     earlier_block = html.split("Earlier Labs", 1)[1].split("Follow From My Desk", 1)[0]
+    lab004_pos = earlier_block.find("/labs/agent-escalation-boundary")
     lab003_pos = earlier_block.find("/labs/agent-access-control")
     lab002_pos = earlier_block.find("/labs/delegated-authority")
     lab001_pos = earlier_block.find("/labs/know-your-agent")
-    assert lab003_pos < lab002_pos < lab001_pos
+    assert lab004_pos < lab003_pos < lab002_pos < lab001_pos
     assert "Delegated Authority" in earlier_block
     assert "Agent Access Control" in earlier_block
+    assert "The Agent Escalation Boundary" in earlier_block
     assert "KYA" not in earlier_block
-    assert "/labs/agent-escalation-boundary" not in earlier_block
+    assert "/labs/verifiable-action-receipts" not in earlier_block
 
 
 def test_homepage_bottom_structure_and_cta():
@@ -122,13 +127,13 @@ def test_homepage_bottom_structure_and_cta():
     assert "https://www.linkedin.com/newsletters/from-my-desk-7492634647890341890/" in html
     assert "https://github.com/angesh3/from-my-desk-labs" in html
     assert "Written and built by Angesh Vikram" in html
-    assert html.count("Explore Lab 004") == 1
+    assert html.count("Explore Lab 005") == 1
 
 
 def test_homepage_latest_lab_excluded_from_earlier_labs():
     html = client.get("/").text
     earlier_block = html.split("Earlier Labs", 1)[1].split("Follow From My Desk", 1)[0]
-    assert "The Agent Escalation Boundary" not in earlier_block
+    assert "Can We Prove What the Agent Actually Did?" not in earlier_block
 
 
 def test_homepage_single_published_lab_has_no_earlier_section(tmp_path, monkeypatch):
@@ -214,22 +219,24 @@ def test_homepage_latest_lab_selection_updates_with_catalog(tmp_path, monkeypatc
 
 def test_labs_index_ordered_newest_first():
     html = client.get("/labs").text
+    lab005_pos = html.find("/labs/verifiable-action-receipts")
     lab004_pos = html.find("/labs/agent-escalation-boundary")
     lab003_pos = html.find("/labs/agent-access-control")
     lab002_pos = html.find("/labs/delegated-authority")
     lab001_pos = html.find("/labs/know-your-agent")
-    assert lab004_pos < lab003_pos < lab002_pos < lab001_pos
+    assert lab005_pos < lab004_pos < lab003_pos < lab002_pos < lab001_pos
 
 
 def test_catalog_renders_lab_cards():
     home = client.get("/").text
     labs = client.get("/labs").text
-    assert "The Agent Escalation Boundary" in home
-    assert "/labs/agent-escalation-boundary" in home
+    assert "Can We Prove What the Agent Actually Did?" in home
+    assert "/labs/verifiable-action-receipts" in home
     assert "Know Your Agent" in labs
     assert "Delegated Authority" in labs
     assert "Agent Access Control" in labs
     assert "The Agent Escalation Boundary" in labs
+    assert "Can We Prove What the Agent Actually Did?" in labs
     assert "Explore lab" in labs or "Explore Lab" in labs
     assert "AI Agents" in labs or "Agent Governance" in labs
     assert "Interactive demo" in labs
@@ -237,7 +244,8 @@ def test_catalog_renders_lab_cards():
     assert "/labs/delegated-authority" in labs
     assert "/labs/agent-access-control" in labs
     assert "/labs/agent-escalation-boundary" in labs
-    assert "Not investment advice" in labs or "No real accounts" in labs or "educational policy prototype" in labs.lower()
+    assert "/labs/verifiable-action-receipts" in labs
+    assert "Not investment advice" in labs or "No real accounts" in labs or "educational policy prototype" in labs.lower() or "educational receipt prototype" in labs.lower()
 
 
 def test_lab004_page_basics():
@@ -294,6 +302,8 @@ def test_labs_index_hides_placeholder_newsletter():
     html = client.get("/labs").text
     assert "EDITION_4_NEWSLETTER_URL" not in html
     assert "[EDITION_4_NEWSLETTER_URL]" not in html
+    assert "EDITION_5_NEWSLETTER_URL" not in html
+    assert "[EDITION_5_NEWSLETTER_URL]" not in html
 
 
 def test_lab004_api_evaluate_smoke():
@@ -304,6 +314,94 @@ def test_lab004_api_evaluate_smoke():
     body = response.json()
     assert body["execution_outcome"] == "proceed"
     assert body["execution"] == "not_performed"
+
+
+def test_lab005_page_basics():
+    html = client.get("/labs/verifiable-action-receipts").text
+    assert "Can We Prove What the Agent Actually Did?" in html
+    assert "Can We Prove What the Agent" in html
+    assert "Actually Did?" in html
+    assert 'class="lab005-hero-title"' in html
+    assert "Generate action receipt" in html
+    assert "Generate verifiable receipt" not in html
+    assert "digitally sign production events" in html
+    assert "sign real events" not in html
+    assert "Revoke suspicious session" in html
+    assert "Cedar Quill session control" in html
+    assert "Authorization allowed" in html
+    assert "Judgment: proceed" in html
+    assert 'data-preset="authorized_and_recorded"' in html
+    assert 'data-preset="tampered_receipt"' in html
+    assert "/static/labs/005/receipt-chain.svg" in html
+    assert "/static/labs/005/lab.js" in html
+    assert "PROCEED" in html
+    assert "VERIFIED" in html
+    assert "hash-protected receipt" in html
+    assert "EDITION_5_NEWSLETTER_URL" not in html
+    assert "[EDITION_5_NEWSLETTER_URL]" not in html
+    assert "The companion Edition 5 newsletter will be linked here after publication." in html
+    assert "Read the companion newsletter" not in html
+    assert 'class="lab005-footer-note' in html
+    assert 'class="actions lab005-footer-actions"' in html
+    assert "Previous Lab: The Agent Escalation Boundary" in html
+    assert 'href="/labs/agent-escalation-boundary"' in html
+    assert "not_performed" in html
+    assert 'alt="Flow from request through authority, decision, execution, and outcome into a verifiable action receipt, with optional human approval."' in html
+
+
+def test_lab005_builder_preserves_machine_values_in_options():
+    html = client.get("/labs/verifiable-action-receipts").text
+    assert 'value="revoke_suspicious_session"' in html
+    assert 'value="revoke_sessions"' in html
+    assert 'value="cq-session-control"' in html
+    assert 'value="auth.allow"' in html
+    assert 'value="judgment.proceed"' in html
+    js = client.get("/static/labs/005/lab.js").text
+    assert 'revoke_suspicious_session: "Revoke suspicious session"' in js
+    assert 'overflow-wrap' not in js
+    css = client.get("/static/css/styles.css").text
+    assert ".lab005-result" in css
+    assert "overflow-wrap: anywhere" in css
+    assert ".lab005-hero-title" in css
+    assert ".lab005-footer-actions" in css
+
+
+def test_lab005_newsletter_button_when_published(monkeypatch, tmp_path):
+    catalog = tmp_path / "labs.yaml"
+    dump(
+        catalog,
+        [
+            valid_lab(
+                id="005",
+                edition_number=5,
+                slug="verifiable-action-receipts",
+                title="Can We Prove What the Agent Actually Did?",
+                lab_url="/labs/verifiable-action-receipts",
+                newsletter_url="https://www.linkedin.com/newsletters/from-my-desk-example/",
+                featured=True,
+            )
+        ],
+    )
+    monkeypatch.setenv("CATALOG_PATH", str(catalog))
+    reset_settings_cache()
+    reset_catalog()
+    html = client.get("/labs/verifiable-action-receipts").text
+    assert "Read the companion newsletter" in html
+    assert 'href="https://www.linkedin.com/newsletters/from-my-desk-example/"' in html
+    assert 'rel="noopener noreferrer"' in html
+    assert "data-lab005-newsletter" in html
+    assert "The companion Edition 5 newsletter will be linked here after publication." not in html
+    assert "EDITION_5_NEWSLETTER_URL" not in html
+
+
+def test_lab005_api_evaluate_smoke():
+    response = client.post(
+        "/api/labs/005/evaluate-preset/authorized_and_recorded"
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["execution"] == "not_performed"
+    assert body["verification"]["integrity_status"] == "verified"
 
 
 def test_lab002_page_basics():
@@ -411,6 +509,8 @@ def test_static_assets():
         ("/static/labs/003/lab.js", "javascript"),
         ("/static/labs/004/escalation-boundary.svg", "image/svg+xml"),
         ("/static/labs/004/lab.js", "javascript"),
+        ("/static/labs/005/receipt-chain.svg", "image/svg+xml"),
+        ("/static/labs/005/lab.js", "javascript"),
     ]
     for url, content_type in assets:
         response = client.get(url)
@@ -529,3 +629,34 @@ def test_lab004_source_svg_is_valid_utf8_xml():
     assert b"CLARIFY" in data
     assert b"ESCALATE" in data
     assert b"STOP" in data
+
+
+def test_lab005_diagram_url_from_rendered_html():
+    html = client.get("/labs/verifiable-action-receipts").text
+    srcs = re.findall(r'src="(/static/labs/005/[^"]+\.svg)"', html)
+    assert srcs == ["/static/labs/005/receipt-chain.svg"]
+    response = client.get(srcs[0])
+    assert response.status_code == 200
+    assert "image/svg+xml" in response.headers["content-type"]
+    body = response.content
+    assert len(body) > 100
+    stripped = body.lstrip()
+    assert stripped.startswith(b"<?xml") or stripped.startswith(b"<svg")
+    body.decode("utf-8")
+    ET.parse(io.BytesIO(body))
+    source = LAB005_STATIC / "receipt-chain.svg"
+    assert source.is_file()
+    assert source.read_bytes() == body
+
+
+def test_lab005_source_svg_is_valid_utf8_xml():
+    path = LAB005_STATIC / "receipt-chain.svg"
+    data = path.read_bytes()
+    data.decode("utf-8")
+    ET.parse(path)
+    assert b"<title" in data
+    assert b"<desc" in data
+    assert b"Receipt" in data
+    assert b"Request" in data
+    assert b"VERIFIED" in data
+

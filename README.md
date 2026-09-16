@@ -6,7 +6,7 @@ This repository hosts the public companion site and any editions that include a 
 
 ```
 from-my-desk-labs/
-├── pyproject.toml          # installs know_your_agent, delegated_authority, agent_access_control
+├── pyproject.toml          # installs know_your_agent, delegated_authority, agent_access_control, agent_escalation_boundary, verifiable_action_receipts
 ├── Dockerfile
 ├── docker-compose.yml
 ├── website/
@@ -29,15 +29,22 @@ from-my-desk-labs/
     │   ├── docs/
     │   ├── diagrams/
     │   └── static/
-    └── 003-agent-access-control/
-        ├── src/agent_access_control/
-        ├── policies/
-        ├── examples/
-        ├── tests/
-        ├── docs/
-        └── static/
-    └── 004-agent-escalation-boundary/
-        ├── src/agent_escalation_boundary/
+    ├── 003-agent-access-control/
+    │   ├── src/agent_access_control/
+    │   ├── policies/
+    │   ├── examples/
+    │   ├── tests/
+    │   ├── docs/
+    │   └── static/
+    ├── 004-agent-escalation-boundary/
+    │   ├── src/agent_escalation_boundary/
+    │   ├── policies/
+    │   ├── examples/
+    │   ├── tests/
+    │   ├── docs/
+    │   └── static/
+    └── 005-verifiable-action-receipts/
+        ├── src/verifiable_action_receipts/
         ├── policies/
         ├── examples/
         ├── tests/
@@ -50,7 +57,7 @@ from-my-desk-labs/
 There is **one FastAPI application** and **one Docker container**.
 
 - Global HTTP pages, templates, catalog, and brand assets live under `website/app/`.
-- Lab domain packages are installed from `pyproject.toml` (`know_your_agent`, `delegated_authority`, `agent_access_control`, `agent_escalation_boundary`).
+- Lab domain packages are installed from `pyproject.toml` (`know_your_agent`, `delegated_authority`, `agent_access_control`, `agent_escalation_boundary`, `verifiable_action_receipts`).
 - The numbered editorial directories cannot themselves be Python packages (they contain a hyphen).
 - Packages are installed from `pyproject.toml`. Local development may use `pip install -e .`. The production image uses a non-editable `pip install .`.
 - No multi-directory `PYTHONPATH` and no `sys.path` mutation.
@@ -68,6 +75,7 @@ Discovery is data-driven. Edit `website/catalog/labs.yaml`; do not hard-code edi
 | [002-delegated-authority](labs/002-delegated-authority) | KYA: Delegated Authority | Trust must narrow at every handoff. Parent-child delegation, APE, APSE, revocation, and restricted fallback. Never executes. |
 | [003-agent-access-control](labs/003-agent-access-control) | Agent Access Control | Progressive Live Authority Evaluation across agent, principal, action, tool, resource, purpose, limits, delegation, posture, and context. Never executes. |
 | [004-agent-escalation-boundary](labs/004-agent-escalation-boundary) | The Agent Escalation Boundary | Separates authorization (ALLOW/CONFIRM/STEP_UP/DENY) from execution judgment (PROCEED/CLARIFY/ESCALATE/STOP). Never executes. |
+| [005-verifiable-action-receipts](labs/005-verifiable-action-receipts) | Verifiable Action Receipts | Sealed fictional receipts connecting request, authority, judgment, human involvement, simulated execution, and integrity verification. Never executes against real systems. |
 
 ## Local setup
 

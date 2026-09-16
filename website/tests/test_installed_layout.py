@@ -50,6 +50,9 @@ def test_non_editable_install_resolves_explicit_paths(tmp_path):
     env["LAB004_DATA_DIR"] = str(REPO_ROOT / "labs" / "004-agent-escalation-boundary" / "examples")
     env["LAB004_POLICY_DIR"] = str(REPO_ROOT / "labs" / "004-agent-escalation-boundary" / "policies")
     env["LAB004_STATIC_DIR"] = str(REPO_ROOT / "labs" / "004-agent-escalation-boundary" / "static")
+    env["LAB005_DATA_DIR"] = str(REPO_ROOT / "labs" / "005-verifiable-action-receipts" / "examples")
+    env["LAB005_POLICY_DIR"] = str(REPO_ROOT / "labs" / "005-verifiable-action-receipts" / "policies")
+    env["LAB005_STATIC_DIR"] = str(REPO_ROOT / "labs" / "005-verifiable-action-receipts" / "static")
     env["POSTHOG_ENABLED"] = "false"
     env["PYTHONDONTWRITEBYTECODE"] = "1"
 
@@ -80,6 +83,7 @@ assert client.get('/labs/know-your-agent').status_code == 200
 assert client.get('/labs/delegated-authority').status_code == 200
 assert client.get('/labs/agent-access-control').status_code == 200
 assert client.get('/labs/agent-escalation-boundary').status_code == 200
+assert client.get('/labs/verifiable-action-receipts').status_code == 200
 assert client.get('/static/labs/002/system-architecture.svg').status_code == 200
 assert client.get('/static/labs/002/delegated-authority-workflow.svg').status_code == 200
 assert client.get('/static/labs/002/evaluation-flow.svg').status_code == 200
@@ -88,10 +92,15 @@ assert client.get('/static/labs/002/revocation-flow.svg').status_code == 200
 assert client.post('/api/labs/002/evaluate', json={{'scenario_id': 'valid_narrow_delegation'}}).json()['decision'] == 'allow'
 assert client.post('/api/labs/003/evaluate', json={{'scenario_id': 'managed_public_data_read'}}).json()['decision'] == 'allow'
 assert client.post('/api/labs/004/evaluate-preset/clear_session_revoke').json()['execution_outcome'] == 'proceed'
+lab005 = client.post('/api/labs/005/evaluate-preset/authorized_and_recorded').json()
+assert lab005['execution'] == 'not_performed'
+assert lab005['verification']['integrity_status'] == 'verified'
 assert client.get('/static/labs/003/nac-comparison.svg').status_code == 200
 assert client.get('/static/labs/003/lab.js').status_code == 200
 assert client.get('/static/labs/004/escalation-boundary.svg').status_code == 200
 assert client.get('/static/labs/004/lab.js').status_code == 200
+assert client.get('/static/labs/005/receipt-chain.svg').status_code == 200
+assert client.get('/static/labs/005/lab.js').status_code == 200
 css = client.get('/static/css/styles.css')
 assert css.status_code == 200
 assert '--navy:' in css.text

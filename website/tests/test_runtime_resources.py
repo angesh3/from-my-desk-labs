@@ -86,6 +86,7 @@ def test_required_routes_registered_once_in_safe_order():
         "lab002-static": ("/static/labs/002", []),
         "lab003-static": ("/static/labs/003", []),
         "lab004-static": ("/static/labs/004", []),
+        "lab005-static": ("/static/labs/005", []),
         "static": ("/static", []),
     }
     for name, (path, methods) in required.items():
@@ -96,7 +97,7 @@ def test_required_routes_registered_once_in_safe_order():
 
     # Exactly one of each critical path.
     paths = [row["path"] for row in table]
-    for path in ("/", "/labs", "/labs/{slug}", "/health", "/api/evaluate", "/api/labs/002/evaluate", "/api/labs/003/evaluate", "/api/labs/004/evaluate"):
+    for path in ("/", "/labs", "/labs/{slug}", "/health", "/api/evaluate", "/api/labs/002/evaluate", "/api/labs/003/evaluate", "/api/labs/004/evaluate", "/api/labs/005/generate"):
         assert paths.count(path) == 1, path
 
     home_idx = next(i for i, row in enumerate(table) if row["name"] == "home")
@@ -106,10 +107,11 @@ def test_required_routes_registered_once_in_safe_order():
     lab002_static_idx = next(i for i, row in enumerate(table) if row["name"] == "lab002-static")
     lab003_static_idx = next(i for i, row in enumerate(table) if row["name"] == "lab003-static")
     lab004_static_idx = next(i for i, row in enumerate(table) if row["name"] == "lab004-static")
+    lab005_static_idx = next(i for i, row in enumerate(table) if row["name"] == "lab005-static")
     static_idx = next(i for i, row in enumerate(table) if row["name"] == "static")
     health_idx = next(i for i, row in enumerate(table) if row["name"] == "health")
 
-    assert health_idx < home_idx < labs_idx < lab_idx < lab_static_idx < lab002_static_idx < lab003_static_idx < lab004_static_idx < static_idx
+    assert health_idx < home_idx < labs_idx < lab_idx < lab_static_idx < lab002_static_idx < lab003_static_idx < lab004_static_idx < lab005_static_idx < static_idx
 
     # Page routes must not be Mount objects; static mounts must not precede pages.
     for route in app.routes:

@@ -20,6 +20,9 @@ services:
       LAB004_STATIC_DIR: /srv/labs/004-agent-escalation-boundary/static
       LAB004_DATA_DIR: /srv/labs/004-agent-escalation-boundary/examples
       LAB004_POLICY_DIR: /srv/labs/004-agent-escalation-boundary/policies
+      LAB005_STATIC_DIR: /srv/labs/005-verifiable-action-receipts/static
+      LAB005_DATA_DIR: /srv/labs/005-verifiable-action-receipts/examples
+      LAB005_POLICY_DIR: /srv/labs/005-verifiable-action-receipts/policies
       PORT: "8080"
       POSTHOG_ENABLED: "false"
       POSTHOG_KEY: ""

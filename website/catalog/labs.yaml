@@ -90,3 +90,29 @@ labs:
     homepage_detail: "Adjust evidence, impact, reversibility and time sensitivity for a fictional security-operations case, then see why the execution judgment changes."
     homepage_safety: "The scenarios are fictional, and the Lab never performs a real security action."
     homepage_earlier_description: "A trustworthy agent is not one that always finishes the task. It recognizes when continuing alone would be unsafe."
+
+  - id: "005"
+    edition_number: 5
+    slug: verifiable-action-receipts
+    title: "Can We Prove What the Agent Actually Did?"
+    subtitle: "Trustworthy autonomy needs more than an activity log. It needs a verifiable record of request, authority, judgment, execution, and outcome."
+    summary: "Build and verify fictional action receipts that connect identity, delegated authority, policy decisions, human involvement, simulated tool activity, and integrity checks."
+    status: published
+    tags:
+      - Agent Governance
+      - Auditability
+      - Accountability
+      - Security
+      - Evidence
+      - Responsible AI
+    lab_url: /labs/verifiable-action-receipts
+    newsletter_url: "[EDITION_5_NEWSLETTER_URL]"
+    github_url: https://github.com/angesh3/from-my-desk-labs
+    interactive: true
+    featured: false
+    disclaimer: "This Lab is an educational receipt prototype using fictional data. It does not create production audit evidence, digitally sign production events, or perform security actions. Execution is never performed against real systems."
+    reader_title: "Verifiable Action Receipts"
+    homepage_lead: "An agent’s claim that it finished a task is not enough. Can we prove what it actually did—and why?"
+    homepage_detail: "Generate hash-protected fictional receipts for Cedar Quill Markets cases, then verify integrity, tampering, and broken receipt chains."
+    homepage_safety: "The scenarios are fictional, and the Lab never performs a real security action."
+    homepage_earlier_description: "A useful receipt binds intent, authority, judgment, execution, and outcome—not only an activity line."
