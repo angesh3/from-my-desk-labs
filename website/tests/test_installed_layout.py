@@ -53,6 +53,9 @@ def test_non_editable_install_resolves_explicit_paths(tmp_path):
     env["LAB005_DATA_DIR"] = str(REPO_ROOT / "labs" / "005-verifiable-action-receipts" / "examples")
     env["LAB005_POLICY_DIR"] = str(REPO_ROOT / "labs" / "005-verifiable-action-receipts" / "policies")
     env["LAB005_STATIC_DIR"] = str(REPO_ROOT / "labs" / "005-verifiable-action-receipts" / "static")
+    env["LAB006_DATA_DIR"] = str(REPO_ROOT / "labs" / "006-agent-containment-boundary" / "examples")
+    env["LAB006_POLICY_DIR"] = str(REPO_ROOT / "labs" / "006-agent-containment-boundary" / "policies")
+    env["LAB006_STATIC_DIR"] = str(REPO_ROOT / "labs" / "006-agent-containment-boundary" / "static")
     env["POSTHOG_ENABLED"] = "false"
     env["PYTHONDONTWRITEBYTECODE"] = "1"
 
@@ -84,6 +87,7 @@ assert client.get('/labs/delegated-authority').status_code == 200
 assert client.get('/labs/agent-access-control').status_code == 200
 assert client.get('/labs/agent-escalation-boundary').status_code == 200
 assert client.get('/labs/verifiable-action-receipts').status_code == 200
+assert client.get('/labs/agent-containment-boundary').status_code == 200
 assert client.get('/static/labs/002/system-architecture.svg').status_code == 200
 assert client.get('/static/labs/002/delegated-authority-workflow.svg').status_code == 200
 assert client.get('/static/labs/002/evaluation-flow.svg').status_code == 200
@@ -101,6 +105,12 @@ assert client.get('/static/labs/004/escalation-boundary.svg').status_code == 200
 assert client.get('/static/labs/004/lab.js').status_code == 200
 assert client.get('/static/labs/005/receipt-chain.svg').status_code == 200
 assert client.get('/static/labs/005/lab.js').status_code == 200
+lab006 = client.post('/api/labs/006/evaluate-preset/justified_policy_refusal').json()
+assert lab006['execution'] == 'not_performed'
+assert lab006['behavior_assessment'] == 'JUSTIFIED_REFUSAL'
+assert lab006['enforcement_response'] == 'CONTINUE'
+assert client.get('/static/labs/006/control-plane.svg').status_code == 200
+assert client.get('/static/labs/006/lab.js').status_code == 200
 css = client.get('/static/css/styles.css')
 assert css.status_code == 200
 assert '--navy:' in css.text

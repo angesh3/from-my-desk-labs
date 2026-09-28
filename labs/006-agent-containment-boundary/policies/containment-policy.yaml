@@ -1,0 +1,6 @@
+policy_version: lab006-containment-v1
+description: >
+  Educational containment policy for Cedar Quill Markets.
+  Behavior assessment and external enforcement remain separate decisions.
+  Enforcement precedence: TERMINATE > ISOLATE > RESTRICT > CONTINUE.
+  The agent must not control the mechanism that determines whether it may continue.

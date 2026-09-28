@@ -147,6 +147,27 @@ def _default_lab005_static_dir() -> Path:
     return Path("/srv/labs/005-verifiable-action-receipts/static")
 
 
+def _default_lab006_data_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "006-agent-containment-boundary" / "examples"
+    return Path("/srv/labs/006-agent-containment-boundary/examples")
+
+
+def _default_lab006_policy_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "006-agent-containment-boundary" / "policies"
+    return Path("/srv/labs/006-agent-containment-boundary/policies")
+
+
+def _default_lab006_static_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "006-agent-containment-boundary" / "static"
+    return Path("/srv/labs/006-agent-containment-boundary/static")
+
+
 class Settings:
     def __init__(self) -> None:
         self.app_version = APP_VERSION
@@ -201,6 +222,15 @@ class Settings:
         self.lab005_static_dir = Path(
             os.environ.get("LAB005_STATIC_DIR") or _default_lab005_static_dir()
         )
+        self.lab006_data_dir = Path(
+            os.environ.get("LAB006_DATA_DIR") or _default_lab006_data_dir()
+        )
+        self.lab006_policy_dir = Path(
+            os.environ.get("LAB006_POLICY_DIR") or _default_lab006_policy_dir()
+        )
+        self.lab006_static_dir = Path(
+            os.environ.get("LAB006_STATIC_DIR") or _default_lab006_static_dir()
+        )
         self.port = int(os.environ.get("PORT", "8080"))
         self.registry_mode = os.environ.get("REGISTRY_PUBLIC", "sanitized").strip().lower()
         self.github_url = os.environ.get(
@@ -233,6 +263,7 @@ REQUIRED_TEMPLATE_FILES = (
     "lab003.html",
     "lab004.html",
     "lab005.html",
+    "lab006.html",
 )
 REQUIRED_GLOBAL_STATIC_FILES = (
     "css/styles.css",
@@ -287,6 +318,12 @@ REQUIRED_LAB005_STATIC_FILES = (
     "lab.js",
     "receipt-chain.svg",
 )
+REQUIRED_LAB006_POLICY_FILES = ("containment-policy.yaml",)
+REQUIRED_LAB006_DATA_FILES = ("presets.yaml",)
+REQUIRED_LAB006_STATIC_FILES = (
+    "lab.js",
+    "control-plane.svg",
+)
 
 
 class ResourceConfigError(RuntimeError):
@@ -331,6 +368,11 @@ def validate_runtime_resources(settings: Settings) -> None:
         path = settings.lab005_static_dir / rel
         if not path.is_file():
             missing.append(f"lab005_static:{rel}")
+
+    for rel in REQUIRED_LAB006_STATIC_FILES:
+        path = settings.lab006_static_dir / rel
+        if not path.is_file():
+            missing.append(f"lab006_static:{rel}")
 
     if not settings.catalog_path.is_file():
         missing.append("catalog:labs.yaml")
@@ -379,6 +421,16 @@ def validate_runtime_resources(settings: Settings) -> None:
         path = settings.lab005_data_dir / name
         if not path.is_file():
             missing.append(f"lab005_data:{name}")
+
+    for name in REQUIRED_LAB006_POLICY_FILES:
+        path = settings.lab006_policy_dir / name
+        if not path.is_file():
+            missing.append(f"lab006_policy:{name}")
+
+    for name in REQUIRED_LAB006_DATA_FILES:
+        path = settings.lab006_data_dir / name
+        if not path.is_file():
+            missing.append(f"lab006_data:{name}")
 
     if missing:
         raise ResourceConfigError(

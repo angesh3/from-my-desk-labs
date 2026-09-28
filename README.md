@@ -6,7 +6,7 @@ This repository hosts the public companion site and any editions that include a 
 
 ```
 from-my-desk-labs/
-├── pyproject.toml          # installs know_your_agent, delegated_authority, agent_access_control, agent_escalation_boundary, verifiable_action_receipts
+├── pyproject.toml          # installs know_your_agent, delegated_authority, agent_access_control, agent_escalation_boundary, verifiable_action_receipts, agent_containment_boundary
 ├── Dockerfile
 ├── docker-compose.yml
 ├── website/
@@ -43,8 +43,15 @@ from-my-desk-labs/
     │   ├── tests/
     │   ├── docs/
     │   └── static/
-    └── 005-verifiable-action-receipts/
-        ├── src/verifiable_action_receipts/
+    ├── 005-verifiable-action-receipts/
+    │   ├── src/verifiable_action_receipts/
+    │   ├── policies/
+    │   ├── examples/
+    │   ├── tests/
+    │   ├── docs/
+    │   └── static/
+    └── 006-agent-containment-boundary/
+        ├── src/agent_containment_boundary/
         ├── policies/
         ├── examples/
         ├── tests/
@@ -57,7 +64,7 @@ from-my-desk-labs/
 There is **one FastAPI application** and **one Docker container**.
 
 - Global HTTP pages, templates, catalog, and brand assets live under `website/app/`.
-- Lab domain packages are installed from `pyproject.toml` (`know_your_agent`, `delegated_authority`, `agent_access_control`, `agent_escalation_boundary`, `verifiable_action_receipts`).
+- Lab domain packages are installed from `pyproject.toml` (`know_your_agent`, `delegated_authority`, `agent_access_control`, `agent_escalation_boundary`, `verifiable_action_receipts`, `agent_containment_boundary`).
 - The numbered editorial directories cannot themselves be Python packages (they contain a hyphen).
 - Packages are installed from `pyproject.toml`. Local development may use `pip install -e .`. The production image uses a non-editable `pip install .`.
 - No multi-directory `PYTHONPATH` and no `sys.path` mutation.
@@ -76,6 +83,7 @@ Discovery is data-driven. Edit `website/catalog/labs.yaml`; do not hard-code edi
 | [003-agent-access-control](labs/003-agent-access-control) | Agent Access Control | Progressive Live Authority Evaluation across agent, principal, action, tool, resource, purpose, limits, delegation, posture, and context. Never executes. |
 | [004-agent-escalation-boundary](labs/004-agent-escalation-boundary) | The Agent Escalation Boundary | Separates authorization (ALLOW/CONFIRM/STEP_UP/DENY) from execution judgment (PROCEED/CLARIFY/ESCALATE/STOP). Never executes. |
 | [005-verifiable-action-receipts](labs/005-verifiable-action-receipts) | Verifiable Action Receipts | Sealed fictional receipts connecting request, authority, judgment, human involvement, simulated execution, and integrity verification. Never executes against real systems. |
+| [006-agent-containment-boundary](labs/006-agent-containment-boundary) | The Agent Containment Boundary | Separates justified refusal from non-compliance and rogue evasion; external Continue / Restrict / Isolate / Terminate. Never executes. |
 
 ## Local setup
 
@@ -97,6 +105,9 @@ Open:
 - http://127.0.0.1:8080/labs/know-your-agent
 - http://127.0.0.1:8080/labs/delegated-authority
 - http://127.0.0.1:8080/labs/agent-access-control
+- http://127.0.0.1:8080/labs/agent-escalation-boundary
+- http://127.0.0.1:8080/labs/verifiable-action-receipts
+- http://127.0.0.1:8080/labs/agent-containment-boundary
 - http://127.0.0.1:8080/health
 
 ## Tests

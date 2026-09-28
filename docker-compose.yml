@@ -23,6 +23,9 @@ services:
       LAB005_STATIC_DIR: /srv/labs/005-verifiable-action-receipts/static
       LAB005_DATA_DIR: /srv/labs/005-verifiable-action-receipts/examples
       LAB005_POLICY_DIR: /srv/labs/005-verifiable-action-receipts/policies
+      LAB006_STATIC_DIR: /srv/labs/006-agent-containment-boundary/static
+      LAB006_DATA_DIR: /srv/labs/006-agent-containment-boundary/examples
+      LAB006_POLICY_DIR: /srv/labs/006-agent-containment-boundary/policies
       PORT: "8080"
       POSTHOG_ENABLED: "false"
       POSTHOG_KEY: ""

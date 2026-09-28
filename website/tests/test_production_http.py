@@ -19,6 +19,7 @@ PAGES = {
     "/labs/agent-access-control": "Agent Access Control",
     "/labs/agent-escalation-boundary": "Escalation Boundary",
     "/labs/verifiable-action-receipts": "Can We Prove What the Agent Actually Did?",
+    "/labs/agent-containment-boundary": "What If the Agent",
 }
 
 ASSET_URL_RE = re.compile(
