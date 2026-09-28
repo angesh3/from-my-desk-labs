@@ -1004,6 +1004,180 @@ pre {
   aspect-ratio: 960 / 420;
 }
 
+.lab006-question-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.lab006-intro .lab006-hero-title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.05em;
+  max-width: min(100%, 14em);
+  font-size: clamp(1.75rem, 3.5vw, 2.45rem);
+  line-height: 1.16;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.lab006-title-line {
+  display: block;
+  max-width: 100%;
+}
+.lab006-hero-sub {
+  font-size: 1.15rem;
+  color: var(--navy);
+  font-weight: 600;
+}
+.lab006-principle {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  background: var(--paper);
+  border-left: 3px solid var(--gold);
+}
+.lab006-question-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 1.1rem 1.2rem;
+}
+.lab006-question-card h3 {
+  margin: 0 0 0.45rem;
+  font-size: 1rem;
+  color: var(--navy);
+}
+.lab006-bullets {
+  margin: 1rem 0 0;
+  padding-left: 1.2rem;
+}
+.lab006-bullets li {
+  margin: 0.35rem 0;
+}
+.lab006-form {
+  display: grid;
+  gap: 1rem;
+}
+.lab006-fieldset {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  padding: 1rem 1.1rem 1.2rem;
+  margin: 0;
+}
+.lab006-fieldset legend {
+  padding: 0 0.35rem;
+  color: var(--navy);
+  font-weight: 700;
+}
+.lab006-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem 1rem;
+}
+.lab006-grid label {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+.lab006-grid select,
+.lab006-grid input,
+.lab006-grid textarea {
+  font: inherit;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  background: var(--ivory);
+  padding: 0.45rem 0.55rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.lab006-span-2 { grid-column: 1 / -1; }
+.lab006-check {
+  display: flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  grid-template-columns: none !important;
+}
+.lab006-check input { width: auto; }
+.lab006-result {
+  margin-top: 0.5rem;
+  padding: 1.1rem 1.2rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+.lab006-result h3,
+.lab006-result h4 {
+  margin: 1rem 0 0.35rem;
+  font-size: 1rem;
+  color: var(--navy);
+}
+.lab006-result h3 { margin-top: 0; }
+.lab006-result,
+.lab006-result p,
+.lab006-result li,
+.lab006-mono,
+.lab006-raw pre,
+.lab006-reason-list {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.lab006-result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1rem;
+  margin: 0.75rem 0 1rem;
+}
+.lab006-result-grid dt {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.lab006-result-grid dd {
+  margin: 0.15rem 0 0;
+  font-weight: 600;
+  color: var(--navy);
+}
+.lab006-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.92em;
+}
+.lab006-tone-continue .decision-label { color: var(--allow); }
+.lab006-tone-restrict .decision-label { color: var(--step); }
+.lab006-tone-isolate .decision-label { color: var(--step); }
+.lab006-tone-terminate .decision-label { color: var(--deny); }
+.lab006-raw {
+  margin-top: 1rem;
+}
+.lab006-raw pre {
+  overflow-x: auto;
+  background: var(--ivory);
+  border: 1px solid var(--line);
+  padding: 0.75rem;
+  font-size: 0.85rem;
+}
+.lab006-diagram {
+  margin: 1rem 0 0;
+}
+.lab006-diagram img {
+  width: 100%;
+  height: auto;
+  max-width: 920px;
+  aspect-ratio: 920 / 560;
+  background: var(--ivory);
+  border: 1px solid var(--line);
+}
+.lab006-diagram figcaption {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+.lab006-footer-note {
+  display: block;
+  margin: 1rem 0 0.75rem;
+}
+.lab006-footer-actions {
+  margin-top: 0;
+  flex-wrap: wrap;
+}
+
 @media (max-width: 768px) {
   .earlier-lab-grid {
     grid-template-columns: 1fr;
@@ -1011,14 +1185,19 @@ pre {
   .lab004-question-grid,
   .lab004-grid,
   .lab005-question-grid,
-  .lab005-grid {
+  .lab005-grid,
+  .lab006-question-grid,
+  .lab006-grid,
+  .lab006-result-grid {
     grid-template-columns: 1fr;
   }
-  .lab005-intro .lab005-hero-title {
+  .lab005-intro .lab005-hero-title,
+  .lab006-intro .lab006-hero-title {
     max-width: 100%;
     font-size: clamp(1.65rem, 7vw, 2.1rem);
   }
-  .lab005-footer-actions .button {
+  .lab005-footer-actions .button,
+  .lab006-footer-actions .button {
     width: 100%;
     text-align: center;
   }

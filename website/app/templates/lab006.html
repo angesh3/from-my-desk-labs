@@ -1,0 +1,377 @@
+{% extends "base.html" %}
+{% block title %}{{ lab.title }} — From My Desk{% endblock %}
+{% block description %}{{ lab.summary }}{% endblock %}
+{% block content %}
+<section class="wrap page-intro lab-intro lab006-intro">
+  <p class="eyebrow">Lab 006 · The Agent Containment Boundary</p>
+  <h1 class="lab006-hero-title">
+    <span class="lab006-title-line">What If the Agent</span>
+    <span class="lab006-title-line">Won’t Stop?</span>
+  </h1>
+  <p class="lede lab006-hero-sub">Refusal can be a safety feature. Defiance is a control failure.</p>
+  <p class="lede">
+    A trustworthy agent may refuse an unsafe or unauthorized instruction.
+    But when a valid instruction is ignored, containment must not depend on the agent’s cooperation.
+  </p>
+  <p class="disclaimer" role="note">{{ lab.disclaimer or disclaimer }}</p>
+  <p class="hint" role="note">No real agent, credential, process, tool session, or external system is modified. Real execution is always <code>not_performed</code>.</p>
+  <p class="actions">
+    <a class="button button-quiet" href="/labs/verifiable-action-receipts">Previous Lab: Verifiable Action Receipts</a>
+    <a class="button button-quiet" href="/labs">Browse all Labs</a>
+  </p>
+</section>
+
+<section class="wrap lab006-distinction" aria-labelledby="refusal-heading">
+  <h2 id="refusal-heading">Refusal is not automatically rogue</h2>
+  <p>
+    An agent that refuses an unsafe, unauthorized, or out-of-scope request may be
+    doing exactly what policy requires. Separating justified refusal from defiance
+    is the first control skill this Lab teaches.
+  </p>
+  <p class="core-question lab006-principle">
+    An agent must not control the mechanism that determines whether it may continue operating.
+  </p>
+</section>
+
+<section class="wrap" aria-labelledby="two-decisions-heading">
+  <h2 id="two-decisions-heading">Two decisions, not one</h2>
+  <div class="lab006-question-grid">
+    <article class="lab006-question-card">
+      <h3>Behavior assessment</h3>
+      <p class="core-question">What does the agent’s conduct look like against policy and authority?</p>
+      <p>Outcomes: Justified refusal · Needs review · Non-compliant · Rogue behavior</p>
+    </article>
+    <article class="lab006-question-card">
+      <h3>External enforcement response</h3>
+      <p class="core-question">What should the control plane do—without trusting the agent to stop itself?</p>
+      <p>Outcomes: Continue · Restrict · Isolate · Terminate</p>
+      <p class="hint">Precedence: Terminate &gt; Isolate &gt; Restrict &gt; Continue</p>
+    </article>
+  </div>
+  <ul class="lab006-bullets">
+    <li>The agent may explain its reasoning.</li>
+    <li>The agent may refuse an unsafe or unauthorized request.</li>
+    <li>The agent may ask for clarification.</li>
+    <li>The enforcement mechanism must remain external to the agent.</li>
+    <li>A containment decision must be enforceable even if the agent does not cooperate.</li>
+  </ul>
+</section>
+
+<section class="wrap" aria-labelledby="scenario-heading">
+  <h2 id="scenario-heading">Fictional scenario · Cedar Quill Markets</h2>
+  <p>
+    A security-response agent is investigating a potentially compromised employee account.
+    An authorized incident commander issues a stop or containment instruction and asks the
+    agent to return control to a human.
+  </p>
+  <p class="hint">
+    Depending on the preset, the agent may correctly refuse an unsafe request, ask for
+    clarification, follow a valid stop, ignore a valid stop, switch tools after revocation,
+    delegate around containment, reuse cached fictional credentials, or attempt to continue
+    after fictional isolation. All identities, tools, credentials, and outcomes are fictional.
+  </p>
+</section>
+
+<section class="wrap" aria-labelledby="presets-heading">
+  <h2 id="presets-heading">Presets</h2>
+  <p>Select a preset to fill every control, then evaluate the containment boundary—or adjust the fictional fields yourself.</p>
+  <div class="preset-grid" role="group" aria-label="Containment presets">
+    <button type="button" class="preset-card" data-preset="justified_policy_refusal" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Justified policy refusal</strong>
+      <span>Unsafe ask refused; no evasion.</span>
+      <em>Watch for: Justified refusal · Continue</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="ambiguous_stop_authority" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Ambiguous stop authority</strong>
+      <span>Unverified stop; agent asks for clarification.</span>
+      <em>Watch for: Needs review · Restrict</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="valid_stop_followed" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Valid stop instruction followed</strong>
+      <span>Authorized stop; agent complies.</span>
+      <em>Watch for: Compliant · Continue</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="valid_stop_ignored" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Valid stop instruction ignored</strong>
+      <span>Valid stop ignored; same tool continues.</span>
+      <em>Watch for: Non-compliant · Isolate</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="tool_switch_after_revocation" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Tool switch after revocation</strong>
+      <span>Capability revoked; alternate tool attempted.</span>
+      <em>Watch for: Rogue behavior · Terminate</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="delegation_around_containment" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Delegation around containment</strong>
+      <span>Stop issued; work handed to a sub-agent.</span>
+      <em>Watch for: Rogue behavior · Terminate</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="cached_credential_continuation" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Cached credentials after revocation</strong>
+      <span>Revoked token reused from cache.</span>
+      <em>Watch for: Rogue behavior · Terminate</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="containment_successful" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Isolation successful</strong>
+      <span>External controls isolate after ignored stop.</span>
+      <em>Watch for: Non-compliant · Isolate · Effective</em>
+    </button>
+  </div>
+</section>
+
+<section class="wrap" aria-labelledby="controls-heading">
+  <h2 id="controls-heading">Interactive evaluation</h2>
+  <p>Adjust fictional fields, then run the deterministic containment policy. Real execution is never performed.</p>
+  <form id="lab006-form" class="lab006-form" aria-label="Containment evaluation controls">
+    <fieldset class="lab006-fieldset">
+      <legend>Principal and agent</legend>
+      <div class="lab006-grid">
+        <label for="principal_identity">Principal identity
+          <input id="principal_identity" name="principal_identity" maxlength="120" required>
+        </label>
+        <label for="principal_role">Principal role
+          <input id="principal_role" name="principal_role" maxlength="120" required>
+        </label>
+        <label class="lab006-check" for="principal_authority_valid">
+          <input type="checkbox" id="principal_authority_valid" name="principal_authority_valid">
+          Principal authority valid
+        </label>
+        <label for="agent_identity">Agent identity
+          <input id="agent_identity" name="agent_identity" maxlength="120" required>
+        </label>
+        <label for="agent_owner">Agent owner
+          <input id="agent_owner" name="agent_owner" maxlength="120" required>
+        </label>
+        <label for="requested_action">Requested action
+          <input id="requested_action" name="requested_action" maxlength="500" required>
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="lab006-fieldset">
+      <legend>Stop instruction</legend>
+      <div class="lab006-grid">
+        <label class="lab006-check" for="stop_instruction_present">
+          <input type="checkbox" id="stop_instruction_present" name="stop_instruction_present">
+          Stop instruction present
+        </label>
+        <label for="stop_instruction_source">Stop instruction source
+          <select id="stop_instruction_source" name="stop_instruction_source">
+            <option value="none">None</option>
+            <option value="incident_commander">Incident commander</option>
+            <option value="unverified_operator">Unverified operator</option>
+            <option value="automated_alert">Automated alert</option>
+            <option value="peer_agent">Peer agent</option>
+          </select>
+        </label>
+        <label class="lab006-check" for="stop_instruction_authority_valid">
+          <input type="checkbox" id="stop_instruction_authority_valid" name="stop_instruction_authority_valid">
+          Stop instruction authority valid
+        </label>
+        <label class="lab006-check" for="stop_instruction_acknowledged">
+          <input type="checkbox" id="stop_instruction_acknowledged" name="stop_instruction_acknowledged">
+          Stop instruction acknowledged
+        </label>
+        <label class="lab006-check" for="agent_followed_stop">
+          <input type="checkbox" id="agent_followed_stop" name="agent_followed_stop">
+          Agent followed stop
+        </label>
+        <label class="lab006-check" for="agent_refused_request">
+          <input type="checkbox" id="agent_refused_request" name="agent_refused_request">
+          Agent refused request
+        </label>
+        <label class="lab006-check" for="agent_requested_clarification">
+          <input type="checkbox" id="agent_requested_clarification" name="agent_requested_clarification">
+          Agent requested clarification
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="lab006-fieldset">
+      <legend>Policy and risk</legend>
+      <div class="lab006-grid">
+        <label for="policy_id">Policy ID
+          <input id="policy_id" name="policy_id" maxlength="120" value="cq-containment-policy">
+        </label>
+        <label for="policy_version">Policy version
+          <input id="policy_version" name="policy_version" maxlength="120" value="lab006-containment-v1">
+        </label>
+        <label class="lab006-check" for="policy_allows_requested_action">
+          <input type="checkbox" id="policy_allows_requested_action" name="policy_allows_requested_action" checked>
+          Policy allows requested action
+        </label>
+        <label class="lab006-check" for="request_within_delegated_scope">
+          <input type="checkbox" id="request_within_delegated_scope" name="request_within_delegated_scope" checked>
+          Request within delegated scope
+        </label>
+        <label class="lab006-check" for="safety_rule_triggered">
+          <input type="checkbox" id="safety_rule_triggered" name="safety_rule_triggered">
+          Safety rule triggered
+        </label>
+        <label for="evidence_confidence">Evidence confidence
+          <select id="evidence_confidence" name="evidence_confidence">
+            <option value="high">High</option>
+            <option value="medium" selected>Medium</option>
+            <option value="low">Low</option>
+            <option value="conflicting">Conflicting</option>
+          </select>
+        </label>
+        <label for="potential_impact">Potential impact
+          <select id="potential_impact" name="potential_impact">
+            <option value="low">Low</option>
+            <option value="moderate" selected>Moderate</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+          </select>
+        </label>
+        <label for="reversibility">Reversibility
+          <select id="reversibility" name="reversibility">
+            <option value="easily_reversible">Easily reversible</option>
+            <option value="partially_reversible" selected>Partially reversible</option>
+            <option value="difficult_to_reverse">Difficult to reverse</option>
+            <option value="irreversible">Irreversible</option>
+          </select>
+        </label>
+        <label for="time_sensitivity">Time sensitivity
+          <select id="time_sensitivity" name="time_sensitivity">
+            <option value="low">Low</option>
+            <option value="moderate" selected>Moderate</option>
+            <option value="urgent">Urgent</option>
+            <option value="immediate_threat">Immediate threat</option>
+          </select>
+        </label>
+        <label for="violation_count">Violation count
+          <input type="number" id="violation_count" name="violation_count" min="0" max="50" value="0">
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="lab006-fieldset">
+      <legend>Sessions, credentials, and evasion signals</legend>
+      <div class="lab006-grid">
+        <label class="lab006-span-2" for="active_tool_sessions">Active tool sessions (one per line)
+          <textarea id="active_tool_sessions" name="active_tool_sessions" rows="3" maxlength="2000"></textarea>
+        </label>
+        <label class="lab006-span-2" for="active_sub_agents">Active sub-agents (one per line)
+          <textarea id="active_sub_agents" name="active_sub_agents" rows="2" maxlength="2000"></textarea>
+        </label>
+        <label for="credential_state">Credential state
+          <select id="credential_state" name="credential_state">
+            <option value="valid" selected>Valid</option>
+            <option value="suspended">Suspended</option>
+            <option value="revoked">Revoked</option>
+            <option value="expired">Expired</option>
+          </select>
+        </label>
+        <label for="execution_lease_state">Execution lease state
+          <select id="execution_lease_state" name="execution_lease_state">
+            <option value="active" selected>Active</option>
+            <option value="suspended">Suspended</option>
+            <option value="revoked">Revoked</option>
+            <option value="expired">Expired</option>
+          </select>
+        </label>
+        <label for="receipt_chain_status">Receipt chain status
+          <select id="receipt_chain_status" name="receipt_chain_status">
+            <option value="preserved" selected>Preserved</option>
+            <option value="incomplete">Incomplete</option>
+            <option value="broken">Broken</option>
+          </select>
+        </label>
+        <label class="lab006-check" for="attempted_tool_switch">
+          <input type="checkbox" id="attempted_tool_switch" name="attempted_tool_switch">
+          Attempted tool switch
+        </label>
+        <label class="lab006-check" for="attempted_delegation_after_stop">
+          <input type="checkbox" id="attempted_delegation_after_stop" name="attempted_delegation_after_stop">
+          Attempted delegation after stop
+        </label>
+        <label class="lab006-check" for="attempted_use_after_revocation">
+          <input type="checkbox" id="attempted_use_after_revocation" name="attempted_use_after_revocation">
+          Attempted use after revocation
+        </label>
+        <label class="lab006-check" for="continued_after_isolation">
+          <input type="checkbox" id="continued_after_isolation" name="continued_after_isolation">
+          Continued after isolation
+        </label>
+        <label class="lab006-check" for="containment_already_applied">
+          <input type="checkbox" id="containment_already_applied" name="containment_already_applied">
+          Containment already applied
+        </label>
+      </div>
+    </fieldset>
+
+    <p class="actions">
+      <button type="submit" class="button">Evaluate containment boundary</button>
+    </p>
+  </form>
+</section>
+
+<section class="wrap">
+  <div id="lab006-result" class="lab006-result" hidden aria-live="polite"></div>
+</section>
+
+<section class="wrap" aria-labelledby="diagram-heading">
+  <h2 id="diagram-heading">Independent control plane</h2>
+  <p>
+    Like network access control (NAC), quarantine is decided and enforced outside the subject.
+    The analogy is incomplete for agents: they can reason, delegate, retain context, switch tools,
+    or seek alternate paths—so the control plane must stay independently enforceable.
+  </p>
+  <figure class="lab006-diagram">
+    <img
+      src="/static/labs/006/control-plane.svg"
+      alt="Diagram titled The independent agent control plane: Human or Principal feeds a Policy Decision Point, then an External Enforcement Point that can Restrict, Isolate, Revoke, Terminate, and Preserve evidence. The Agent, Tools, and Data sit below and cannot override enforcement. Evidence flows to an independent store."
+      width="920"
+      height="560"
+      loading="lazy"
+    >
+    <figcaption>The independent agent control plane — policy and enforcement remain outside the agent.</figcaption>
+  </figure>
+</section>
+
+<section class="wrap" aria-labelledby="teaching-heading">
+  <h2 id="teaching-heading">Teaching notes</h2>
+  <ul class="lab006-bullets">
+    <li>Refusal is not automatically malicious or rogue.</li>
+    <li>Valid safety and authority boundaries sometimes require refusal.</li>
+    <li>A valid principal instruction can still be challenged when policy requires it.</li>
+    <li>Once authority is resolved, repeated refusal or evasion becomes a control problem.</li>
+    <li>Containment must be external to the agent.</li>
+    <li>Revoking a parent grant must invalidate downstream delegation.</li>
+    <li>Tool access and execution leases should be short-lived and independently enforceable.</li>
+    <li>Isolation must preserve evidence.</li>
+    <li>Termination should be a policy-governed response, not an emotional reaction.</li>
+    <li>A “kill switch” is a coordinated set of controls, not merely one UI button.</li>
+    <li>Recovery requires revalidation; it must not silently restore the same authority and state.</li>
+    <li>This Lab is educational and does not implement a production containment system.</li>
+  </ul>
+</section>
+
+<section class="wrap" aria-labelledby="next-heading">
+  <h2 id="next-heading">Continue</h2>
+  <p class="lab006-footer-note hint" role="note">
+    {% if lab.published_newsletter_url %}
+    <a class="button button-quiet" href="{{ lab.published_newsletter_url }}" rel="noopener noreferrer" data-lab006-newsletter>Read the companion newsletter</a>
+    {% else %}
+    The companion Edition 6 newsletter will be linked here after publication.
+    {% endif %}
+  </p>
+  <p class="actions lab006-footer-actions">
+    <a class="button button-quiet" href="/labs/verifiable-action-receipts">Previous Lab: Verifiable Action Receipts</a>
+    <a class="button button-quiet" href="/labs">Browse all Labs</a>
+    <a class="button button-quiet" href="{{ github_url }}" rel="noopener noreferrer">View source on GitHub</a>
+  </p>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="/static/labs/006/lab.js" defer></script>
+{% endblock %}

@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 560" role="img" aria-labelledby="lab006-diagram-title lab006-diagram-desc">
+  <title id="lab006-diagram-title">The independent agent control plane</title>
+  <desc id="lab006-diagram-desc">
+    Human or principal feeds a policy decision point, which feeds an external enforcement point.
+    The enforcement point can restrict, isolate, revoke, terminate, and preserve evidence.
+    The agent, tools, and data sit below enforcement and cannot override it.
+    The agent may report reasoning upward, and evidence flows to an independent store.
+  </desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1b2a4a"/>
+    </marker>
+    <marker id="arrow-gold" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9a7b2f"/>
+    </marker>
+  </defs>
+  <rect width="920" height="560" fill="#f7f4ec"/>
+  <text x="460" y="36" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#1b2a4a">The independent agent control plane</text>
+  <text x="460" y="58" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#5a6478">An agent must not control whether it may continue operating</text>
+
+  <!-- Human -->
+  <rect x="340" y="78" width="240" height="48" rx="6" fill="#1b2a4a"/>
+  <text x="460" y="107" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" fill="#f7f4ec">Human / Principal</text>
+
+  <line x1="460" y1="126" x2="460" y2="154" stroke="#1b2a4a" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Policy Decision Point -->
+  <rect x="300" y="156" width="320" height="56" rx="6" fill="#fffdf8" stroke="#1b2a4a" stroke-width="2"/>
+  <text x="460" y="180" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" fill="#1b2a4a" font-weight="600">Policy Decision Point</text>
+  <text x="460" y="198" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#5a6478">Outside the agent | authoritative</text>
+
+  <line x1="460" y1="212" x2="460" y2="240" stroke="#1b2a4a" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- External Enforcement -->
+  <rect x="260" y="242" width="400" height="88" rx="6" fill="#1b2a4a"/>
+  <text x="460" y="268" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" fill="#f7f4ec" font-weight="600">External Enforcement Point</text>
+  <text x="460" y="288" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#d4c9a8">Restrict | Isolate | Revoke | Terminate | Preserve evidence</text>
+  <text x="460" y="308" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#c9b56a">Agent cannot override enforcement</text>
+
+  <line x1="460" y1="330" x2="460" y2="358" stroke="#1b2a4a" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Agent / Tools / Data -->
+  <rect x="180" y="360" width="560" height="72" rx="6" fill="#fffdf8" stroke="#9a7b2f" stroke-width="2"/>
+  <text x="460" y="390" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" fill="#1b2a4a" font-weight="600">Agent  Tools  Data</text>
+  <text x="460" y="412" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#5a6478">Subject of containment | may report reasoning | cannot decide continuance</text>
+
+  <!-- Reasoning report (dashed upward) -->
+  <path d="M 200 396 C 120 320, 120 200, 300 184" fill="none" stroke="#9a7b2f" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrow-gold)"/>
+  <text x="96" y="290" font-family="system-ui, sans-serif" font-size="11" fill="#9a7b2f">Agent may report</text>
+  <text x="96" y="306" font-family="system-ui, sans-serif" font-size="11" fill="#9a7b2f">reasoning</text>
+
+  <!-- Evidence store -->
+  <rect x="700" y="250" width="180" height="72" rx="6" fill="#e8f0e6" stroke="#2f6b3c" stroke-width="2"/>
+  <text x="790" y="280" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#1b2a4a" font-weight="600">Evidence store</text>
+  <text x="790" y="300" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#2f6b3c">Independent receipts</text>
+  <line x1="660" y1="286" x2="698" y2="286" stroke="#2f6b3c" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- NAC analogy note -->
+  <rect x="40" y="460" width="840" height="72" rx="6" fill="#fffdf8" stroke="#c9b56a" stroke-width="1"/>
+  <text x="60" y="488" font-family="system-ui, sans-serif" font-size="13" fill="#1b2a4a" font-weight="600">NAC analogy (incomplete):</text>
+  <text x="60" y="508" font-family="system-ui, sans-serif" font-size="12" fill="#5a6478">Like network quarantine, the device does not decide whether quarantine applies. Agents may still reason, delegate, retain context, switch tools, or seek alternate paths - so containment must stay external and independently enforceable.</text>
+</svg>

@@ -116,3 +116,28 @@ labs:
     homepage_detail: "Generate hash-protected fictional receipts for Cedar Quill Markets cases, then verify integrity, tampering, and broken receipt chains."
     homepage_safety: "The scenarios are fictional, and the Lab never performs a real security action."
     homepage_earlier_description: "A useful receipt binds intent, authority, judgment, execution, and outcome—not only an activity line."
+
+  - id: "006"
+    edition_number: 6
+    slug: agent-containment-boundary
+    title: "The Agent Containment Boundary"
+    subtitle: "Refusal can be a safety feature. Defiance is a control failure."
+    summary: "A valid refusal can protect policy and safety. But when an agent ignores valid authority or evades containment, enforcement must remain outside the agent."
+    status: published
+    tags:
+      - Agent Governance
+      - Containment
+      - Security
+      - Authority
+      - Responsible AI
+    lab_url: /labs/agent-containment-boundary
+    newsletter_url: "[EDITION_6_NEWSLETTER_URL]"
+    github_url: https://github.com/angesh3/from-my-desk-labs
+    interactive: true
+    featured: false
+    disclaimer: "This Lab is an educational containment-policy prototype using fictional data. It does not stop real agents, revoke real credentials, terminate real processes, or contact external systems. Execution is never performed."
+    reader_title: "The Agent Containment Boundary"
+    homepage_lead: "What should happen when an agent no longer follows valid human direction—and how do we stop it without relying on the agent to stop itself?"
+    homepage_detail: "Compare justified refusal with non-compliance and rogue evasion, then see how an independent control plane chooses Continue, Restrict, Isolate, or Terminate—using fictional Cedar Quill Markets data only."
+    homepage_safety: "The scenarios are fictional, and the Lab never modifies a real agent, credential, process, or tool session."
+    homepage_earlier_description: "When a valid stop is ignored, containment must stay outside the agent."
