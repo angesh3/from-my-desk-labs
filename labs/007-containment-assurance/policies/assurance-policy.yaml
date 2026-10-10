@@ -1,0 +1,8 @@
+policy_version: lab007-assurance-v1
+description: >
+  Educational containment-assurance policy for Cedar Quill Markets.
+  Enforcement intention and assurance outcome remain separate.
+  Precedence: FAILED > PARTIAL > UNVERIFIED > CONFIRMED.
+  An agent must never assess or certify its own containment.
+  CONFIRMED requires positive independent evidence within the evidence window;
+  it is not absolute proof that no unknown path exists.

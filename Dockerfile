@@ -32,6 +32,10 @@ COPY labs/006-agent-containment-boundary/src /srv/labs/006-agent-containment-bou
 COPY labs/006-agent-containment-boundary/policies /srv/labs/006-agent-containment-boundary/policies
 COPY labs/006-agent-containment-boundary/examples /srv/labs/006-agent-containment-boundary/examples
 COPY labs/006-agent-containment-boundary/static /srv/labs/006-agent-containment-boundary/static
+COPY labs/007-containment-assurance/src /srv/labs/007-containment-assurance/src
+COPY labs/007-containment-assurance/policies /srv/labs/007-containment-assurance/policies
+COPY labs/007-containment-assurance/examples /srv/labs/007-containment-assurance/examples
+COPY labs/007-containment-assurance/static /srv/labs/007-containment-assurance/static
 
 RUN pip install --no-cache-dir .
 
@@ -55,6 +59,9 @@ ENV LAB005_POLICY_DIR=/srv/labs/005-verifiable-action-receipts/policies
 ENV LAB006_STATIC_DIR=/srv/labs/006-agent-containment-boundary/static
 ENV LAB006_DATA_DIR=/srv/labs/006-agent-containment-boundary/examples
 ENV LAB006_POLICY_DIR=/srv/labs/006-agent-containment-boundary/policies
+ENV LAB007_STATIC_DIR=/srv/labs/007-containment-assurance/static
+ENV LAB007_DATA_DIR=/srv/labs/007-containment-assurance/examples
+ENV LAB007_POLICY_DIR=/srv/labs/007-containment-assurance/policies
 ENV APP_VERSION=0.4.0
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1

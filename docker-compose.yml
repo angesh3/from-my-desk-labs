@@ -26,6 +26,9 @@ services:
       LAB006_STATIC_DIR: /srv/labs/006-agent-containment-boundary/static
       LAB006_DATA_DIR: /srv/labs/006-agent-containment-boundary/examples
       LAB006_POLICY_DIR: /srv/labs/006-agent-containment-boundary/policies
+      LAB007_STATIC_DIR: /srv/labs/007-containment-assurance/static
+      LAB007_DATA_DIR: /srv/labs/007-containment-assurance/examples
+      LAB007_POLICY_DIR: /srv/labs/007-containment-assurance/policies
       PORT: "8080"
       POSTHOG_ENABLED: "false"
       POSTHOG_KEY: ""

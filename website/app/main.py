@@ -37,6 +37,8 @@ from verifiable_action_receipts.gateway import get_lab005_bundle, router as lab0
 from verifiable_action_receipts.loader import Lab005ConfigError
 from agent_containment_boundary.gateway import get_lab006_bundle, router as lab006_router
 from agent_containment_boundary.loader import Lab006ConfigError
+from containment_assurance.gateway import get_lab007_bundle, router as lab007_router
+from containment_assurance.loader import Lab007ConfigError
 
 mimetypes.add_type("image/webp", ".webp")
 mimetypes.add_type("image/svg+xml", ".svg")
@@ -88,6 +90,9 @@ async def lifespan(app: FastAPI):
         os.environ.setdefault("LAB006_DATA_DIR", str(settings.lab006_data_dir))
         os.environ.setdefault("LAB006_POLICY_DIR", str(settings.lab006_policy_dir))
         get_lab006_bundle()
+        os.environ.setdefault("LAB007_DATA_DIR", str(settings.lab007_data_dir))
+        os.environ.setdefault("LAB007_POLICY_DIR", str(settings.lab007_policy_dir))
+        get_lab007_bundle()
     except (
         CatalogError,
         PolicyConfigError,
@@ -96,6 +101,7 @@ async def lifespan(app: FastAPI):
         Lab004ConfigError,
         Lab005ConfigError,
         Lab006ConfigError,
+        Lab007ConfigError,
         ResourceConfigError,
     ) as exc:
         raise RuntimeError(
@@ -126,6 +132,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             "/api/labs/004/evaluate",
             "/api/labs/005/generate",
             "/api/labs/006/evaluate",
+            "/api/labs/007/evaluate",
         } and request.method == "POST":
             limiter = _limiter
             if limiter is not None:
@@ -202,6 +209,7 @@ async def validation_handler(request: Request, exc: RequestValidationError):
         "/api/labs/004/evaluate",
         "/api/labs/005/generate",
         "/api/labs/006/evaluate",
+        "/api/labs/007/evaluate",
     }:
         return JSONResponse(
             status_code=422,
@@ -235,6 +243,7 @@ app.include_router(lab003_router)
 app.include_router(lab004_router)
 app.include_router(lab005_router)
 app.include_router(lab006_router)
+app.include_router(lab007_router)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -306,6 +315,12 @@ def lab_page(request: Request, slug: str) -> HTMLResponse:
             "lab006.html",
             _page_context(request, lab=entry),
         )
+    if slug == "containment-assurance":
+        return TEMPLATES.TemplateResponse(
+            request,
+            "lab007.html",
+            _page_context(request, lab=entry),
+        )
     raise HTTPException(status_code=404, detail="This edition does not have an interactive page yet.")
 
 
@@ -339,6 +354,11 @@ app.mount(
     "/static/labs/006",
     StaticFiles(directory=str(_settings.lab006_static_dir)),
     name="lab006-static",
+)
+app.mount(
+    "/static/labs/007",
+    StaticFiles(directory=str(_settings.lab007_static_dir)),
+    name="lab007-static",
 )
 app.mount(
     "/static",

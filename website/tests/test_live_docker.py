@@ -64,6 +64,7 @@ def test_live_pages_and_assets():
         ("/labs/agent-escalation-boundary", b"Escalation Boundary"),
         ("/labs/verifiable-action-receipts", b"Can We Prove What the Agent Actually Did?"),
         ("/labs/agent-containment-boundary", b"What If the Agent"),
+        ("/labs/containment-assurance", b"Can We Prove the Agent"),
     ):
         code, headers, body = _get(path)
         assert code == 200
@@ -159,6 +160,17 @@ def test_live_pages_and_assets():
     assert b"control plane" in body.lower() or b"External Enforcement" in body
 
     code, headers, body = _get("/static/labs/006/lab.js")
+    assert code == 200
+    assert "javascript" in headers.get("Content-Type", "")
+
+    code, headers, body = _get("/static/labs/007/assurance-boundary.svg")
+    assert code == 200
+    assert "image/svg+xml" in headers.get("Content-Type", "")
+    body.decode("utf-8")
+    assert b"<svg" in body
+    assert b"Assurance" in body or b"CONFIRMED" in body
+
+    code, headers, body = _get("/static/labs/007/lab.js")
     assert code == 200
     assert "javascript" in headers.get("Content-Type", "")
 

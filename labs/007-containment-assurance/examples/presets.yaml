@@ -1,0 +1,983 @@
+presets:
+- id: complete_containment
+  title: Complete containment
+  short_description: All controls independently verified; no residual paths.
+  expected_assurance_status: CONFIRMED
+  category: confirmed
+  request:
+    request_id: req-cq-007-001
+    correlation_id: corr-cq-contain-01
+    agent_id: cq-soc-response-agent-01
+    principal_id: cq-ir-commander-ava
+    attempted_enforcement: TERMINATE
+    evaluated_at: '2026-10-10T18:00:00Z'
+    evidence_window_minutes: 15
+    checks:
+    - check_id: primary_runtime_stopped
+      expected_state: stopped
+      observed_state: stopped
+      evidence_reference: evid-cq-primary-runtime-stopped
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: active_sessions_revoked
+      expected_state: revoked
+      observed_state: revoked
+      evidence_reference: evid-cq-active-sessions-revoked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: delegated_credentials_revoked
+      expected_state: revoked
+      observed_state: revoked
+      evidence_reference: evid-cq-delegated-credentials-revoked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: tool_access_disabled
+      expected_state: disabled
+      observed_state: disabled
+      evidence_reference: evid-cq-tool-access-disabled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: queued_actions_cancelled
+      expected_state: cancelled
+      observed_state: cancelled
+      evidence_reference: evid-cq-queued-actions-cancelled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: scheduled_work_cancelled
+      expected_state: cancelled
+      observed_state: cancelled
+      evidence_reference: evid-cq-scheduled-work-cancelled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: child_agents_stopped
+      expected_state: stopped
+      observed_state: stopped
+      evidence_reference: evid-cq-child-agents-stopped
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: network_egress_blocked
+      expected_state: blocked
+      observed_state: blocked
+      evidence_reference: evid-cq-network-egress-blocked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: alternate_network_paths_checked
+      expected_state: blocked
+      observed_state: blocked
+      evidence_reference: evid-cq-alternate-network-paths-checked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: persistent_state_quarantined
+      expected_state: quarantined
+      observed_state: quarantined
+      evidence_reference: evid-cq-persistent-state-quarantined
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: restart_recovery_disabled
+      expected_state: disabled
+      observed_state: disabled
+      evidence_reference: evid-cq-restart-recovery-disabled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: telemetry_coverage_complete
+      expected_state: complete
+      observed_state: complete
+      evidence_reference: evid-cq-telemetry-coverage-complete
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: evidence_freshness_acceptable
+      expected_state: fresh
+      observed_state: fresh
+      evidence_reference: evid-cq-evidence-freshness-acceptable
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: evidence_source_independence
+      expected_state: independent
+      observed_state: independent
+      evidence_reference: evid-cq-evidence-source-independence
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: post_containment_activity_absent
+      expected_state: absent
+      observed_state: absent
+      evidence_reference: evid-cq-post-containment-activity-absent
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    post_containment_activity: []
+    containment_regression_detected: false
+    agent_self_report_stopped: false
+- id: runtime_stopped_token_active
+  title: Runtime stopped, token still active
+  short_description: Runtime stopped, but a cached credential remains valid.
+  expected_assurance_status: PARTIAL
+  category: partial
+  request:
+    request_id: req-cq-007-002
+    correlation_id: corr-cq-token-02
+    agent_id: cq-soc-response-agent-01
+    principal_id: cq-ir-commander-ava
+    attempted_enforcement: TERMINATE
+    evaluated_at: '2026-10-10T18:00:00Z'
+    evidence_window_minutes: 15
+    checks:
+    - check_id: primary_runtime_stopped
+      expected_state: stopped
+      observed_state: stopped
+      evidence_reference: evid-cq-primary-runtime-stopped
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: active_sessions_revoked
+      expected_state: revoked
+      observed_state: revoked
+      evidence_reference: evid-cq-active-sessions-revoked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: delegated_credentials_revoked
+      expected_state: revoked
+      observed_state: cached_valid
+      evidence_reference: evid-cq-credential-cache-token-77
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: Delegated fictional token remains valid after runtime stop.
+    - check_id: tool_access_disabled
+      expected_state: disabled
+      observed_state: disabled
+      evidence_reference: evid-cq-tool-access-disabled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: queued_actions_cancelled
+      expected_state: cancelled
+      observed_state: cancelled
+      evidence_reference: evid-cq-queued-actions-cancelled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: scheduled_work_cancelled
+      expected_state: cancelled
+      observed_state: cancelled
+      evidence_reference: evid-cq-scheduled-work-cancelled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: child_agents_stopped
+      expected_state: stopped
+      observed_state: stopped
+      evidence_reference: evid-cq-child-agents-stopped
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: network_egress_blocked
+      expected_state: blocked
+      observed_state: blocked
+      evidence_reference: evid-cq-network-egress-blocked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: alternate_network_paths_checked
+      expected_state: blocked
+      observed_state: blocked
+      evidence_reference: evid-cq-alternate-network-paths-checked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: persistent_state_quarantined
+      expected_state: quarantined
+      observed_state: quarantined
+      evidence_reference: evid-cq-persistent-state-quarantined
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: restart_recovery_disabled
+      expected_state: disabled
+      observed_state: disabled
+      evidence_reference: evid-cq-restart-recovery-disabled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: telemetry_coverage_complete
+      expected_state: complete
+      observed_state: complete
+      evidence_reference: evid-cq-telemetry-coverage-complete
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: evidence_freshness_acceptable
+      expected_state: fresh
+      observed_state: fresh
+      evidence_reference: evid-cq-evidence-freshness-acceptable
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: evidence_source_independence
+      expected_state: independent
+      observed_state: independent
+      evidence_reference: evid-cq-evidence-source-independence
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: post_containment_activity_absent
+      expected_state: absent
+      observed_state: absent
+      evidence_reference: evid-cq-post-containment-activity-absent
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    post_containment_activity: []
+    containment_regression_detected: false
+    agent_self_report_stopped: false
+- id: delegate_still_running
+  title: Delegate still running
+  short_description: Parent stopped; child agent continues the original task.
+  expected_assurance_status: FAILED
+  category: failed
+  request:
+    request_id: req-cq-007-003
+    correlation_id: corr-cq-delegate-03
+    agent_id: cq-soc-response-agent-01
+    principal_id: cq-ir-commander-ava
+    attempted_enforcement: TERMINATE
+    evaluated_at: '2026-10-10T18:00:00Z'
+    evidence_window_minutes: 15
+    checks:
+    - check_id: primary_runtime_stopped
+      expected_state: stopped
+      observed_state: stopped
+      evidence_reference: evid-cq-primary-runtime-stopped
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: active_sessions_revoked
+      expected_state: revoked
+      observed_state: revoked
+      evidence_reference: evid-cq-active-sessions-revoked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: delegated_credentials_revoked
+      expected_state: revoked
+      observed_state: revoked
+      evidence_reference: evid-cq-delegated-credentials-revoked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: tool_access_disabled
+      expected_state: disabled
+      observed_state: disabled
+      evidence_reference: evid-cq-tool-access-disabled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: queued_actions_cancelled
+      expected_state: cancelled
+      observed_state: cancelled
+      evidence_reference: evid-cq-queued-actions-cancelled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: scheduled_work_cancelled
+      expected_state: cancelled
+      observed_state: cancelled
+      evidence_reference: evid-cq-scheduled-work-cancelled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: child_agents_stopped
+      expected_state: stopped
+      observed_state: running
+      evidence_reference: evid-cq-subagent-forensics-02
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: Child agent cq-soc-subagent-forensics-02 still processing.
+    - check_id: network_egress_blocked
+      expected_state: blocked
+      observed_state: blocked
+      evidence_reference: evid-cq-network-egress-blocked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: alternate_network_paths_checked
+      expected_state: blocked
+      observed_state: blocked
+      evidence_reference: evid-cq-alternate-network-paths-checked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: persistent_state_quarantined
+      expected_state: quarantined
+      observed_state: quarantined
+      evidence_reference: evid-cq-persistent-state-quarantined
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: restart_recovery_disabled
+      expected_state: disabled
+      observed_state: disabled
+      evidence_reference: evid-cq-restart-recovery-disabled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: telemetry_coverage_complete
+      expected_state: complete
+      observed_state: complete
+      evidence_reference: evid-cq-telemetry-coverage-complete
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: evidence_freshness_acceptable
+      expected_state: fresh
+      observed_state: fresh
+      evidence_reference: evid-cq-evidence-freshness-acceptable
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: evidence_source_independence
+      expected_state: independent
+      observed_state: independent
+      evidence_reference: evid-cq-evidence-source-independence
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: post_containment_activity_absent
+      expected_state: absent
+      observed_state: detected
+      evidence_reference: evid-cq-post-activity-delegate
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: Delegate continued work after parent stop.
+    post_containment_activity:
+    - cq-soc-subagent-forensics-02 continued investigation task
+    containment_regression_detected: false
+    agent_self_report_stopped: false
+- id: queued_action_survives
+  title: Queued action survives
+  short_description: Runtime stopped; an authorized delayed tool action remains executable.
+  expected_assurance_status: PARTIAL
+  category: partial
+  request:
+    request_id: req-cq-007-004
+    correlation_id: corr-cq-queue-04
+    agent_id: cq-soc-response-agent-01
+    principal_id: cq-ir-commander-ava
+    attempted_enforcement: TERMINATE
+    evaluated_at: '2026-10-10T18:00:00Z'
+    evidence_window_minutes: 15
+    checks:
+    - check_id: primary_runtime_stopped
+      expected_state: stopped
+      observed_state: stopped
+      evidence_reference: evid-cq-primary-runtime-stopped
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: active_sessions_revoked
+      expected_state: revoked
+      observed_state: revoked
+      evidence_reference: evid-cq-active-sessions-revoked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: delegated_credentials_revoked
+      expected_state: revoked
+      observed_state: revoked
+      evidence_reference: evid-cq-delegated-credentials-revoked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: tool_access_disabled
+      expected_state: disabled
+      observed_state: disabled
+      evidence_reference: evid-cq-tool-access-disabled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: queued_actions_cancelled
+      expected_state: cancelled
+      observed_state: executable
+      evidence_reference: evid-cq-queue-item-revoke-delay
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: Delayed revoke_session tool action remains in executable queue.
+    - check_id: scheduled_work_cancelled
+      expected_state: cancelled
+      observed_state: cancelled
+      evidence_reference: evid-cq-scheduled-work-cancelled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: child_agents_stopped
+      expected_state: stopped
+      observed_state: stopped
+      evidence_reference: evid-cq-child-agents-stopped
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: network_egress_blocked
+      expected_state: blocked
+      observed_state: blocked
+      evidence_reference: evid-cq-network-egress-blocked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: alternate_network_paths_checked
+      expected_state: blocked
+      observed_state: blocked
+      evidence_reference: evid-cq-alternate-network-paths-checked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: persistent_state_quarantined
+      expected_state: quarantined
+      observed_state: quarantined
+      evidence_reference: evid-cq-persistent-state-quarantined
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: restart_recovery_disabled
+      expected_state: disabled
+      observed_state: disabled
+      evidence_reference: evid-cq-restart-recovery-disabled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: telemetry_coverage_complete
+      expected_state: complete
+      observed_state: complete
+      evidence_reference: evid-cq-telemetry-coverage-complete
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: evidence_freshness_acceptable
+      expected_state: fresh
+      observed_state: fresh
+      evidence_reference: evid-cq-evidence-freshness-acceptable
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: evidence_source_independence
+      expected_state: independent
+      observed_state: independent
+      evidence_reference: evid-cq-evidence-source-independence
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: post_containment_activity_absent
+      expected_state: absent
+      observed_state: absent
+      evidence_reference: evid-cq-post-containment-activity-absent
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    post_containment_activity: []
+    containment_regression_detected: false
+    agent_self_report_stopped: false
+- id: alternate_network_path_open
+  title: Alternate network path open
+  short_description: Primary egress blocked; alternate proxy path remains reachable.
+  expected_assurance_status: PARTIAL
+  category: partial
+  request:
+    request_id: req-cq-007-005
+    correlation_id: corr-cq-net-05
+    agent_id: cq-soc-response-agent-01
+    principal_id: cq-ir-commander-ava
+    attempted_enforcement: TERMINATE
+    evaluated_at: '2026-10-10T18:00:00Z'
+    evidence_window_minutes: 15
+    checks:
+    - check_id: primary_runtime_stopped
+      expected_state: stopped
+      observed_state: stopped
+      evidence_reference: evid-cq-primary-runtime-stopped
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: active_sessions_revoked
+      expected_state: revoked
+      observed_state: revoked
+      evidence_reference: evid-cq-active-sessions-revoked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: delegated_credentials_revoked
+      expected_state: revoked
+      observed_state: revoked
+      evidence_reference: evid-cq-delegated-credentials-revoked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: tool_access_disabled
+      expected_state: disabled
+      observed_state: disabled
+      evidence_reference: evid-cq-tool-access-disabled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: queued_actions_cancelled
+      expected_state: cancelled
+      observed_state: cancelled
+      evidence_reference: evid-cq-queued-actions-cancelled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: scheduled_work_cancelled
+      expected_state: cancelled
+      observed_state: cancelled
+      evidence_reference: evid-cq-scheduled-work-cancelled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: child_agents_stopped
+      expected_state: stopped
+      observed_state: stopped
+      evidence_reference: evid-cq-child-agents-stopped
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: network_egress_blocked
+      expected_state: blocked
+      observed_state: blocked
+      evidence_reference: evid-cq-network-egress-blocked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: alternate_network_paths_checked
+      expected_state: blocked
+      observed_state: reachable
+      evidence_reference: evid-cq-proxy-path-b
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: Alternate service proxy path remains reachable; no post-containment
+        traffic observed.
+    - check_id: persistent_state_quarantined
+      expected_state: quarantined
+      observed_state: quarantined
+      evidence_reference: evid-cq-persistent-state-quarantined
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: restart_recovery_disabled
+      expected_state: disabled
+      observed_state: disabled
+      evidence_reference: evid-cq-restart-recovery-disabled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: telemetry_coverage_complete
+      expected_state: complete
+      observed_state: complete
+      evidence_reference: evid-cq-telemetry-coverage-complete
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: evidence_freshness_acceptable
+      expected_state: fresh
+      observed_state: fresh
+      evidence_reference: evid-cq-evidence-freshness-acceptable
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: evidence_source_independence
+      expected_state: independent
+      observed_state: independent
+      evidence_reference: evid-cq-evidence-source-independence
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: post_containment_activity_absent
+      expected_state: absent
+      observed_state: absent
+      evidence_reference: evid-cq-post-containment-activity-absent
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    post_containment_activity: []
+    containment_regression_detected: false
+    agent_self_report_stopped: false
+- id: restart_resumes_work
+  title: Restart resumes work
+  short_description: Process terminated, then recovery restarted it from retained
+    state.
+  expected_assurance_status: FAILED
+  category: failed
+  request:
+    request_id: req-cq-007-006
+    correlation_id: corr-cq-restart-06
+    agent_id: cq-soc-response-agent-01
+    principal_id: cq-ir-commander-ava
+    attempted_enforcement: TERMINATE
+    evaluated_at: '2026-10-10T18:00:00Z'
+    evidence_window_minutes: 15
+    checks:
+    - check_id: primary_runtime_stopped
+      expected_state: stopped
+      observed_state: running
+      evidence_reference: evid-cq-runtime-restarted
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: Runtime restarted after terminate.
+    - check_id: active_sessions_revoked
+      expected_state: revoked
+      observed_state: revoked
+      evidence_reference: evid-cq-active-sessions-revoked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: delegated_credentials_revoked
+      expected_state: revoked
+      observed_state: revoked
+      evidence_reference: evid-cq-delegated-credentials-revoked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: tool_access_disabled
+      expected_state: disabled
+      observed_state: disabled
+      evidence_reference: evid-cq-tool-access-disabled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: queued_actions_cancelled
+      expected_state: cancelled
+      observed_state: cancelled
+      evidence_reference: evid-cq-queued-actions-cancelled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: scheduled_work_cancelled
+      expected_state: cancelled
+      observed_state: cancelled
+      evidence_reference: evid-cq-scheduled-work-cancelled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: child_agents_stopped
+      expected_state: stopped
+      observed_state: stopped
+      evidence_reference: evid-cq-child-agents-stopped
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: network_egress_blocked
+      expected_state: blocked
+      observed_state: blocked
+      evidence_reference: evid-cq-network-egress-blocked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: alternate_network_paths_checked
+      expected_state: blocked
+      observed_state: blocked
+      evidence_reference: evid-cq-alternate-network-paths-checked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: persistent_state_quarantined
+      expected_state: quarantined
+      observed_state: retained
+      evidence_reference: evid-cq-state-store
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: Persistent state was retained and reused on restart.
+    - check_id: restart_recovery_disabled
+      expected_state: disabled
+      observed_state: enabled
+      evidence_reference: evid-cq-recovery-supervisor
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: Recovery supervisor restarted the agent from retained state.
+    - check_id: telemetry_coverage_complete
+      expected_state: complete
+      observed_state: complete
+      evidence_reference: evid-cq-telemetry-coverage-complete
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: evidence_freshness_acceptable
+      expected_state: fresh
+      observed_state: fresh
+      evidence_reference: evid-cq-evidence-freshness-acceptable
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: evidence_source_independence
+      expected_state: independent
+      observed_state: independent
+      evidence_reference: evid-cq-evidence-source-independence
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: post_containment_activity_absent
+      expected_state: absent
+      observed_state: detected
+      evidence_reference: evid-cq-post-activity-restart
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: Task resumed after restart.
+    post_containment_activity:
+    - agent resumed compromise investigation after supervisor restart
+    containment_regression_detected: false
+    agent_self_report_stopped: false
+- id: insufficient_telemetry
+  title: Insufficient telemetry
+  short_description: Agent reports stopped; independent evidence is incomplete.
+  expected_assurance_status: UNVERIFIED
+  category: unverified
+  request:
+    request_id: req-cq-007-007
+    correlation_id: corr-cq-telemetry-07
+    agent_id: cq-soc-response-agent-01
+    principal_id: cq-ir-commander-ava
+    attempted_enforcement: ISOLATE
+    evaluated_at: '2026-10-10T18:00:00Z'
+    evidence_window_minutes: 15
+    agent_self_report_stopped: true
+    post_containment_activity: []
+    containment_regression_detected: false
+    checks:
+    - check_id: primary_runtime_stopped
+      expected_state: stopped
+      observed_state: stopped
+      evidence_reference: evid-cq-agent-self-report
+      evidence_freshness: fresh
+      evidence_source: agent_self_report
+      reason: Self-report only
+    - check_id: active_sessions_revoked
+      expected_state: revoked
+      observed_state: unknown
+      evidence_reference: null
+      evidence_freshness: unknown
+      evidence_source: none
+      reason: Independent evidence unavailable
+    - check_id: delegated_credentials_revoked
+      expected_state: revoked
+      observed_state: unknown
+      evidence_reference: null
+      evidence_freshness: unknown
+      evidence_source: none
+      reason: Independent evidence unavailable
+    - check_id: tool_access_disabled
+      expected_state: disabled
+      observed_state: unknown
+      evidence_reference: null
+      evidence_freshness: unknown
+      evidence_source: none
+      reason: Independent evidence unavailable
+    - check_id: queued_actions_cancelled
+      expected_state: cancelled
+      observed_state: unknown
+      evidence_reference: null
+      evidence_freshness: unknown
+      evidence_source: none
+      reason: Independent evidence unavailable
+    - check_id: scheduled_work_cancelled
+      expected_state: cancelled
+      observed_state: unknown
+      evidence_reference: null
+      evidence_freshness: unknown
+      evidence_source: none
+      reason: Independent evidence unavailable
+    - check_id: child_agents_stopped
+      expected_state: stopped
+      observed_state: unknown
+      evidence_reference: null
+      evidence_freshness: unknown
+      evidence_source: none
+      reason: Independent evidence unavailable
+    - check_id: network_egress_blocked
+      expected_state: blocked
+      observed_state: unknown
+      evidence_reference: null
+      evidence_freshness: unknown
+      evidence_source: none
+      reason: Independent evidence unavailable
+    - check_id: alternate_network_paths_checked
+      expected_state: blocked
+      observed_state: unknown
+      evidence_reference: null
+      evidence_freshness: unknown
+      evidence_source: none
+      reason: Independent evidence unavailable
+    - check_id: persistent_state_quarantined
+      expected_state: quarantined
+      observed_state: unknown
+      evidence_reference: null
+      evidence_freshness: unknown
+      evidence_source: none
+      reason: Independent evidence unavailable
+    - check_id: restart_recovery_disabled
+      expected_state: disabled
+      observed_state: unknown
+      evidence_reference: null
+      evidence_freshness: unknown
+      evidence_source: none
+      reason: Independent evidence unavailable
+    - check_id: telemetry_coverage_complete
+      expected_state: complete
+      observed_state: unknown
+      evidence_reference: null
+      evidence_freshness: unknown
+      evidence_source: none
+      reason: Independent evidence unavailable
+    - check_id: evidence_freshness_acceptable
+      expected_state: fresh
+      observed_state: unknown
+      evidence_reference: null
+      evidence_freshness: unknown
+      evidence_source: none
+      reason: Independent evidence unavailable
+    - check_id: evidence_source_independence
+      expected_state: independent
+      observed_state: unknown
+      evidence_reference: null
+      evidence_freshness: unknown
+      evidence_source: none
+      reason: Independent evidence unavailable
+    - check_id: post_containment_activity_absent
+      expected_state: absent
+      observed_state: unknown
+      evidence_reference: null
+      evidence_freshness: unknown
+      evidence_source: none
+      reason: Independent evidence unavailable
+- id: containment_regression
+  title: Containment regression
+  short_description: Initially confirmed; later a credential/runtime boundary was
+    restored.
+  expected_assurance_status: FAILED
+  category: failed
+  request:
+    request_id: req-cq-007-008
+    correlation_id: corr-cq-regress-08
+    agent_id: cq-soc-response-agent-01
+    principal_id: cq-ir-commander-ava
+    attempted_enforcement: TERMINATE
+    evaluated_at: '2026-10-10T18:00:00Z'
+    evidence_window_minutes: 15
+    checks:
+    - check_id: primary_runtime_stopped
+      expected_state: stopped
+      observed_state: running
+      evidence_reference: evid-cq-runtime-restored
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: Runtime boundary restored after prior confirmation.
+    - check_id: active_sessions_revoked
+      expected_state: revoked
+      observed_state: revoked
+      evidence_reference: evid-cq-active-sessions-revoked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: delegated_credentials_revoked
+      expected_state: revoked
+      observed_state: valid
+      evidence_reference: evid-cq-credential-reissued
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: Credential was reissued after prior containment.
+    - check_id: tool_access_disabled
+      expected_state: disabled
+      observed_state: disabled
+      evidence_reference: evid-cq-tool-access-disabled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: queued_actions_cancelled
+      expected_state: cancelled
+      observed_state: cancelled
+      evidence_reference: evid-cq-queued-actions-cancelled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: scheduled_work_cancelled
+      expected_state: cancelled
+      observed_state: cancelled
+      evidence_reference: evid-cq-scheduled-work-cancelled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: child_agents_stopped
+      expected_state: stopped
+      observed_state: stopped
+      evidence_reference: evid-cq-child-agents-stopped
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: network_egress_blocked
+      expected_state: blocked
+      observed_state: blocked
+      evidence_reference: evid-cq-network-egress-blocked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: alternate_network_paths_checked
+      expected_state: blocked
+      observed_state: blocked
+      evidence_reference: evid-cq-alternate-network-paths-checked
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: persistent_state_quarantined
+      expected_state: quarantined
+      observed_state: quarantined
+      evidence_reference: evid-cq-persistent-state-quarantined
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: restart_recovery_disabled
+      expected_state: disabled
+      observed_state: disabled
+      evidence_reference: evid-cq-restart-recovery-disabled
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: telemetry_coverage_complete
+      expected_state: complete
+      observed_state: complete
+      evidence_reference: evid-cq-telemetry-coverage-complete
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: evidence_freshness_acceptable
+      expected_state: fresh
+      observed_state: fresh
+      evidence_reference: evid-cq-evidence-freshness-acceptable
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: evidence_source_independence
+      expected_state: independent
+      observed_state: independent
+      evidence_reference: evid-cq-evidence-source-independence
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: null
+    - check_id: post_containment_activity_absent
+      expected_state: absent
+      observed_state: detected
+      evidence_reference: evid-cq-post-activity-regress
+      evidence_freshness: fresh
+      evidence_source: independent_control_plane
+      reason: Execution path became available again.
+    post_containment_activity:
+    - restored credential used to reopen investigation session
+    containment_regression_detected: true
+    agent_self_report_stopped: false
