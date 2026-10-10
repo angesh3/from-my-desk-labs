@@ -29,8 +29,9 @@ LAB003_STATIC = REPO_ROOT / "labs" / "003-agent-access-control" / "static"
 LAB004_STATIC = REPO_ROOT / "labs" / "004-agent-escalation-boundary" / "static"
 LAB005_STATIC = REPO_ROOT / "labs" / "005-verifiable-action-receipts" / "static"
 LAB006_STATIC = REPO_ROOT / "labs" / "006-agent-containment-boundary" / "static"
+LAB007_STATIC = REPO_ROOT / "labs" / "007-containment-assurance" / "static"
 
-PAGES = ("/", "/labs", "/labs/know-your-agent", "/labs/delegated-authority", "/labs/agent-access-control", "/labs/agent-escalation-boundary", "/labs/verifiable-action-receipts", "/labs/agent-containment-boundary")
+PAGES = ("/", "/labs", "/labs/know-your-agent", "/labs/delegated-authority", "/labs/agent-access-control", "/labs/agent-escalation-boundary", "/labs/verifiable-action-receipts", "/labs/agent-containment-boundary", "/labs/containment-assurance")
 FORBIDDEN_SNIPPETS = (
     "r2.dev",
     "r2.cloudflarestorage",
@@ -59,7 +60,7 @@ def test_global_branding_and_navigation():
         assert "Newsletter" in html
         if path == "/":
             assert "Latest Lab" in html
-            assert 'href="/labs/agent-containment-boundary"' in html
+            assert 'href="/labs/containment-assurance"' in html
         if path == "/labs/know-your-agent":
             assert "Know Your Agent" in html
         elif path == "/labs/agent-access-control":
@@ -72,6 +73,8 @@ def test_global_branding_and_navigation():
             assert "Can We Prove What the Agent Actually Did?" in html
         elif path == "/labs/agent-containment-boundary":
             assert "What If the Agent" in html
+        elif path == "/labs/containment-assurance":
+            assert "Can We Prove the Agent" in html
         else:
             assert "From My Desk" in html or "Labs" in html
 
@@ -95,29 +98,31 @@ def test_homepage_features_latest_lab():
     assert "Latest Lab" in html
     assert "Current edition" not in html
     assert "CURRENT EDITION" not in html
-    assert "The Agent Containment Boundary" in html
-    assert 'href="/labs/agent-containment-boundary"' in html
-    assert "Explore Lab 006" in html
+    assert "Containment Assurance" in html
+    assert 'href="/labs/containment-assurance"' in html
+    assert "Explore Lab 007" in html
     assert "Browse all Labs" in html
-    assert "when an agent no longer follows valid human direction" in html.lower() or "What should happen when an agent" in html
+    assert "Can We Prove the Agent Is Actually Contained?" in html
 
 
 def test_homepage_earlier_labs_ordered_newest_first():
     html = client.get("/").text
     assert "Earlier Labs" in html
     earlier_block = html.split("Earlier Labs", 1)[1].split("Follow From My Desk", 1)[0]
+    lab006_pos = earlier_block.find("/labs/agent-containment-boundary")
     lab005_pos = earlier_block.find("/labs/verifiable-action-receipts")
     lab004_pos = earlier_block.find("/labs/agent-escalation-boundary")
     lab003_pos = earlier_block.find("/labs/agent-access-control")
     lab002_pos = earlier_block.find("/labs/delegated-authority")
     lab001_pos = earlier_block.find("/labs/know-your-agent")
-    assert lab005_pos < lab004_pos < lab003_pos < lab002_pos < lab001_pos
+    assert lab006_pos < lab005_pos < lab004_pos < lab003_pos < lab002_pos < lab001_pos
     assert "Delegated Authority" in earlier_block
     assert "Agent Access Control" in earlier_block
     assert "The Agent Escalation Boundary" in earlier_block
     assert "Verifiable Action Receipts" in earlier_block
+    assert "The Agent Containment Boundary" in earlier_block
     assert "KYA" not in earlier_block
-    assert "/labs/agent-containment-boundary" not in earlier_block
+    assert "/labs/containment-assurance" not in earlier_block
 
 
 def test_homepage_bottom_structure_and_cta():
@@ -132,13 +137,13 @@ def test_homepage_bottom_structure_and_cta():
     assert "https://www.linkedin.com/newsletters/from-my-desk-7492634647890341890/" in html
     assert "https://github.com/angesh3/from-my-desk-labs" in html
     assert "Written and built by Angesh Vikram" in html
-    assert html.count("Explore Lab 006") == 1
+    assert html.count("Explore Lab 007") == 1
 
 
 def test_homepage_latest_lab_excluded_from_earlier_labs():
     html = client.get("/").text
     earlier_block = html.split("Earlier Labs", 1)[1].split("Follow From My Desk", 1)[0]
-    assert "The Agent Containment Boundary" not in earlier_block
+    assert "Containment Assurance" not in earlier_block
 
 
 def test_homepage_single_published_lab_has_no_earlier_section(tmp_path, monkeypatch):
@@ -224,26 +229,28 @@ def test_homepage_latest_lab_selection_updates_with_catalog(tmp_path, monkeypatc
 
 def test_labs_index_ordered_newest_first():
     html = client.get("/labs").text
+    lab007_pos = html.find("/labs/containment-assurance")
     lab006_pos = html.find("/labs/agent-containment-boundary")
     lab005_pos = html.find("/labs/verifiable-action-receipts")
     lab004_pos = html.find("/labs/agent-escalation-boundary")
     lab003_pos = html.find("/labs/agent-access-control")
     lab002_pos = html.find("/labs/delegated-authority")
     lab001_pos = html.find("/labs/know-your-agent")
-    assert lab006_pos < lab005_pos < lab004_pos < lab003_pos < lab002_pos < lab001_pos
+    assert lab007_pos < lab006_pos < lab005_pos < lab004_pos < lab003_pos < lab002_pos < lab001_pos
 
 
 def test_catalog_renders_lab_cards():
     home = client.get("/").text
     labs = client.get("/labs").text
-    assert "The Agent Containment Boundary" in home
-    assert "/labs/agent-containment-boundary" in home
+    assert "Containment Assurance" in home
+    assert "/labs/containment-assurance" in home
     assert "Know Your Agent" in labs
     assert "Delegated Authority" in labs
     assert "Agent Access Control" in labs
     assert "The Agent Escalation Boundary" in labs
     assert "Can We Prove What the Agent Actually Did?" in labs
     assert "The Agent Containment Boundary" in labs
+    assert "Containment Assurance" in labs
     assert "Explore lab" in labs or "Explore Lab" in labs
     assert "AI Agents" in labs or "Agent Governance" in labs
     assert "Interactive demo" in labs
@@ -253,6 +260,7 @@ def test_catalog_renders_lab_cards():
     assert "/labs/agent-escalation-boundary" in labs
     assert "/labs/verifiable-action-receipts" in labs
     assert "/labs/agent-containment-boundary" in labs
+    assert "/labs/containment-assurance" in labs
     assert "Not investment advice" in labs or "No real accounts" in labs or "educational policy prototype" in labs.lower() or "educational receipt prototype" in labs.lower() or "educational containment" in labs.lower()
 
 
@@ -314,6 +322,8 @@ def test_labs_index_hides_placeholder_newsletter():
     assert "[EDITION_5_NEWSLETTER_URL]" not in html
     assert "EDITION_6_NEWSLETTER_URL" not in html
     assert "[EDITION_6_NEWSLETTER_URL]" not in html
+    assert "EDITION_7_NEWSLETTER_URL" not in html
+    assert "[EDITION_7_NEWSLETTER_URL]" not in html
 
 
 def test_lab004_api_evaluate_smoke():
@@ -432,6 +442,8 @@ def test_lab006_page_basics():
     assert "Rogue behavior" in html
     assert "EDITION_6_NEWSLETTER_URL" not in html
     assert "[EDITION_6_NEWSLETTER_URL]" not in html
+    assert "EDITION_7_NEWSLETTER_URL" not in html
+    assert "[EDITION_7_NEWSLETTER_URL]" not in html
     assert "The companion Edition 6 newsletter will be linked here after publication." in html
     assert "Read the companion newsletter" not in html
     assert 'class="lab006-footer-note' in html
@@ -495,6 +507,84 @@ def test_lab006_api_evaluate_smoke():
     assert body["execution"] == "not_performed"
     assert body["behavior_assessment"] == "JUSTIFIED_REFUSAL"
     assert body["enforcement_response"] == "CONTINUE"
+
+
+def test_lab007_page_basics():
+    html = client.get("/labs/containment-assurance").text
+    assert "LAB 007 · CONTAINMENT ASSURANCE" in html
+    assert "Can We Prove the Agent" in html
+    assert "Is Actually Contained?" in html
+    assert 'class="lab007-hero-title"' in html
+    assert "Evaluate containment assurance" in html
+    assert "Stopped is not contained" in html
+    assert "An agent must never assess or certify its own containment" in html
+    assert 'data-preset="complete_containment"' in html
+    assert 'data-preset="containment_regression"' in html
+    assert "/static/labs/007/assurance-boundary.svg" in html
+    assert "/static/labs/007/lab.js" in html
+    assert "Confirmed" in html
+    assert "EDITION_7_NEWSLETTER_URL" not in html
+    assert "[EDITION_7_NEWSLETTER_URL]" not in html
+    assert "The companion Edition 7 newsletter will be linked here after publication." in html
+    assert "Read the companion newsletter" not in html
+    assert 'class="lab007-footer-note' in html
+    assert 'class="actions lab007-footer-actions"' in html
+    assert "Previous Lab: The Agent Containment Boundary" in html
+    assert 'href="/labs/agent-containment-boundary"' in html
+    assert "not_performed" in html
+
+
+def test_lab007_controls_preserve_machine_values():
+    html = client.get("/labs/containment-assurance").text
+    assert 'value="TERMINATE"' in html
+    assert 'value="independent_control_plane"' in html
+    assert 'value="fresh"' in html
+    js = client.get("/static/labs/007/lab.js").text
+    assert "CONFIRMED" in js
+    assert "FAILED" in js
+    assert "not_performed" in js
+    css = client.get("/static/css/styles.css").text
+    assert ".lab007-result" in css
+    assert ".lab007-hero-title" in css
+    assert ".lab007-footer-actions" in css
+
+
+def test_lab007_newsletter_button_when_published(monkeypatch, tmp_path):
+    catalog = tmp_path / "labs.yaml"
+    dump(
+        catalog,
+        [
+            valid_lab(
+                id="007",
+                edition_number=7,
+                slug="containment-assurance",
+                title="Containment Assurance",
+                lab_url="/labs/containment-assurance",
+                newsletter_url="https://www.linkedin.com/newsletters/from-my-desk-example/",
+                featured=True,
+            )
+        ],
+    )
+    monkeypatch.setenv("CATALOG_PATH", str(catalog))
+    reset_settings_cache()
+    reset_catalog()
+    html = client.get("/labs/containment-assurance").text
+    assert "Read the companion newsletter" in html
+    assert 'href="https://www.linkedin.com/newsletters/from-my-desk-example/"' in html
+    assert "data-lab007-newsletter" in html
+    assert "The companion Edition 7 newsletter will be linked here after publication." not in html
+    assert "EDITION_7_NEWSLETTER_URL" not in html
+
+
+def test_lab007_api_evaluate_smoke():
+    response = client.post(
+        "/api/labs/007/evaluate-preset/complete_containment"
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["execution"] == "not_performed"
+    assert body["assurance_status"] == "CONFIRMED"
+    assert body["containment_effective"] is True
 
 
 def test_lab002_page_basics():
@@ -606,6 +696,8 @@ def test_static_assets():
         ("/static/labs/005/lab.js", "javascript"),
         ("/static/labs/006/control-plane.svg", "image/svg+xml"),
         ("/static/labs/006/lab.js", "javascript"),
+        ("/static/labs/007/assurance-boundary.svg", "image/svg+xml"),
+        ("/static/labs/007/lab.js", "javascript"),
     ]
     for url, content_type in assets:
         response = client.get(url)
@@ -784,3 +876,31 @@ def test_lab006_source_svg_is_valid_utf8_xml():
     assert b"Policy Decision Point" in data
     assert b"External Enforcement Point" in data
 
+
+def test_lab007_diagram_url_from_rendered_html():
+    html = client.get("/labs/containment-assurance").text
+    srcs = re.findall(r'src="(/static/labs/007/[^"]+\.svg)"', html)
+    assert srcs == ["/static/labs/007/assurance-boundary.svg"]
+    response = client.get(srcs[0])
+    assert response.status_code == 200
+    assert "image/svg+xml" in response.headers["content-type"]
+    body = response.content
+    assert len(body) > 100
+    stripped = body.lstrip()
+    assert stripped.startswith(b"<?xml") or stripped.startswith(b"<svg")
+    body.decode("utf-8")
+    ET.parse(io.BytesIO(body))
+    source = LAB007_STATIC / "assurance-boundary.svg"
+    assert source.is_file()
+    assert source.read_bytes() == body
+
+
+def test_lab007_source_svg_is_valid_utf8_xml():
+    path = LAB007_STATIC / "assurance-boundary.svg"
+    data = path.read_bytes()
+    data.decode("utf-8")
+    ET.parse(path)
+    assert b"<title" in data
+    assert b"<desc" in data
+    assert b"CONFIRMED" in data
+    assert b"Assurance" in data or b"assurance" in data

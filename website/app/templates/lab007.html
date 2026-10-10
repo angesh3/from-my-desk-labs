@@ -1,0 +1,678 @@
+{% extends "base.html" %}
+{% block title %}{{ lab.title }} — From My Desk{% endblock %}
+{% block description %}{{ lab.summary }}{% endblock %}
+{% block content %}
+<section class="wrap page-intro lab-intro lab007-intro">
+  <p class="eyebrow">LAB 007 · CONTAINMENT ASSURANCE</p>
+  <h1 class="lab007-hero-title">
+    <span class="lab007-title-line">Can We Prove the Agent</span>
+    <span class="lab007-title-line">Is Actually Contained?</span>
+  </h1>
+  <p class="lede lab007-hero-sub">A stop command records an intention. Assurance requires independent evidence that every execution path and authority has been neutralized.</p>
+  <p class="lede">
+    Stopping the visible process may leave credentials, delegates, queues, tool
+    sessions, network paths, persistent state, or recovery mechanisms available.
+  </p>
+  <p class="disclaimer" role="note">{{ lab.disclaimer or disclaimer }}</p>
+  <p class="hint" role="note">No real agent, credential, process, tool session, or external system is modified. Real execution is always <code>not_performed</code>.</p>
+  <p class="actions">
+    <a class="button button-quiet" href="/labs/agent-containment-boundary">Previous Lab: The Agent Containment Boundary</a>
+    <a class="button button-quiet" href="/labs">Browse all Labs</a>
+  </p>
+</section>
+
+<section class="wrap lab007-distinction" aria-labelledby="stopped-heading">
+  <h2 id="stopped-heading">Stopped is not contained</h2>
+  <div class="lab007-question-grid">
+    <article class="lab007-question-card">
+      <h3>Containment action</h3>
+      <p class="core-question">What control did the system attempt to apply?</p>
+      <p>Outcomes: Restrict · Isolate · Terminate</p>
+      <p class="hint">An enforcement intention or command response is not proof.</p>
+    </article>
+    <article class="lab007-question-card">
+      <h3>Containment assurance</h3>
+      <p class="core-question">What evidence proves that the intended boundary is now effective?</p>
+      <p>Outcomes: Confirmed · Partial · Unverified · Failed</p>
+      <p class="hint">Precedence: Failed &gt; Partial &gt; Unverified &gt; Confirmed</p>
+    </article>
+  </div>
+  <p class="core-question lab007-principle">
+    An agent must never assess or certify its own containment. Assurance is produced by an independent control plane using external evidence.
+  </p>
+</section>
+
+<section class="wrap" aria-labelledby="blast-heading">
+  <h2 id="blast-heading">Containment has a blast radius</h2>
+  <p>
+    A stop, isolate, or terminate command may leave runtimes, sessions, credentials,
+    delegates, queues, tools, networks, state, or recovery paths available.
+  </p>
+  <ul class="lab007-bullets">
+    <li>Runtime and process state</li>
+    <li>Identity and active sessions</li>
+    <li>Delegated and cached credentials</li>
+    <li>Tool access and sessions</li>
+    <li>Queued and scheduled actions</li>
+    <li>Child or delegated agents</li>
+    <li>Primary and alternate network paths</li>
+    <li>Persistent state and restart/recovery mechanisms</li>
+  </ul>
+</section>
+
+<section class="wrap" aria-labelledby="presets-heading">
+  <h2 id="presets-heading">Scenario presets</h2>
+  <p>Select a preset to fill every control, then evaluate containment assurance—or adjust the fictional evidence yourself.</p>
+  <div class="preset-grid" role="group" aria-label="Assurance presets">
+    <button type="button" class="preset-card" data-preset="complete_containment" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Complete containment</strong>
+      <span>All controls independently verified.</span>
+      <em>Watch for: Confirmed</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="runtime_stopped_token_active" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Runtime stopped, token still active</strong>
+      <span>Cached credential remains valid.</span>
+      <em>Watch for: Partial</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="delegate_still_running" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Delegate still running</strong>
+      <span>Child agent continues the task.</span>
+      <em>Watch for: Failed</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="queued_action_survives" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Queued action survives</strong>
+      <span>Delayed tool action remains executable.</span>
+      <em>Watch for: Partial</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="alternate_network_path_open" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Alternate network path open</strong>
+      <span>Proxy path remains reachable.</span>
+      <em>Watch for: Partial</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="restart_resumes_work" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Restart resumes work</strong>
+      <span>Recovery restarts from retained state.</span>
+      <em>Watch for: Failed</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="insufficient_telemetry" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Insufficient telemetry</strong>
+      <span>Self-report only; evidence incomplete.</span>
+      <em>Watch for: Unverified</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="containment_regression" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Containment regression</strong>
+      <span>Earlier confirmation later reversed.</span>
+      <em>Watch for: Failed</em>
+    </button>
+  </div>
+</section>
+
+<section class="wrap" aria-labelledby="controls-heading">
+  <h2 id="controls-heading">Assurance inspector</h2>
+  <p>Inspect or adjust fictional evidence fields, then evaluate. The agent never certifies its own containment.</p>
+  <form id="lab007-form" class="lab007-form" aria-label="Containment assurance controls">
+    <fieldset class="lab007-fieldset">
+      <legend>Case identity and enforcement</legend>
+      <div class="lab007-grid">
+        <label for="request_id">Request ID
+          <input id="request_id" name="request_id" maxlength="120" required>
+        </label>
+        <label for="correlation_id">Correlation ID
+          <input id="correlation_id" name="correlation_id" maxlength="120" required>
+        </label>
+        <label for="agent_id">Agent ID
+          <input id="agent_id" name="agent_id" maxlength="120" required>
+        </label>
+        <label for="principal_id">Principal ID
+          <input id="principal_id" name="principal_id" maxlength="120" required>
+        </label>
+        <label for="attempted_enforcement">Attempted enforcement
+          <select id="attempted_enforcement" name="attempted_enforcement" required>
+            <option value="RESTRICT">Restrict</option>
+            <option value="ISOLATE">Isolate</option>
+            <option value="TERMINATE" selected>Terminate</option>
+          </select>
+        </label>
+        <label for="evaluated_at">Evaluated at
+          <input id="evaluated_at" name="evaluated_at" maxlength="120" required>
+        </label>
+        <label for="evidence_window_minutes">Evidence window (minutes)
+          <input type="number" id="evidence_window_minutes" name="evidence_window_minutes" min="1" max="1440" value="15">
+        </label>
+        <label class="lab007-check" for="containment_regression_detected">
+          <input type="checkbox" id="containment_regression_detected" name="containment_regression_detected">
+          Containment regression detected
+        </label>
+        <label class="lab007-check" for="agent_self_report_stopped">
+          <input type="checkbox" id="agent_self_report_stopped" name="agent_self_report_stopped">
+          Agent self-report: stopped
+        </label>
+        <label class="lab007-span-2" for="post_containment_activity">Post-containment activity (one per line)
+          <textarea id="post_containment_activity" name="post_containment_activity" rows="3" maxlength="2000"></textarea>
+        </label>
+      </div>
+    </fieldset>
+
+    <h3 class="lab007-inspector-heading">Independent assurance checks</h3>
+
+        <fieldset class="lab007-check-card" data-check="primary_runtime_stopped">
+          <legend>Primary runtime stopped</legend>
+          <div class="lab007-grid">
+            <label for="check_primary_runtime_stopped_expected">Expected state
+              <input id="check_primary_runtime_stopped_expected" name="check_primary_runtime_stopped_expected" maxlength="500" value="">
+            </label>
+            <label for="check_primary_runtime_stopped_observed">Observed state
+              <input id="check_primary_runtime_stopped_observed" name="check_primary_runtime_stopped_observed" maxlength="500" value="">
+            </label>
+            <label for="check_primary_runtime_stopped_evidence">Evidence reference
+              <input id="check_primary_runtime_stopped_evidence" name="check_primary_runtime_stopped_evidence" maxlength="120" value="">
+            </label>
+            <label for="check_primary_runtime_stopped_freshness">Evidence freshness
+              <select id="check_primary_runtime_stopped_freshness" name="check_primary_runtime_stopped_freshness">
+                <option value="fresh">Fresh</option>
+                <option value="stale">Stale</option>
+                <option value="unknown" selected>Unknown</option>
+              </select>
+            </label>
+            <label for="check_primary_runtime_stopped_source">Evidence source
+              <select id="check_primary_runtime_stopped_source" name="check_primary_runtime_stopped_source">
+                <option value="independent_control_plane">Independent control plane</option>
+                <option value="agent_self_report">Agent self-report</option>
+                <option value="partial_telemetry">Partial telemetry</option>
+                <option value="none" selected>None</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="lab007-check-card" data-check="active_sessions_revoked">
+          <legend>Active sessions revoked</legend>
+          <div class="lab007-grid">
+            <label for="check_active_sessions_revoked_expected">Expected state
+              <input id="check_active_sessions_revoked_expected" name="check_active_sessions_revoked_expected" maxlength="500" value="">
+            </label>
+            <label for="check_active_sessions_revoked_observed">Observed state
+              <input id="check_active_sessions_revoked_observed" name="check_active_sessions_revoked_observed" maxlength="500" value="">
+            </label>
+            <label for="check_active_sessions_revoked_evidence">Evidence reference
+              <input id="check_active_sessions_revoked_evidence" name="check_active_sessions_revoked_evidence" maxlength="120" value="">
+            </label>
+            <label for="check_active_sessions_revoked_freshness">Evidence freshness
+              <select id="check_active_sessions_revoked_freshness" name="check_active_sessions_revoked_freshness">
+                <option value="fresh">Fresh</option>
+                <option value="stale">Stale</option>
+                <option value="unknown" selected>Unknown</option>
+              </select>
+            </label>
+            <label for="check_active_sessions_revoked_source">Evidence source
+              <select id="check_active_sessions_revoked_source" name="check_active_sessions_revoked_source">
+                <option value="independent_control_plane">Independent control plane</option>
+                <option value="agent_self_report">Agent self-report</option>
+                <option value="partial_telemetry">Partial telemetry</option>
+                <option value="none" selected>None</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="lab007-check-card" data-check="delegated_credentials_revoked">
+          <legend>Delegated credentials revoked</legend>
+          <div class="lab007-grid">
+            <label for="check_delegated_credentials_revoked_expected">Expected state
+              <input id="check_delegated_credentials_revoked_expected" name="check_delegated_credentials_revoked_expected" maxlength="500" value="">
+            </label>
+            <label for="check_delegated_credentials_revoked_observed">Observed state
+              <input id="check_delegated_credentials_revoked_observed" name="check_delegated_credentials_revoked_observed" maxlength="500" value="">
+            </label>
+            <label for="check_delegated_credentials_revoked_evidence">Evidence reference
+              <input id="check_delegated_credentials_revoked_evidence" name="check_delegated_credentials_revoked_evidence" maxlength="120" value="">
+            </label>
+            <label for="check_delegated_credentials_revoked_freshness">Evidence freshness
+              <select id="check_delegated_credentials_revoked_freshness" name="check_delegated_credentials_revoked_freshness">
+                <option value="fresh">Fresh</option>
+                <option value="stale">Stale</option>
+                <option value="unknown" selected>Unknown</option>
+              </select>
+            </label>
+            <label for="check_delegated_credentials_revoked_source">Evidence source
+              <select id="check_delegated_credentials_revoked_source" name="check_delegated_credentials_revoked_source">
+                <option value="independent_control_plane">Independent control plane</option>
+                <option value="agent_self_report">Agent self-report</option>
+                <option value="partial_telemetry">Partial telemetry</option>
+                <option value="none" selected>None</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="lab007-check-card" data-check="tool_access_disabled">
+          <legend>Tool access disabled</legend>
+          <div class="lab007-grid">
+            <label for="check_tool_access_disabled_expected">Expected state
+              <input id="check_tool_access_disabled_expected" name="check_tool_access_disabled_expected" maxlength="500" value="">
+            </label>
+            <label for="check_tool_access_disabled_observed">Observed state
+              <input id="check_tool_access_disabled_observed" name="check_tool_access_disabled_observed" maxlength="500" value="">
+            </label>
+            <label for="check_tool_access_disabled_evidence">Evidence reference
+              <input id="check_tool_access_disabled_evidence" name="check_tool_access_disabled_evidence" maxlength="120" value="">
+            </label>
+            <label for="check_tool_access_disabled_freshness">Evidence freshness
+              <select id="check_tool_access_disabled_freshness" name="check_tool_access_disabled_freshness">
+                <option value="fresh">Fresh</option>
+                <option value="stale">Stale</option>
+                <option value="unknown" selected>Unknown</option>
+              </select>
+            </label>
+            <label for="check_tool_access_disabled_source">Evidence source
+              <select id="check_tool_access_disabled_source" name="check_tool_access_disabled_source">
+                <option value="independent_control_plane">Independent control plane</option>
+                <option value="agent_self_report">Agent self-report</option>
+                <option value="partial_telemetry">Partial telemetry</option>
+                <option value="none" selected>None</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="lab007-check-card" data-check="queued_actions_cancelled">
+          <legend>Queued actions cancelled</legend>
+          <div class="lab007-grid">
+            <label for="check_queued_actions_cancelled_expected">Expected state
+              <input id="check_queued_actions_cancelled_expected" name="check_queued_actions_cancelled_expected" maxlength="500" value="">
+            </label>
+            <label for="check_queued_actions_cancelled_observed">Observed state
+              <input id="check_queued_actions_cancelled_observed" name="check_queued_actions_cancelled_observed" maxlength="500" value="">
+            </label>
+            <label for="check_queued_actions_cancelled_evidence">Evidence reference
+              <input id="check_queued_actions_cancelled_evidence" name="check_queued_actions_cancelled_evidence" maxlength="120" value="">
+            </label>
+            <label for="check_queued_actions_cancelled_freshness">Evidence freshness
+              <select id="check_queued_actions_cancelled_freshness" name="check_queued_actions_cancelled_freshness">
+                <option value="fresh">Fresh</option>
+                <option value="stale">Stale</option>
+                <option value="unknown" selected>Unknown</option>
+              </select>
+            </label>
+            <label for="check_queued_actions_cancelled_source">Evidence source
+              <select id="check_queued_actions_cancelled_source" name="check_queued_actions_cancelled_source">
+                <option value="independent_control_plane">Independent control plane</option>
+                <option value="agent_self_report">Agent self-report</option>
+                <option value="partial_telemetry">Partial telemetry</option>
+                <option value="none" selected>None</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="lab007-check-card" data-check="scheduled_work_cancelled">
+          <legend>Scheduled work cancelled</legend>
+          <div class="lab007-grid">
+            <label for="check_scheduled_work_cancelled_expected">Expected state
+              <input id="check_scheduled_work_cancelled_expected" name="check_scheduled_work_cancelled_expected" maxlength="500" value="">
+            </label>
+            <label for="check_scheduled_work_cancelled_observed">Observed state
+              <input id="check_scheduled_work_cancelled_observed" name="check_scheduled_work_cancelled_observed" maxlength="500" value="">
+            </label>
+            <label for="check_scheduled_work_cancelled_evidence">Evidence reference
+              <input id="check_scheduled_work_cancelled_evidence" name="check_scheduled_work_cancelled_evidence" maxlength="120" value="">
+            </label>
+            <label for="check_scheduled_work_cancelled_freshness">Evidence freshness
+              <select id="check_scheduled_work_cancelled_freshness" name="check_scheduled_work_cancelled_freshness">
+                <option value="fresh">Fresh</option>
+                <option value="stale">Stale</option>
+                <option value="unknown" selected>Unknown</option>
+              </select>
+            </label>
+            <label for="check_scheduled_work_cancelled_source">Evidence source
+              <select id="check_scheduled_work_cancelled_source" name="check_scheduled_work_cancelled_source">
+                <option value="independent_control_plane">Independent control plane</option>
+                <option value="agent_self_report">Agent self-report</option>
+                <option value="partial_telemetry">Partial telemetry</option>
+                <option value="none" selected>None</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="lab007-check-card" data-check="child_agents_stopped">
+          <legend>Child agents stopped</legend>
+          <div class="lab007-grid">
+            <label for="check_child_agents_stopped_expected">Expected state
+              <input id="check_child_agents_stopped_expected" name="check_child_agents_stopped_expected" maxlength="500" value="">
+            </label>
+            <label for="check_child_agents_stopped_observed">Observed state
+              <input id="check_child_agents_stopped_observed" name="check_child_agents_stopped_observed" maxlength="500" value="">
+            </label>
+            <label for="check_child_agents_stopped_evidence">Evidence reference
+              <input id="check_child_agents_stopped_evidence" name="check_child_agents_stopped_evidence" maxlength="120" value="">
+            </label>
+            <label for="check_child_agents_stopped_freshness">Evidence freshness
+              <select id="check_child_agents_stopped_freshness" name="check_child_agents_stopped_freshness">
+                <option value="fresh">Fresh</option>
+                <option value="stale">Stale</option>
+                <option value="unknown" selected>Unknown</option>
+              </select>
+            </label>
+            <label for="check_child_agents_stopped_source">Evidence source
+              <select id="check_child_agents_stopped_source" name="check_child_agents_stopped_source">
+                <option value="independent_control_plane">Independent control plane</option>
+                <option value="agent_self_report">Agent self-report</option>
+                <option value="partial_telemetry">Partial telemetry</option>
+                <option value="none" selected>None</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="lab007-check-card" data-check="network_egress_blocked">
+          <legend>Network egress blocked</legend>
+          <div class="lab007-grid">
+            <label for="check_network_egress_blocked_expected">Expected state
+              <input id="check_network_egress_blocked_expected" name="check_network_egress_blocked_expected" maxlength="500" value="">
+            </label>
+            <label for="check_network_egress_blocked_observed">Observed state
+              <input id="check_network_egress_blocked_observed" name="check_network_egress_blocked_observed" maxlength="500" value="">
+            </label>
+            <label for="check_network_egress_blocked_evidence">Evidence reference
+              <input id="check_network_egress_blocked_evidence" name="check_network_egress_blocked_evidence" maxlength="120" value="">
+            </label>
+            <label for="check_network_egress_blocked_freshness">Evidence freshness
+              <select id="check_network_egress_blocked_freshness" name="check_network_egress_blocked_freshness">
+                <option value="fresh">Fresh</option>
+                <option value="stale">Stale</option>
+                <option value="unknown" selected>Unknown</option>
+              </select>
+            </label>
+            <label for="check_network_egress_blocked_source">Evidence source
+              <select id="check_network_egress_blocked_source" name="check_network_egress_blocked_source">
+                <option value="independent_control_plane">Independent control plane</option>
+                <option value="agent_self_report">Agent self-report</option>
+                <option value="partial_telemetry">Partial telemetry</option>
+                <option value="none" selected>None</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="lab007-check-card" data-check="alternate_network_paths_checked">
+          <legend>Alternate network paths checked</legend>
+          <div class="lab007-grid">
+            <label for="check_alternate_network_paths_checked_expected">Expected state
+              <input id="check_alternate_network_paths_checked_expected" name="check_alternate_network_paths_checked_expected" maxlength="500" value="">
+            </label>
+            <label for="check_alternate_network_paths_checked_observed">Observed state
+              <input id="check_alternate_network_paths_checked_observed" name="check_alternate_network_paths_checked_observed" maxlength="500" value="">
+            </label>
+            <label for="check_alternate_network_paths_checked_evidence">Evidence reference
+              <input id="check_alternate_network_paths_checked_evidence" name="check_alternate_network_paths_checked_evidence" maxlength="120" value="">
+            </label>
+            <label for="check_alternate_network_paths_checked_freshness">Evidence freshness
+              <select id="check_alternate_network_paths_checked_freshness" name="check_alternate_network_paths_checked_freshness">
+                <option value="fresh">Fresh</option>
+                <option value="stale">Stale</option>
+                <option value="unknown" selected>Unknown</option>
+              </select>
+            </label>
+            <label for="check_alternate_network_paths_checked_source">Evidence source
+              <select id="check_alternate_network_paths_checked_source" name="check_alternate_network_paths_checked_source">
+                <option value="independent_control_plane">Independent control plane</option>
+                <option value="agent_self_report">Agent self-report</option>
+                <option value="partial_telemetry">Partial telemetry</option>
+                <option value="none" selected>None</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="lab007-check-card" data-check="persistent_state_quarantined">
+          <legend>Persistent state quarantined</legend>
+          <div class="lab007-grid">
+            <label for="check_persistent_state_quarantined_expected">Expected state
+              <input id="check_persistent_state_quarantined_expected" name="check_persistent_state_quarantined_expected" maxlength="500" value="">
+            </label>
+            <label for="check_persistent_state_quarantined_observed">Observed state
+              <input id="check_persistent_state_quarantined_observed" name="check_persistent_state_quarantined_observed" maxlength="500" value="">
+            </label>
+            <label for="check_persistent_state_quarantined_evidence">Evidence reference
+              <input id="check_persistent_state_quarantined_evidence" name="check_persistent_state_quarantined_evidence" maxlength="120" value="">
+            </label>
+            <label for="check_persistent_state_quarantined_freshness">Evidence freshness
+              <select id="check_persistent_state_quarantined_freshness" name="check_persistent_state_quarantined_freshness">
+                <option value="fresh">Fresh</option>
+                <option value="stale">Stale</option>
+                <option value="unknown" selected>Unknown</option>
+              </select>
+            </label>
+            <label for="check_persistent_state_quarantined_source">Evidence source
+              <select id="check_persistent_state_quarantined_source" name="check_persistent_state_quarantined_source">
+                <option value="independent_control_plane">Independent control plane</option>
+                <option value="agent_self_report">Agent self-report</option>
+                <option value="partial_telemetry">Partial telemetry</option>
+                <option value="none" selected>None</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="lab007-check-card" data-check="restart_recovery_disabled">
+          <legend>Restart/recovery disabled</legend>
+          <div class="lab007-grid">
+            <label for="check_restart_recovery_disabled_expected">Expected state
+              <input id="check_restart_recovery_disabled_expected" name="check_restart_recovery_disabled_expected" maxlength="500" value="">
+            </label>
+            <label for="check_restart_recovery_disabled_observed">Observed state
+              <input id="check_restart_recovery_disabled_observed" name="check_restart_recovery_disabled_observed" maxlength="500" value="">
+            </label>
+            <label for="check_restart_recovery_disabled_evidence">Evidence reference
+              <input id="check_restart_recovery_disabled_evidence" name="check_restart_recovery_disabled_evidence" maxlength="120" value="">
+            </label>
+            <label for="check_restart_recovery_disabled_freshness">Evidence freshness
+              <select id="check_restart_recovery_disabled_freshness" name="check_restart_recovery_disabled_freshness">
+                <option value="fresh">Fresh</option>
+                <option value="stale">Stale</option>
+                <option value="unknown" selected>Unknown</option>
+              </select>
+            </label>
+            <label for="check_restart_recovery_disabled_source">Evidence source
+              <select id="check_restart_recovery_disabled_source" name="check_restart_recovery_disabled_source">
+                <option value="independent_control_plane">Independent control plane</option>
+                <option value="agent_self_report">Agent self-report</option>
+                <option value="partial_telemetry">Partial telemetry</option>
+                <option value="none" selected>None</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="lab007-check-card" data-check="telemetry_coverage_complete">
+          <legend>Telemetry coverage complete</legend>
+          <div class="lab007-grid">
+            <label for="check_telemetry_coverage_complete_expected">Expected state
+              <input id="check_telemetry_coverage_complete_expected" name="check_telemetry_coverage_complete_expected" maxlength="500" value="">
+            </label>
+            <label for="check_telemetry_coverage_complete_observed">Observed state
+              <input id="check_telemetry_coverage_complete_observed" name="check_telemetry_coverage_complete_observed" maxlength="500" value="">
+            </label>
+            <label for="check_telemetry_coverage_complete_evidence">Evidence reference
+              <input id="check_telemetry_coverage_complete_evidence" name="check_telemetry_coverage_complete_evidence" maxlength="120" value="">
+            </label>
+            <label for="check_telemetry_coverage_complete_freshness">Evidence freshness
+              <select id="check_telemetry_coverage_complete_freshness" name="check_telemetry_coverage_complete_freshness">
+                <option value="fresh">Fresh</option>
+                <option value="stale">Stale</option>
+                <option value="unknown" selected>Unknown</option>
+              </select>
+            </label>
+            <label for="check_telemetry_coverage_complete_source">Evidence source
+              <select id="check_telemetry_coverage_complete_source" name="check_telemetry_coverage_complete_source">
+                <option value="independent_control_plane">Independent control plane</option>
+                <option value="agent_self_report">Agent self-report</option>
+                <option value="partial_telemetry">Partial telemetry</option>
+                <option value="none" selected>None</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="lab007-check-card" data-check="evidence_freshness_acceptable">
+          <legend>Evidence freshness acceptable</legend>
+          <div class="lab007-grid">
+            <label for="check_evidence_freshness_acceptable_expected">Expected state
+              <input id="check_evidence_freshness_acceptable_expected" name="check_evidence_freshness_acceptable_expected" maxlength="500" value="">
+            </label>
+            <label for="check_evidence_freshness_acceptable_observed">Observed state
+              <input id="check_evidence_freshness_acceptable_observed" name="check_evidence_freshness_acceptable_observed" maxlength="500" value="">
+            </label>
+            <label for="check_evidence_freshness_acceptable_evidence">Evidence reference
+              <input id="check_evidence_freshness_acceptable_evidence" name="check_evidence_freshness_acceptable_evidence" maxlength="120" value="">
+            </label>
+            <label for="check_evidence_freshness_acceptable_freshness">Evidence freshness
+              <select id="check_evidence_freshness_acceptable_freshness" name="check_evidence_freshness_acceptable_freshness">
+                <option value="fresh">Fresh</option>
+                <option value="stale">Stale</option>
+                <option value="unknown" selected>Unknown</option>
+              </select>
+            </label>
+            <label for="check_evidence_freshness_acceptable_source">Evidence source
+              <select id="check_evidence_freshness_acceptable_source" name="check_evidence_freshness_acceptable_source">
+                <option value="independent_control_plane">Independent control plane</option>
+                <option value="agent_self_report">Agent self-report</option>
+                <option value="partial_telemetry">Partial telemetry</option>
+                <option value="none" selected>None</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="lab007-check-card" data-check="evidence_source_independence">
+          <legend>Evidence source independence</legend>
+          <div class="lab007-grid">
+            <label for="check_evidence_source_independence_expected">Expected state
+              <input id="check_evidence_source_independence_expected" name="check_evidence_source_independence_expected" maxlength="500" value="">
+            </label>
+            <label for="check_evidence_source_independence_observed">Observed state
+              <input id="check_evidence_source_independence_observed" name="check_evidence_source_independence_observed" maxlength="500" value="">
+            </label>
+            <label for="check_evidence_source_independence_evidence">Evidence reference
+              <input id="check_evidence_source_independence_evidence" name="check_evidence_source_independence_evidence" maxlength="120" value="">
+            </label>
+            <label for="check_evidence_source_independence_freshness">Evidence freshness
+              <select id="check_evidence_source_independence_freshness" name="check_evidence_source_independence_freshness">
+                <option value="fresh">Fresh</option>
+                <option value="stale">Stale</option>
+                <option value="unknown" selected>Unknown</option>
+              </select>
+            </label>
+            <label for="check_evidence_source_independence_source">Evidence source
+              <select id="check_evidence_source_independence_source" name="check_evidence_source_independence_source">
+                <option value="independent_control_plane">Independent control plane</option>
+                <option value="agent_self_report">Agent self-report</option>
+                <option value="partial_telemetry">Partial telemetry</option>
+                <option value="none" selected>None</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="lab007-check-card" data-check="post_containment_activity_absent">
+          <legend>Post-containment activity absent</legend>
+          <div class="lab007-grid">
+            <label for="check_post_containment_activity_absent_expected">Expected state
+              <input id="check_post_containment_activity_absent_expected" name="check_post_containment_activity_absent_expected" maxlength="500" value="">
+            </label>
+            <label for="check_post_containment_activity_absent_observed">Observed state
+              <input id="check_post_containment_activity_absent_observed" name="check_post_containment_activity_absent_observed" maxlength="500" value="">
+            </label>
+            <label for="check_post_containment_activity_absent_evidence">Evidence reference
+              <input id="check_post_containment_activity_absent_evidence" name="check_post_containment_activity_absent_evidence" maxlength="120" value="">
+            </label>
+            <label for="check_post_containment_activity_absent_freshness">Evidence freshness
+              <select id="check_post_containment_activity_absent_freshness" name="check_post_containment_activity_absent_freshness">
+                <option value="fresh">Fresh</option>
+                <option value="stale">Stale</option>
+                <option value="unknown" selected>Unknown</option>
+              </select>
+            </label>
+            <label for="check_post_containment_activity_absent_source">Evidence source
+              <select id="check_post_containment_activity_absent_source" name="check_post_containment_activity_absent_source">
+                <option value="independent_control_plane">Independent control plane</option>
+                <option value="agent_self_report">Agent self-report</option>
+                <option value="partial_telemetry">Partial telemetry</option>
+                <option value="none" selected>None</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+    <p class="actions">
+      <button type="submit" class="button">Evaluate containment assurance</button>
+    </p>
+  </form>
+</section>
+
+<section class="wrap">
+  <div id="lab007-result" class="lab007-result" hidden aria-live="polite"></div>
+</section>
+
+<section class="wrap" aria-labelledby="diagram-heading">
+  <h2 id="diagram-heading">Assurance boundary</h2>
+  <p>
+    Lab 005 asks what the agent did. Lab 006 asks what containment action should be applied.
+    Lab 007 asks whether that containment action actually worked—using evidence outside the agent.
+  </p>
+  <figure class="lab007-diagram">
+    <img
+      src="/static/labs/007/assurance-boundary.svg"
+      alt="Diagram titled Containment assurance boundary: Containment action feeds independent evidence collection, then assurance checks, then Confirmed, Partial, Unverified, or Failed. An assurance perimeter covers runtime, identity and sessions, credentials, tools, queues, delegates, network, and state and recovery."
+      width="960"
+      height="580"
+      loading="lazy"
+    >
+    <figcaption>Containment is not the command we issue. It is a state we must verify.</figcaption>
+  </figure>
+</section>
+
+<section class="wrap" aria-labelledby="teaching-heading">
+  <h2 id="teaching-heading">Teaching notes</h2>
+  <ul class="lab007-bullets">
+    <li>A successful API response to a stop request is not proof of containment.</li>
+    <li>Absence of observed activity is not positive evidence.</li>
+    <li>Process termination does not automatically revoke identity or authority.</li>
+    <li>Parent-agent termination does not automatically stop delegated work.</li>
+    <li>Queued and scheduled actions may outlive the initiating runtime.</li>
+    <li>Cached credentials and tool sessions can survive process termination.</li>
+    <li>Persistent state can allow work to resume after restart.</li>
+    <li>Assurance evidence must come from controls independent of the agent.</li>
+    <li>Confirmed is time-bounded; containment can regress.</li>
+    <li>This educational Lab does not provide production containment or assurance.</li>
+  </ul>
+</section>
+
+<section class="wrap" aria-labelledby="next-heading">
+  <h2 id="next-heading">Continue</h2>
+  <p class="lab007-footer-note hint" role="note">
+    {% if lab.published_newsletter_url %}
+    <a class="button button-quiet" href="{{ lab.published_newsletter_url }}" rel="noopener noreferrer" data-lab007-newsletter>Read the companion newsletter</a>
+    {% else %}
+    The companion Edition 7 newsletter will be linked here after publication.
+    {% endif %}
+  </p>
+  <p class="actions lab007-footer-actions">
+    <a class="button button-quiet" href="/labs/agent-containment-boundary">Previous Lab: The Agent Containment Boundary</a>
+    <a class="button button-quiet" href="/labs">Browse all Labs</a>
+    <a class="button button-quiet" href="{{ github_url }}" rel="noopener noreferrer">View source on GitHub</a>
+  </p>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="/static/labs/007/lab.js" defer></script>
+{% endblock %}

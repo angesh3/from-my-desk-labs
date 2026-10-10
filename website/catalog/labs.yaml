@@ -141,3 +141,29 @@ labs:
     homepage_detail: "Compare justified refusal with non-compliance and rogue evasion, then see how an independent control plane chooses Continue, Restrict, Isolate, or Terminate—using fictional Cedar Quill Markets data only."
     homepage_safety: "The scenarios are fictional, and the Lab never modifies a real agent, credential, process, or tool session."
     homepage_earlier_description: "When a valid stop is ignored, containment must stay outside the agent."
+
+  - id: "007"
+    edition_number: 7
+    slug: containment-assurance
+    title: "Containment Assurance"
+    subtitle: "A stop command records an intention. Assurance requires independent evidence that every execution path and authority has been neutralized."
+    summary: "A stop command is not proof. Test whether runtimes, identities, credentials, delegates, queues, tools, networks, state, and recovery paths are independently verified as contained."
+    status: published
+    tags:
+      - Agent Governance
+      - Containment
+      - Assurance
+      - Security
+      - Evidence
+      - Responsible AI
+    lab_url: /labs/containment-assurance
+    newsletter_url: "[EDITION_7_NEWSLETTER_URL]"
+    github_url: https://github.com/angesh3/from-my-desk-labs
+    interactive: true
+    featured: false
+    disclaimer: "This Lab is an educational containment-assurance prototype using fictional data. It does not control production agents, terminate workloads, revoke credentials, alter network access, or perform security actions. Execution is never performed against real systems."
+    reader_title: "Containment Assurance"
+    homepage_lead: "Can We Prove the Agent Is Actually Contained?"
+    homepage_detail: "A stop command is not proof. Test whether runtimes, identities, credentials, delegates, queues, tools, networks, state, and recovery paths are independently verified as contained."
+    homepage_safety: "The scenarios are fictional, and the Lab never controls a real agent, credential, process, or network path."
+    homepage_earlier_description: "A containment command records intention; assurance asks whether every path is actually closed."
