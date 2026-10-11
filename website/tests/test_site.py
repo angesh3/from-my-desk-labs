@@ -525,8 +525,11 @@ def test_lab007_page_basics():
     assert "Confirmed" in html
     assert "EDITION_7_NEWSLETTER_URL" not in html
     assert "[EDITION_7_NEWSLETTER_URL]" not in html
-    assert "The companion Edition 7 newsletter will be linked here after publication." in html
-    assert "Read the companion newsletter" not in html
+    assert "The companion Edition 7 newsletter will be linked here after publication." not in html
+    assert "Read the companion newsletter" in html
+    assert 'href="https://www.linkedin.com/pulse/did-containment-actually-work-angesh-vikram-djp0c/"' in html
+    assert "trackingId" not in html
+    assert "data-lab007-newsletter" in html
     assert 'class="lab007-footer-note' in html
     assert 'class="actions lab007-footer-actions"' in html
     assert "Previous Lab: The Agent Containment Boundary" in html

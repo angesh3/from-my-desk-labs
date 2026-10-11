@@ -71,9 +71,13 @@ def test_published_catalog_loads():
     assert by_id["006"].edition_number == 6
     assert by_id["007"].slug == "containment-assurance"
     assert by_id["007"].lab_url == "/labs/containment-assurance"
-    assert by_id["007"].newsletter_url == "[EDITION_7_NEWSLETTER_URL]"
-    assert by_id["007"].newsletter_is_placeholder is True
-    assert by_id["007"].published_newsletter_url is None
+    assert by_id["007"].newsletter_url == (
+        "https://www.linkedin.com/pulse/did-containment-actually-work-angesh-vikram-djp0c/"
+    )
+    assert by_id["007"].newsletter_is_placeholder is False
+    assert by_id["007"].published_newsletter_url == (
+        "https://www.linkedin.com/pulse/did-containment-actually-work-angesh-vikram-djp0c/"
+    )
     assert by_id["007"].edition_number == 7
     assert by_id["001"].newsletter_is_placeholder is False
     assert by_id["001"].published_newsletter_url is not None
