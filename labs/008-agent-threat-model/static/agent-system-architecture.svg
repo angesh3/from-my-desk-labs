@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">High-level agent-system threat-model architecture</title>
+  <desc id="desc">A principal and identity and authority plane govern an agent orchestrator connected to a model, instructions, memory, tools, data, queues, and delegated agents. An independent evidence and control plane observes and constrains the system.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#10213d"/></marker>
+    <marker id="gold-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#b98b3e"/></marker>
+    <style>
+      .bg{fill:#f7f2e8}.zone{fill:#fff;stroke:#cfc5b4;stroke-width:2}.core{fill:#10213d;stroke:#10213d}.control{fill:#edf6f0;stroke:#2d7a54;stroke-width:2}.external{fill:#fff7df;stroke:#b98b3e;stroke-width:2}.node{fill:#fff;stroke:#10213d;stroke-width:2}.title{font:700 30px Georgia,serif;fill:#10213d}.label{font:700 19px Georgia,serif;fill:#10213d}.light{fill:#fff}.small{font:15px Arial,sans-serif;fill:#5e5a52}.small.light{fill:#fff}.line{fill:none;stroke:#10213d;stroke-width:2;marker-end:url(#arrow)}.dashed{fill:none;stroke:#b98b3e;stroke-width:2;stroke-dasharray:8 7;marker-end:url(#gold-arrow)}.boundary{fill:none;stroke:#8d877c;stroke-width:2;stroke-dasharray:10 8}.boundaryText{font:700 14px Arial,sans-serif;fill:#6f695f;letter-spacing:1px}
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="760"/>
+  <text class="title" x="60" y="62">Example agent-system architecture</text>
+  <text class="small" x="60" y="91">Threat-model the complete system—not only the model.</text>
+
+  <rect class="boundary" x="35" y="120" width="1130" height="500" rx="18"/>
+  <text class="boundaryText" x="55" y="146">AGENT SYSTEM TRUST BOUNDARY</text>
+
+  <rect class="external" x="60" y="190" width="190" height="92" rx="12"/>
+  <text class="label" x="155" y="225" text-anchor="middle">Principal</text>
+  <text class="small" x="155" y="252" text-anchor="middle">Human or service intent</text>
+
+  <rect class="control" x="330" y="160" width="270" height="122" rx="12"/>
+  <text class="label" x="465" y="198" text-anchor="middle">Identity &amp; Authority</text>
+  <text class="small" x="465" y="225" text-anchor="middle">Authentication · delegation</text>
+  <text class="small" x="465" y="247" text-anchor="middle">approval · policy · expiry</text>
+
+  <rect class="core" x="690" y="180" width="250" height="122" rx="14"/>
+  <text class="label light" x="815" y="222" text-anchor="middle">Agent Orchestrator</text>
+  <text class="small light" x="815" y="250" text-anchor="middle">Plans · routes · coordinates</text>
+  <text class="small light" x="815" y="274" text-anchor="middle">selects tools and delegates</text>
+
+  <rect class="node" x="990" y="170" width="145" height="100" rx="12"/>
+  <text class="label" x="1062" y="210" text-anchor="middle">Model</text>
+  <text class="small" x="1062" y="238" text-anchor="middle">Inference</text>
+
+  <rect class="node" x="70" y="390" width="180" height="100" rx="12"/>
+  <text class="label" x="160" y="426" text-anchor="middle">Instructions</text>
+  <text class="small" x="160" y="454" text-anchor="middle">System · task · retrieved</text>
+
+  <rect class="node" x="300" y="390" width="180" height="100" rx="12"/>
+  <text class="label" x="390" y="426" text-anchor="middle">Memory</text>
+  <text class="small" x="390" y="454" text-anchor="middle">Session · persistent · RAG</text>
+
+  <rect class="node" x="530" y="390" width="180" height="100" rx="12"/>
+  <text class="label" x="620" y="426" text-anchor="middle">Tools &amp; APIs</text>
+  <text class="small" x="620" y="454" text-anchor="middle">Actions · credentials</text>
+
+  <rect class="node" x="760" y="390" width="180" height="100" rx="12"/>
+  <text class="label" x="850" y="426" text-anchor="middle">Delegates</text>
+  <text class="small" x="850" y="454" text-anchor="middle">Workers · child agents</text>
+
+  <rect class="node" x="990" y="390" width="145" height="100" rx="12"/>
+  <text class="label" x="1062" y="426" text-anchor="middle">Queues</text>
+  <text class="small" x="1062" y="454" text-anchor="middle">Deferred work</text>
+
+  <rect class="external" x="520" y="540" width="200" height="74" rx="12"/>
+  <text class="label" x="620" y="572" text-anchor="middle">Protected Data</text>
+  <text class="small" x="620" y="596" text-anchor="middle">Records · secrets · output</text>
+
+  <path class="line" d="M250 226H330"/>
+  <path class="line" d="M600 221H690"/>
+  <path class="line" d="M940 226H990"/>
+  <path class="line" d="M815 302V350H160V390"/>
+  <path class="line" d="M815 350H390V390"/>
+  <path class="line" d="M815 350H620V390"/>
+  <path class="line" d="M815 350H850V390"/>
+  <path class="line" d="M815 350H1062V390"/>
+  <path class="line" d="M620 490V540"/>
+
+  <rect class="control" x="130" y="655" width="940" height="72" rx="14"/>
+  <text class="label" x="600" y="685" text-anchor="middle">Independent Evidence &amp; Control Plane</text>
+  <text class="small" x="600" y="710" text-anchor="middle">Policy decisions · telemetry · action receipts · anomaly detection · revoke · isolate · recover</text>
+  <path class="dashed" d="M465 655V300"/>
+  <path class="dashed" d="M815 655V302"/>
+  <path class="dashed" d="M1060 655V490"/>
+</svg>

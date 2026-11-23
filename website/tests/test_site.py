@@ -606,6 +606,10 @@ def test_lab008_page_basics():
     assert 'class="lab008-hero-title"' in html
     assert "The model is not the whole system" in html
     assert "Seven threat surfaces" in html
+    assert "Example agent-system architecture" in html
+    assert "Data-flow diagram and trust boundaries" in html
+    assert "/static/labs/008/agent-system-architecture.svg" in html
+    assert "/static/labs/008/agent-data-flow.svg" in html
     assert 'data-preset="retrieved_prompt_injection_blocked"' in html
     assert 'data-preset="insufficient_cross_system_telemetry"' in html
     assert "/static/labs/008/agent-threat-model.svg" in html
@@ -791,6 +795,8 @@ def test_static_assets():
         ("/static/labs/007/assurance-boundary.svg", "image/svg+xml"),
         ("/static/labs/007/lab.js", "javascript"),
         ("/static/labs/008/agent-threat-model.svg", "image/svg+xml"),
+        ("/static/labs/008/agent-system-architecture.svg", "image/svg+xml"),
+        ("/static/labs/008/agent-data-flow.svg", "image/svg+xml"),
         ("/static/labs/008/lab.js", "javascript"),
     ]
     for url, content_type in assets:
@@ -1003,19 +1009,24 @@ def test_lab007_source_svg_is_valid_utf8_xml():
 def test_lab008_diagram_url_from_rendered_html():
     html = client.get("/labs/agent-threat-model").text
     srcs = re.findall(r'src="(/static/labs/008/[^"]+\.svg)"', html)
-    assert srcs == ["/static/labs/008/agent-threat-model.svg"]
-    response = client.get(srcs[0])
-    assert response.status_code == 200
-    assert "image/svg+xml" in response.headers["content-type"]
-    body = response.content
-    assert len(body) > 100
-    stripped = body.lstrip()
-    assert stripped.startswith(b"<?xml") or stripped.startswith(b"<svg")
-    body.decode("utf-8")
-    ET.parse(io.BytesIO(body))
-    source = LAB008_STATIC / "agent-threat-model.svg"
-    assert source.is_file()
-    assert source.read_bytes() == body
+    assert srcs == [
+        "/static/labs/008/agent-system-architecture.svg",
+        "/static/labs/008/agent-data-flow.svg",
+        "/static/labs/008/agent-threat-model.svg",
+    ]
+    for src in srcs:
+        response = client.get(src)
+        assert response.status_code == 200
+        assert "image/svg+xml" in response.headers["content-type"]
+        body = response.content
+        assert len(body) > 100
+        stripped = body.lstrip()
+        assert stripped.startswith(b"<?xml") or stripped.startswith(b"<svg")
+        body.decode("utf-8")
+        ET.parse(io.BytesIO(body))
+        source = LAB008_STATIC / src.rsplit("/", 1)[-1]
+        assert source.is_file()
+        assert source.read_bytes() == body
 
 
 def test_lab008_source_svg_is_valid_utf8_xml():
