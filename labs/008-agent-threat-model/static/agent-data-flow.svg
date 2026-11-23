@@ -53,9 +53,9 @@
   <text class="label" x="1035" y="484" text-anchor="middle">Protected Data</text>
   <text class="small" x="1035" y="509" text-anchor="middle">Records · secrets · results</text>
 
-  <rect class="controlZone" x="315" y="710" width="850" height="82" rx="18"/>
-  <text class="label" x="740" y="742" text-anchor="middle">Independent Evidence &amp; Control Plane</text>
-  <text class="small" x="740" y="768" text-anchor="middle">Telemetry · receipts · policy evidence · revoke · isolate · recovery</text>
+  <rect class="controlZone" x="315" y="735" width="850" height="70" rx="18"/>
+  <text class="label" x="740" y="763" text-anchor="middle">Independent Evidence &amp; Control Plane</text>
+  <text class="small" x="740" y="787" text-anchor="middle">Telemetry · receipts · policy evidence · revoke · isolate · recovery</text>
 
   <path class="flow" d="M250 220H355"/>
   <circle class="num" cx="305" cy="204" r="14"/><text class="numText" x="305" y="204">1</text>
@@ -76,10 +76,10 @@
   <path class="flow" d="M940 496H875V622H830"/>
   <circle class="num" cx="896" cy="480" r="14"/><text class="numText" x="896" y="480">9</text>
 
-  <path class="telemetry" d="M455 267V710"/>
-  <path class="telemetry" d="M728 622V710"/>
-  <path class="telemetry" d="M1035 542V710"/>
+  <path class="telemetry" d="M455 267V735"/>
+  <path class="telemetry" d="M728 622V735"/>
+  <path class="telemetry" d="M1035 542V735"/>
 
-  <text class="small" x="55" y="705">1 Request + principal identity  ·  2 scoped authority  ·  3 context request  ·  4 model prompt/response  ·  5 retrieved data</text>
-  <text class="small" x="55" y="730">6 delegated task  ·  7 policy-bound tool call  ·  8 protected data access  ·  9 result  ·  dashed green: independent evidence</text>
+  <text class="small" x="55" y="690">1 Request + principal identity  ·  2 scoped authority  ·  3 context request  ·  4 model prompt/response  ·  5 retrieved data</text>
+  <text class="small" x="55" y="714">6 worker tool request  ·  7 policy-bound tool call  ·  8 protected data access  ·  9 result  ·  dashed green: independent evidence</text>
 </svg>
