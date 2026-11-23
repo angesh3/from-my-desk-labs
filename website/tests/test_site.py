@@ -606,6 +606,10 @@ def test_lab008_page_basics():
     assert 'class="lab008-hero-title"' in html
     assert "The model is not the whole system" in html
     assert "Seven threat surfaces" in html
+    assert "Example agent-system architecture" in html
+    assert "Data-flow diagram and trust boundaries" in html
+    assert "/static/labs/008/agent-system-architecture.svg" in html
+    assert "/static/labs/008/agent-data-flow.svg" in html
     assert 'data-preset="retrieved_prompt_injection_blocked"' in html
     assert 'data-preset="insufficient_cross_system_telemetry"' in html
     assert "/static/labs/008/agent-threat-model.svg" in html
@@ -791,6 +795,8 @@ def test_static_assets():
         ("/static/labs/007/assurance-boundary.svg", "image/svg+xml"),
         ("/static/labs/007/lab.js", "javascript"),
         ("/static/labs/008/agent-threat-model.svg", "image/svg+xml"),
+        ("/static/labs/008/agent-system-architecture.svg", "image/svg+xml"),
+        ("/static/labs/008/agent-data-flow.svg", "image/svg+xml"),
         ("/static/labs/008/lab.js", "javascript"),
     ]
     for url, content_type in assets:
