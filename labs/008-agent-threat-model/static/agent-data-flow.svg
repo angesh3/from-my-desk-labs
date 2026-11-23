@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
+  <title id="title">Agent data-flow diagram with trust boundaries</title>
+  <desc id="desc">Numbered data flows move from a principal through identity and authority controls into an agent runtime, model, retrieval and memory services, tools, delegated workers, and protected systems. Independent telemetry flows to an evidence and control plane.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#10213d"/></marker>
+    <style>
+      .bg{fill:#f7f2e8}.zone{fill:#fff;stroke:#cfc5b4;stroke-width:2}.agentZone{fill:#f8fbff;stroke:#10213d;stroke-width:2;stroke-dasharray:10 8}.externalZone{fill:#fff9e9;stroke:#b98b3e;stroke-width:2;stroke-dasharray:10 8}.controlZone{fill:#edf6f0;stroke:#2d7a54;stroke-width:2;stroke-dasharray:10 8}.node{fill:#fff;stroke:#10213d;stroke-width:2}.control{fill:#edf6f0;stroke:#2d7a54;stroke-width:2}.external{fill:#fff7df;stroke:#b98b3e;stroke-width:2}.title{font:700 30px Georgia,serif;fill:#10213d}.label{font:700 18px Georgia,serif;fill:#10213d}.small{font:14px Arial,sans-serif;fill:#5e5a52}.boundary{font:700 13px Arial,sans-serif;fill:#6f695f;letter-spacing:1px}.flow{fill:none;stroke:#10213d;stroke-width:2;marker-end:url(#arrow)}.telemetry{fill:none;stroke:#2d7a54;stroke-width:2;stroke-dasharray:7 6;marker-end:url(#arrow)}.num{fill:#10213d}.numText{font:700 13px Arial,sans-serif;fill:#fff;text-anchor:middle;dominant-baseline:middle}
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="820"/>
+  <text class="title" x="55" y="58">Example data-flow diagram</text>
+  <text class="small" x="55" y="86">Follow data, authority, and evidence across explicit trust boundaries.</text>
+
+  <rect class="externalZone" x="35" y="115" width="250" height="555" rx="18"/>
+  <text class="boundary" x="55" y="143">EXTERNAL / PRINCIPAL ZONE</text>
+  <rect class="external" x="70" y="180" width="180" height="82" rx="12"/>
+  <text class="label" x="160" y="214" text-anchor="middle">Principal</text>
+  <text class="small" x="160" y="239" text-anchor="middle">Intent + request</text>
+  <rect class="external" x="70" y="365" width="180" height="92" rx="12"/>
+  <text class="label" x="160" y="400" text-anchor="middle">External Content</text>
+  <text class="small" x="160" y="425" text-anchor="middle">Documents · web · events</text>
+
+  <rect class="agentZone" x="315" y="115" width="560" height="555" rx="18"/>
+  <text class="boundary" x="335" y="143">AGENT RUNTIME TRUST BOUNDARY</text>
+  <rect class="control" x="355" y="175" width="200" height="92" rx="12"/>
+  <text class="label" x="455" y="208" text-anchor="middle">Identity / Authority</text>
+  <text class="small" x="455" y="233" text-anchor="middle">Verify · scope · approve</text>
+  <rect class="node" x="625" y="175" width="205" height="92" rx="12"/>
+  <text class="label" x="728" y="208" text-anchor="middle">Agent Runtime</text>
+  <text class="small" x="728" y="233" text-anchor="middle">Plan · decide · coordinate</text>
+
+  <rect class="node" x="355" y="350" width="190" height="92" rx="12"/>
+  <text class="label" x="450" y="384" text-anchor="middle">Model</text>
+  <text class="small" x="450" y="409" text-anchor="middle">Prompt + inference</text>
+  <rect class="node" x="625" y="350" width="205" height="92" rx="12"/>
+  <text class="label" x="728" y="384" text-anchor="middle">Memory / Retrieval</text>
+  <text class="small" x="728" y="409" text-anchor="middle">Context · RAG · history</text>
+
+  <rect class="node" x="355" y="530" width="190" height="92" rx="12"/>
+  <text class="label" x="450" y="564" text-anchor="middle">Tool Gateway</text>
+  <text class="small" x="450" y="589" text-anchor="middle">Policy-bound calls</text>
+  <rect class="node" x="625" y="530" width="205" height="92" rx="12"/>
+  <text class="label" x="728" y="564" text-anchor="middle">Delegated Worker</text>
+  <text class="small" x="728" y="589" text-anchor="middle">Narrowed handoff</text>
+
+  <rect class="externalZone" x="905" y="115" width="260" height="555" rx="18"/>
+  <text class="boundary" x="925" y="143">PROTECTED SYSTEMS ZONE</text>
+  <rect class="external" x="940" y="230" width="190" height="92" rx="12"/>
+  <text class="label" x="1035" y="264" text-anchor="middle">Tools / APIs</text>
+  <text class="small" x="1035" y="289" text-anchor="middle">Actions + credentials</text>
+  <rect class="external" x="940" y="450" width="190" height="92" rx="12"/>
+  <text class="label" x="1035" y="484" text-anchor="middle">Protected Data</text>
+  <text class="small" x="1035" y="509" text-anchor="middle">Records · secrets · results</text>
+
+  <rect class="controlZone" x="315" y="710" width="850" height="82" rx="18"/>
+  <text class="label" x="740" y="742" text-anchor="middle">Independent Evidence &amp; Control Plane</text>
+  <text class="small" x="740" y="768" text-anchor="middle">Telemetry · receipts · policy evidence · revoke · isolate · recovery</text>
+
+  <path class="flow" d="M250 220H355"/>
+  <circle class="num" cx="305" cy="204" r="14"/><text class="numText" x="305" y="204">1</text>
+  <path class="flow" d="M555 220H625"/>
+  <circle class="num" cx="590" cy="204" r="14"/><text class="numText" x="590" y="204">2</text>
+  <path class="flow" d="M728 267V350"/>
+  <circle class="num" cx="747" cy="309" r="14"/><text class="numText" x="747" y="309">3</text>
+  <path class="flow" d="M625 396H545"/>
+  <circle class="num" cx="585" cy="380" r="14"/><text class="numText" x="585" y="380">4</text>
+  <path class="flow" d="M250 411H625"/>
+  <circle class="num" cx="302" cy="395" r="14"/><text class="numText" x="302" y="395">5</text>
+  <path class="flow" d="M625 577H545"/>
+  <circle class="num" cx="585" cy="561" r="14"/><text class="numText" x="585" y="561">6</text>
+  <path class="flow" d="M545 576H895V276H940"/>
+  <circle class="num" cx="882" cy="560" r="14"/><text class="numText" x="882" y="560">7</text>
+  <path class="flow" d="M1035 322V450"/>
+  <circle class="num" cx="1054" cy="386" r="14"/><text class="numText" x="1054" y="386">8</text>
+  <path class="flow" d="M940 496H875V622H830"/>
+  <circle class="num" cx="896" cy="480" r="14"/><text class="numText" x="896" y="480">9</text>
+
+  <path class="telemetry" d="M455 267V710"/>
+  <path class="telemetry" d="M728 622V710"/>
+  <path class="telemetry" d="M1035 542V710"/>
+
+  <text class="small" x="55" y="705">1 Request + principal identity  ·  2 scoped authority  ·  3 context request  ·  4 model prompt/response  ·  5 retrieved data</text>
+  <text class="small" x="55" y="730">6 delegated task  ·  7 policy-bound tool call  ·  8 protected data access  ·  9 result  ·  dashed green: independent evidence</text>
+</svg>
