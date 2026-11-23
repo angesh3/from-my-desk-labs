@@ -157,7 +157,7 @@ labs:
       - Evidence
       - Responsible AI
     lab_url: /labs/containment-assurance
-    newsletter_url: "[EDITION_7_NEWSLETTER_URL]"
+    newsletter_url: https://www.linkedin.com/pulse/did-containment-actually-work-angesh-vikram-djp0c/
     github_url: https://github.com/angesh3/from-my-desk-labs
     interactive: true
     featured: false
