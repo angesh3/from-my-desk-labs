@@ -34,7 +34,7 @@ def valid_lab(**overrides):
 
 def test_published_catalog_loads():
     labs = load_catalog(CATALOG)
-    assert len(labs) == 7
+    assert len(labs) == 8
     by_id = {lab.id: lab for lab in labs}
     assert by_id["001"].slug == "know-your-agent"
     assert by_id["001"].reader_title_text == "Know Your Agent"
@@ -79,6 +79,12 @@ def test_published_catalog_loads():
         "https://www.linkedin.com/pulse/did-containment-actually-work-angesh-vikram-djp0c/"
     )
     assert by_id["007"].edition_number == 7
+    assert by_id["008"].slug == "agent-threat-model"
+    assert by_id["008"].lab_url == "/labs/agent-threat-model"
+    assert by_id["008"].newsletter_url == "[EDITION_8_NEWSLETTER_URL]"
+    assert by_id["008"].newsletter_is_placeholder is True
+    assert by_id["008"].published_newsletter_url is None
+    assert by_id["008"].edition_number == 8
     assert by_id["001"].newsletter_is_placeholder is False
     assert by_id["001"].published_newsletter_url is not None
 
@@ -107,9 +113,9 @@ def test_latest_lab_selects_highest_published_edition():
     labs = load_catalog(CATALOG)
     latest = latest_lab(labs)
     assert latest is not None
-    assert latest.id == "007"
-    assert latest.edition_number == 7
-    assert latest.title == "Containment Assurance"
+    assert latest.id == "008"
+    assert latest.edition_number == 8
+    assert latest.title == "Agent Threat Model"
 
 
 def test_latest_lab_excludes_draft_and_on_the_desk(tmp_path):

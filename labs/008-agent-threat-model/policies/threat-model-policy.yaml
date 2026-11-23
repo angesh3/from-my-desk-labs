@@ -1,0 +1,26 @@
+policy_version: lab008-threat-model-v1
+description: >
+  Educational agent threat-model policy for Cedar Quill Markets.
+  Risk is categorical (not a production score). COMPLETE coverage does not mean zero risk.
+  Agent self-report is never independent verification.
+risk_matrix:
+  LOW:
+    LOW: LOW
+    MEDIUM: LOW
+    HIGH: MEDIUM
+    CRITICAL: HIGH
+  MEDIUM:
+    LOW: LOW
+    MEDIUM: MEDIUM
+    HIGH: HIGH
+    CRITICAL: CRITICAL
+  HIGH:
+    LOW: MEDIUM
+    MEDIUM: HIGH
+    HIGH: CRITICAL
+    CRITICAL: CRITICAL
+control_coverage:
+  COMPLETE: All material modeled controls are PRESENT with independent evidence.
+  PARTIAL: Some controls are present, but material gaps remain.
+  NONE: No effective controls cover the modeled path.
+  UNVERIFIED: Independent evidence is insufficient to support a conclusion.

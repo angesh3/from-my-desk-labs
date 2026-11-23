@@ -57,8 +57,15 @@ from-my-desk-labs/
     │   ├── tests/
     │   ├── docs/
     │   └── static/
-    └── 007-containment-assurance/
-        ├── src/containment_assurance/
+    ├── 007-containment-assurance/
+    │   ├── src/containment_assurance/
+    │   ├── policies/
+    │   ├── examples/
+    │   ├── tests/
+    │   ├── docs/
+    │   └── static/
+    └── 008-agent-threat-model/
+        ├── src/agent_threat_model/
         ├── policies/
         ├── examples/
         ├── tests/
@@ -71,7 +78,7 @@ from-my-desk-labs/
 There is **one FastAPI application** and **one Docker container**.
 
 - Global HTTP pages, templates, catalog, and brand assets live under `website/app/`.
-- Lab domain packages are installed from `pyproject.toml` (`know_your_agent`, `delegated_authority`, `agent_access_control`, `agent_escalation_boundary`, `verifiable_action_receipts`, `agent_containment_boundary`, `containment_assurance`).
+- Lab domain packages are installed from `pyproject.toml` (`know_your_agent`, `delegated_authority`, `agent_access_control`, `agent_escalation_boundary`, `verifiable_action_receipts`, `agent_containment_boundary`, `containment_assurance`, `agent_threat_model`).
 - The numbered editorial directories cannot themselves be Python packages (they contain a hyphen).
 - Packages are installed from `pyproject.toml`. Local development may use `pip install -e .`. The production image uses a non-editable `pip install .`.
 - No multi-directory `PYTHONPATH` and no `sys.path` mutation.
@@ -92,6 +99,7 @@ Discovery is data-driven. Edit `website/catalog/labs.yaml`; do not hard-code edi
 | [005-verifiable-action-receipts](labs/005-verifiable-action-receipts) | Verifiable Action Receipts | Sealed fictional receipts connecting request, authority, judgment, human involvement, simulated execution, and integrity verification. Never executes against real systems. |
 | [006-agent-containment-boundary](labs/006-agent-containment-boundary) | The Agent Containment Boundary | Separates justified refusal from non-compliance and rogue evasion; external Continue / Restrict / Isolate / Terminate. Never executes. |
 | [007-containment-assurance](labs/007-containment-assurance) | Containment Assurance | Separates enforcement intention from independent assurance (Confirmed / Partial / Unverified / Failed). Never executes. |
+| [008-agent-threat-model](labs/008-agent-threat-model) | Agent Threat Model | Maps assets, trust boundaries, controls, evidence, and residual risk across the complete agentic system. Never executes. |
 
 ## Local setup
 
@@ -117,6 +125,7 @@ Open:
 - http://127.0.0.1:8080/labs/verifiable-action-receipts
 - http://127.0.0.1:8080/labs/agent-containment-boundary
 - http://127.0.0.1:8080/labs/containment-assurance
+- http://127.0.0.1:8080/labs/agent-threat-model
 - http://127.0.0.1:8080/health
 
 ## Tests

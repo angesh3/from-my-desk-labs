@@ -30,8 +30,9 @@ LAB004_STATIC = REPO_ROOT / "labs" / "004-agent-escalation-boundary" / "static"
 LAB005_STATIC = REPO_ROOT / "labs" / "005-verifiable-action-receipts" / "static"
 LAB006_STATIC = REPO_ROOT / "labs" / "006-agent-containment-boundary" / "static"
 LAB007_STATIC = REPO_ROOT / "labs" / "007-containment-assurance" / "static"
+LAB008_STATIC = REPO_ROOT / "labs" / "008-agent-threat-model" / "static"
 
-PAGES = ("/", "/labs", "/labs/know-your-agent", "/labs/delegated-authority", "/labs/agent-access-control", "/labs/agent-escalation-boundary", "/labs/verifiable-action-receipts", "/labs/agent-containment-boundary", "/labs/containment-assurance")
+PAGES = ("/", "/labs", "/labs/know-your-agent", "/labs/delegated-authority", "/labs/agent-access-control", "/labs/agent-escalation-boundary", "/labs/verifiable-action-receipts", "/labs/agent-containment-boundary", "/labs/containment-assurance", "/labs/agent-threat-model")
 FORBIDDEN_SNIPPETS = (
     "r2.dev",
     "r2.cloudflarestorage",
@@ -60,7 +61,7 @@ def test_global_branding_and_navigation():
         assert "Newsletter" in html
         if path == "/":
             assert "Latest Lab" in html
-            assert 'href="/labs/containment-assurance"' in html
+            assert 'href="/labs/agent-threat-model"' in html
         if path == "/labs/know-your-agent":
             assert "Know Your Agent" in html
         elif path == "/labs/agent-access-control":
@@ -75,6 +76,8 @@ def test_global_branding_and_navigation():
             assert "What If the Agent" in html
         elif path == "/labs/containment-assurance":
             assert "Can We Prove the Agent" in html
+        elif path == "/labs/agent-threat-model":
+            assert "How Do We Threat-Model" in html
         else:
             assert "From My Desk" in html or "Labs" in html
 
@@ -98,31 +101,33 @@ def test_homepage_features_latest_lab():
     assert "Latest Lab" in html
     assert "Current edition" not in html
     assert "CURRENT EDITION" not in html
-    assert "Containment Assurance" in html
-    assert 'href="/labs/containment-assurance"' in html
-    assert "Explore Lab 007" in html
+    assert "Agent Threat Model" in html
+    assert 'href="/labs/agent-threat-model"' in html
+    assert "Explore Lab 008" in html
     assert "Browse all Labs" in html
-    assert "Can We Prove the Agent Is Actually Contained?" in html
+    assert "How do we threat-model the complete agentic system—not only the model?" in html
 
 
 def test_homepage_earlier_labs_ordered_newest_first():
     html = client.get("/").text
     assert "Earlier Labs" in html
     earlier_block = html.split("Earlier Labs", 1)[1].split("Follow From My Desk", 1)[0]
+    lab007_pos = earlier_block.find("/labs/containment-assurance")
     lab006_pos = earlier_block.find("/labs/agent-containment-boundary")
     lab005_pos = earlier_block.find("/labs/verifiable-action-receipts")
     lab004_pos = earlier_block.find("/labs/agent-escalation-boundary")
     lab003_pos = earlier_block.find("/labs/agent-access-control")
     lab002_pos = earlier_block.find("/labs/delegated-authority")
     lab001_pos = earlier_block.find("/labs/know-your-agent")
-    assert lab006_pos < lab005_pos < lab004_pos < lab003_pos < lab002_pos < lab001_pos
+    assert lab007_pos < lab006_pos < lab005_pos < lab004_pos < lab003_pos < lab002_pos < lab001_pos
     assert "Delegated Authority" in earlier_block
     assert "Agent Access Control" in earlier_block
     assert "The Agent Escalation Boundary" in earlier_block
     assert "Verifiable Action Receipts" in earlier_block
     assert "The Agent Containment Boundary" in earlier_block
+    assert "Containment Assurance" in earlier_block
     assert "KYA" not in earlier_block
-    assert "/labs/containment-assurance" not in earlier_block
+    assert "/labs/agent-threat-model" not in earlier_block
 
 
 def test_homepage_bottom_structure_and_cta():
@@ -137,13 +142,13 @@ def test_homepage_bottom_structure_and_cta():
     assert "https://www.linkedin.com/newsletters/from-my-desk-7492634647890341890/" in html
     assert "https://github.com/angesh3/from-my-desk-labs" in html
     assert "Written and built by Angesh Vikram" in html
-    assert html.count("Explore Lab 007") == 1
+    assert html.count("Explore Lab 008") == 1
 
 
 def test_homepage_latest_lab_excluded_from_earlier_labs():
     html = client.get("/").text
     earlier_block = html.split("Earlier Labs", 1)[1].split("Follow From My Desk", 1)[0]
-    assert "Containment Assurance" not in earlier_block
+    assert "Agent Threat Model" not in earlier_block
 
 
 def test_homepage_single_published_lab_has_no_earlier_section(tmp_path, monkeypatch):
@@ -229,6 +234,7 @@ def test_homepage_latest_lab_selection_updates_with_catalog(tmp_path, monkeypatc
 
 def test_labs_index_ordered_newest_first():
     html = client.get("/labs").text
+    lab008_pos = html.find("/labs/agent-threat-model")
     lab007_pos = html.find("/labs/containment-assurance")
     lab006_pos = html.find("/labs/agent-containment-boundary")
     lab005_pos = html.find("/labs/verifiable-action-receipts")
@@ -236,14 +242,14 @@ def test_labs_index_ordered_newest_first():
     lab003_pos = html.find("/labs/agent-access-control")
     lab002_pos = html.find("/labs/delegated-authority")
     lab001_pos = html.find("/labs/know-your-agent")
-    assert lab007_pos < lab006_pos < lab005_pos < lab004_pos < lab003_pos < lab002_pos < lab001_pos
+    assert lab008_pos < lab007_pos < lab006_pos < lab005_pos < lab004_pos < lab003_pos < lab002_pos < lab001_pos
 
 
 def test_catalog_renders_lab_cards():
     home = client.get("/").text
     labs = client.get("/labs").text
-    assert "Containment Assurance" in home
-    assert "/labs/containment-assurance" in home
+    assert "Agent Threat Model" in home
+    assert "/labs/agent-threat-model" in home
     assert "Know Your Agent" in labs
     assert "Delegated Authority" in labs
     assert "Agent Access Control" in labs
@@ -251,6 +257,7 @@ def test_catalog_renders_lab_cards():
     assert "Can We Prove What the Agent Actually Did?" in labs
     assert "The Agent Containment Boundary" in labs
     assert "Containment Assurance" in labs
+    assert "Agent Threat Model" in labs
     assert "Explore lab" in labs or "Explore Lab" in labs
     assert "AI Agents" in labs or "Agent Governance" in labs
     assert "Interactive demo" in labs
@@ -261,7 +268,8 @@ def test_catalog_renders_lab_cards():
     assert "/labs/verifiable-action-receipts" in labs
     assert "/labs/agent-containment-boundary" in labs
     assert "/labs/containment-assurance" in labs
-    assert "Not investment advice" in labs or "No real accounts" in labs or "educational policy prototype" in labs.lower() or "educational receipt prototype" in labs.lower() or "educational containment" in labs.lower()
+    assert "/labs/agent-threat-model" in labs
+    assert "Not investment advice" in labs or "No real accounts" in labs or "educational policy prototype" in labs.lower() or "educational receipt prototype" in labs.lower() or "educational containment" in labs.lower() or "educational agent threat" in labs.lower()
 
 
 def test_lab004_page_basics():
@@ -590,6 +598,87 @@ def test_lab007_api_evaluate_smoke():
     assert body["containment_effective"] is True
 
 
+def test_lab008_page_basics():
+    html = client.get("/labs/agent-threat-model").text
+    assert "LAB 008 · AGENT THREAT MODEL" in html
+    assert "How Do We Threat-Model" in html
+    assert "an AI Agent?" in html
+    assert 'class="lab008-hero-title"' in html
+    assert "The model is not the whole system" in html
+    assert "Seven threat surfaces" in html
+    assert 'data-preset="retrieved_prompt_injection_blocked"' in html
+    assert 'data-preset="insufficient_cross_system_telemetry"' in html
+    assert "/static/labs/008/agent-threat-model.svg" in html
+    assert "/static/labs/008/lab.js" in html
+    assert "EDITION_8_NEWSLETTER_URL" not in html
+    assert "[EDITION_8_NEWSLETTER_URL]" not in html
+    assert "The companion Edition 8 newsletter will be linked here after publication." in html
+    assert "Read the companion newsletter" not in html
+    assert 'class="lab008-footer-note' in html
+    assert 'class="actions lab008-footer-actions"' in html
+    assert "Previous Lab: Containment Assurance" in html
+    assert 'href="/labs/containment-assurance"' in html
+    assert "not_performed" in html
+
+
+def test_lab008_controls_preserve_machine_values():
+    html = client.get("/labs/agent-threat-model").text
+    assert 'value="IDENTITY"' in html
+    assert 'value="MEMORY_CONTEXT"' in html
+    assert "IDENTITY" in html
+    assert "Instructions and intent" in html
+    js = client.get("/static/labs/008/lab.js").text
+    assert "IDENTITY" in js
+    assert "Identity" in js
+    assert "MEMORY_CONTEXT" in js
+    assert "Memory and context" in js
+    assert "COMPLETE" in js
+    assert "not_performed" in js
+    css = client.get("/static/css/styles.css").text
+    assert ".lab008-result" in css
+    assert ".lab008-hero-title" in css
+    assert ".lab008-footer-actions" in css
+
+
+def test_lab008_newsletter_button_when_published(monkeypatch, tmp_path):
+    catalog = tmp_path / "labs.yaml"
+    dump(
+        catalog,
+        [
+            valid_lab(
+                id="008",
+                edition_number=8,
+                slug="agent-threat-model",
+                title="Agent Threat Model",
+                lab_url="/labs/agent-threat-model",
+                newsletter_url="https://www.linkedin.com/newsletters/from-my-desk-example/",
+                featured=True,
+            )
+        ],
+    )
+    monkeypatch.setenv("CATALOG_PATH", str(catalog))
+    reset_settings_cache()
+    reset_catalog()
+    html = client.get("/labs/agent-threat-model").text
+    assert "Read the companion newsletter" in html
+    assert 'href="https://www.linkedin.com/newsletters/from-my-desk-example/"' in html
+    assert "data-lab008-newsletter" in html
+    assert "The companion Edition 8 newsletter will be linked here after publication." not in html
+    assert "EDITION_8_NEWSLETTER_URL" not in html
+
+
+def test_lab008_api_evaluate_smoke():
+    response = client.post(
+        "/api/labs/008/evaluate-preset/retrieved_prompt_injection_blocked"
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["execution"] == "not_performed"
+    assert body["primary_surface"] == "INSTRUCTIONS"
+    assert body["control_coverage"] == "COMPLETE"
+    assert body["residual_risk"] == "LOW"
+
+
 def test_lab002_page_basics():
     html = client.get("/labs/delegated-authority").text
     assert "Delegated Authority" in html
@@ -701,6 +790,8 @@ def test_static_assets():
         ("/static/labs/006/lab.js", "javascript"),
         ("/static/labs/007/assurance-boundary.svg", "image/svg+xml"),
         ("/static/labs/007/lab.js", "javascript"),
+        ("/static/labs/008/agent-threat-model.svg", "image/svg+xml"),
+        ("/static/labs/008/lab.js", "javascript"),
     ]
     for url, content_type in assets:
         response = client.get(url)
@@ -907,3 +998,32 @@ def test_lab007_source_svg_is_valid_utf8_xml():
     assert b"<desc" in data
     assert b"CONFIRMED" in data
     assert b"Assurance" in data or b"assurance" in data
+
+
+def test_lab008_diagram_url_from_rendered_html():
+    html = client.get("/labs/agent-threat-model").text
+    srcs = re.findall(r'src="(/static/labs/008/[^"]+\.svg)"', html)
+    assert srcs == ["/static/labs/008/agent-threat-model.svg"]
+    response = client.get(srcs[0])
+    assert response.status_code == 200
+    assert "image/svg+xml" in response.headers["content-type"]
+    body = response.content
+    assert len(body) > 100
+    stripped = body.lstrip()
+    assert stripped.startswith(b"<?xml") or stripped.startswith(b"<svg")
+    body.decode("utf-8")
+    ET.parse(io.BytesIO(body))
+    source = LAB008_STATIC / "agent-threat-model.svg"
+    assert source.is_file()
+    assert source.read_bytes() == body
+
+
+def test_lab008_source_svg_is_valid_utf8_xml():
+    path = LAB008_STATIC / "agent-threat-model.svg"
+    data = path.read_bytes()
+    data.decode("utf-8")
+    ET.parse(path)
+    assert b"<title" in data
+    assert b"<desc" in data
+    assert b"Protected Asset" in data
+    assert b"Residual Risk" in data

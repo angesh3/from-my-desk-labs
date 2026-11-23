@@ -21,6 +21,7 @@ PAGES = {
     "/labs/verifiable-action-receipts": "Can We Prove What the Agent Actually Did?",
     "/labs/agent-containment-boundary": "What If the Agent",
     "/labs/containment-assurance": "Can We Prove the Agent",
+    "/labs/agent-threat-model": "How Do We Threat-Model",
 }
 
 ASSET_URL_RE = re.compile(

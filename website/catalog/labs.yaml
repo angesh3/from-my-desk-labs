@@ -167,3 +167,29 @@ labs:
     homepage_detail: "A stop command is not proof. Test whether runtimes, identities, credentials, delegates, queues, tools, networks, state, and recovery paths are independently verified as contained."
     homepage_safety: "The scenarios are fictional, and the Lab never controls a real agent, credential, process, or network path."
     homepage_earlier_description: "A containment command records intention; assurance asks whether every path is actually closed."
+
+  - id: "008"
+    edition_number: 8
+    slug: agent-threat-model
+    title: "Agent Threat Model"
+    subtitle: "The model is only one component. Agent risk emerges across identity, authority, instructions, memory, tools, delegation, execution, evidence, and control."
+    summary: "Map assets, trust boundaries, threat paths, controls, evidence, and residual risk across the complete agentic system—not only the model."
+    status: published
+    tags:
+      - Agent Governance
+      - Threat Modeling
+      - Security
+      - Responsible AI
+      - Controls
+      - Evidence
+    lab_url: /labs/agent-threat-model
+    newsletter_url: "[EDITION_8_NEWSLETTER_URL]"
+    github_url: https://github.com/angesh3/from-my-desk-labs
+    interactive: true
+    featured: false
+    disclaimer: "This Lab is an educational agent threat-modeling prototype using fictional Cedar Quill Markets data. It is not a production threat-modeling system, security scanner, penetration-testing tool, or compliance-certification tool. It never executes tools, scans systems, or changes security configuration. Every evaluation returns execution: not_performed."
+    reader_title: "Agent Threat Model"
+    homepage_lead: "How do we threat-model the complete agentic system—not only the model?"
+    homepage_detail: "Map assets, trust boundaries, threat paths, controls, evidence, and residual risk across identity, authority, instructions, memory, tools, delegation, and control."
+    homepage_safety: "The scenarios are fictional, and the Lab never scans, executes, or modifies a real system."
+    homepage_earlier_description: "Threat modeling the agent means mapping the whole system—not only the model."

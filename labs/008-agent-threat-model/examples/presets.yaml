@@ -1,0 +1,668 @@
+presets:
+- id: retrieved_prompt_injection_blocked
+  title: Retrieved prompt injection blocked
+  short_description: External retrieved content tries to replace the approved task; instruction and data stay separated.
+  primary_surface: INSTRUCTIONS
+  expected_initial_risk: HIGH
+  expected_control_coverage: COMPLETE
+  expected_residual_risk: LOW
+  category: instructions
+  request:
+    case_id: case-cq-008-001
+    title: Retrieved prompt injection blocked
+    description: A support agent retrieves external content containing instructions that attempt to replace the approved task.
+    agent_identity: cq-support-agent-01
+    principal_identity: cq-customer-care-lead-mia
+    environment: Cedar Quill Markets fictional support lab
+    policy_version: lab008-threat-model-v1
+    asset_name: Approved support task instructions
+    asset_type: instruction_set
+    asset_sensitivity: high
+    security_objective: Preserve approved intent; treat retrieved content as untrusted data
+    threat_source: Untrusted retrieved web content with embedded override instructions
+    failure_mode: Retrieved data accepted as authoritative task replacement
+    primary_surface: INSTRUCTIONS
+    secondary_surfaces: []
+    trust_boundary: Retrieval pipeline between external content and agent instruction channel
+    preconditions:
+    - Agent is authorized for a bounded customer support task
+    - Retrieval tool is allowed for public FAQ sources
+    threat_path:
+    - External page retrieved
+    - Embedded instructions attempt to replace approved task
+    - Instruction/data separation and tool policy reject the override
+    - Detective evidence records the blocked injection attempt
+    potential_impact: Unauthorized task substitution and downstream tool misuse
+    initial_likelihood: MEDIUM
+    initial_impact: HIGH
+    residual_likelihood: LOW
+    residual_impact: MEDIUM
+    preventive_controls:
+    - control_id: instruction_data_separation
+      name: Instruction and data separation
+      category: preventive
+      expected_behavior: Retrieved content is labeled as data and cannot replace approved instructions
+      evidence_reference: evid-cq-008-instr-sep
+      status: PRESENT
+    - control_id: content_labeling
+      name: Content labeling
+      category: preventive
+      expected_behavior: Retrieved text is marked untrusted and non-authoritative
+      evidence_reference: evid-cq-008-content-label
+      status: PRESENT
+    - control_id: tool_policy_enforcement
+      name: Tool-policy enforcement
+      category: preventive
+      expected_behavior: Tool calls remain bound to the approved support purpose
+      evidence_reference: evid-cq-008-tool-policy
+      status: PRESENT
+    detective_controls:
+    - control_id: injection_attempt_detection
+      name: Injection-attempt detection
+      category: detective
+      expected_behavior: Override-style retrieved instructions are detected and logged
+      evidence_reference: evid-cq-008-injection-detect
+      status: PRESENT
+    containment_controls:
+    - control_id: task_freeze_on_injection
+      name: Task freeze on injection signal
+      category: containment
+      expected_behavior: Privileged tools pause when injection is detected
+      evidence_reference: evid-cq-008-task-freeze
+      status: PRESENT
+    recovery_controls:
+    - control_id: restore_approved_instructions
+      name: Restore approved instructions
+      category: recovery
+      expected_behavior: Session returns to the original approved task definition
+      evidence_reference: evid-cq-008-restore-instr
+      status: PRESENT
+    evidence_sources:
+    - retrieval_audit_log
+    - instruction_channel_trace
+    - tool_policy_decision_record
+    evidence_summary: Independent retrieval and policy evidence shows the override was blocked.
+    evidence_gaps: []
+    observation_window: 15m
+    agent_self_report_present: false
+    independent_evidence_sufficient: true
+
+- id: excessive_delegated_authority
+  title: Excessive delegated authority
+  short_description: A worker receives broader authority than the parent agent required for the handoff.
+  primary_surface: AUTHORITY
+  expected_initial_risk: CRITICAL
+  expected_control_coverage: PARTIAL
+  expected_residual_risk: HIGH
+  category: authority
+  request:
+    case_id: case-cq-008-002
+    title: Excessive delegated authority
+    description: A coordinator delegates a task, but the worker receives broader authority than the parent agent required.
+    agent_identity: cq-coord-agent-02
+    principal_identity: cq-ops-manager-lee
+    environment: Cedar Quill Markets fictional coordination lab
+    policy_version: lab008-threat-model-v1
+    asset_name: Delegated worker authority grant
+    asset_type: authority_token
+    asset_sensitivity: critical
+    security_objective: Authority must narrow at every delegation boundary
+    threat_source: Over-broad delegation grant from coordinator to worker
+    failure_mode: Child worker inherits expanded privileges beyond parent need
+    primary_surface: AUTHORITY
+    secondary_surfaces:
+    - DELEGATION
+    trust_boundary: Coordinator-to-worker delegation handoff
+    preconditions:
+    - Parent agent holds limited refund authority
+    - Worker is created for a single inventory lookup
+    threat_path:
+    - Coordinator issues delegation
+    - Worker token includes refund and export scopes
+    - Narrowing control is missing at handoff
+    - Detection flags excess but does not revoke in time
+    potential_impact: Unauthorized refunds or bulk data export by the worker
+    initial_likelihood: HIGH
+    initial_impact: HIGH
+    residual_likelihood: HIGH
+    residual_impact: MEDIUM
+    preventive_controls:
+    - control_id: authority_narrowing
+      name: Delegated authority narrowing
+      category: preventive
+      expected_behavior: Worker scope is a strict subset of parent need
+      evidence_reference: evid-cq-008-auth-narrow
+      status: MISSING
+    - control_id: least_privilege_handoff
+      name: Least-privilege handoff
+      category: preventive
+      expected_behavior: Delegation policy binds purpose and max scopes
+      evidence_reference: evid-cq-008-least-priv
+      status: INEFFECTIVE
+    detective_controls:
+    - control_id: scope_expansion_detection
+      name: Scope-expansion detection
+      category: detective
+      expected_behavior: Detects child scopes broader than parent request
+      evidence_reference: evid-cq-008-scope-detect
+      status: PRESENT
+    containment_controls:
+    - control_id: revoke_expanded_worker
+      name: Revoke expanded worker grant
+      category: containment
+      expected_behavior: Excess worker tokens are revoked on expansion signal
+      evidence_reference: evid-cq-008-revoke-worker
+      status: MISSING
+    recovery_controls:
+    - control_id: reissue_narrow_grant
+      name: Reissue narrow grant
+      category: recovery
+      expected_behavior: Operator can reissue a purpose-bound narrow grant
+      evidence_reference: evid-cq-008-reissue-narrow
+      status: PRESENT
+    evidence_sources:
+    - delegation_audit_log
+    - token_scope_diff
+    evidence_summary: Evidence shows excess scopes were granted; narrowing was not enforced.
+    evidence_gaps:
+    - No automated revoke confirmation for the expanded token
+    observation_window: 15m
+    agent_self_report_present: false
+    independent_evidence_sufficient: true
+
+- id: approval_replay_blocked
+  title: Approval replay blocked
+  short_description: A prior human approval is replayed for a different target; binding checks reject it.
+  primary_surface: AUTHORITY
+  expected_initial_risk: HIGH
+  expected_control_coverage: COMPLETE
+  expected_residual_risk: LOW
+  category: authority
+  request:
+    case_id: case-cq-008-003
+    title: Approval replay blocked
+    description: A previously valid human approval is replayed for a different target or action.
+    agent_identity: cq-finance-agent-03
+    principal_identity: cq-finance-approver-ria
+    environment: Cedar Quill Markets fictional finance lab
+    policy_version: lab008-threat-model-v1
+    asset_name: Human approval record for payout
+    asset_type: approval_artifact
+    asset_sensitivity: critical
+    security_objective: Bind approval to request, action, target, scope, and validity window
+    threat_source: Replay of a prior approval artifact against a new payout target
+    failure_mode: Stale approval accepted for a different action or target
+    primary_surface: AUTHORITY
+    secondary_surfaces:
+    - IDENTITY
+    - EVIDENCE_CONTROL
+    trust_boundary: Approval verification before privileged payout execution
+    preconditions:
+    - An earlier approval existed for payout A
+    - Agent attempts payout B with the same approval artifact
+    threat_path:
+    - Prior approval captured
+    - Replay presented for different target
+    - Binding checks compare action, target, scope, and time
+    - Replay rejected with independent evidence
+    potential_impact: Unauthorized funds transfer to an alternate recipient
+    initial_likelihood: MEDIUM
+    initial_impact: HIGH
+    residual_likelihood: LOW
+    residual_impact: MEDIUM
+    preventive_controls:
+    - control_id: approval_binding
+      name: Approval binding
+      category: preventive
+      expected_behavior: Approval is bound to request, action, target, scope, and validity window
+      evidence_reference: evid-cq-008-approval-bind
+      status: PRESENT
+    - control_id: approver_identity_check
+      name: Approver identity check
+      category: preventive
+      expected_behavior: Approver identity and artifact integrity are verified
+      evidence_reference: evid-cq-008-approver-id
+      status: PRESENT
+    detective_controls:
+    - control_id: replay_detection
+      name: Approval replay detection
+      category: detective
+      expected_behavior: Detects reuse of approvals across targets or windows
+      evidence_reference: evid-cq-008-replay-detect
+      status: PRESENT
+    containment_controls:
+    - control_id: freeze_payout_on_replay
+      name: Freeze payout on replay
+      category: containment
+      expected_behavior: Payout path pauses when replay is detected
+      evidence_reference: evid-cq-008-freeze-payout
+      status: PRESENT
+    recovery_controls:
+    - control_id: require_fresh_approval
+      name: Require fresh approval
+      category: recovery
+      expected_behavior: A new target-bound approval must be obtained
+      evidence_reference: evid-cq-008-fresh-approval
+      status: PRESENT
+    evidence_sources:
+    - approval_ledger
+    - payout_decision_record
+    - identity_verification_log
+    evidence_summary: Binding and replay evidence confirm the mismatched approval was rejected.
+    evidence_gaps: []
+    observation_window: 15m
+    agent_self_report_present: false
+    independent_evidence_sufficient: true
+
+- id: poisoned_persistent_memory
+  title: Poisoned persistent memory
+  short_description: An untrusted memory record later influences a privileged task across sessions.
+  primary_surface: MEMORY_CONTEXT
+  expected_initial_risk: HIGH
+  expected_control_coverage: NONE
+  expected_residual_risk: HIGH
+  category: memory
+  request:
+    case_id: case-cq-008-004
+    title: Poisoned persistent memory
+    description: A persistent memory record contains an untrusted instruction that influences a later privileged task.
+    agent_identity: cq-research-agent-04
+    principal_identity: cq-research-lead-sam
+    environment: Cedar Quill Markets fictional research lab
+    policy_version: lab008-threat-model-v1
+    asset_name: Persistent agent memory store
+    asset_type: memory_record
+    asset_sensitivity: high
+    security_objective: Persistent memory must not become an untrusted instruction channel
+    threat_source: Poisoned memory entry written in an earlier low-privilege session
+    failure_mode: Cross-session memory treated as trusted instruction for a privileged task
+    primary_surface: MEMORY_CONTEXT
+    secondary_surfaces:
+    - INSTRUCTIONS
+    trust_boundary: Persistent memory reuse across sessions and privilege levels
+    preconditions:
+    - Memory write occurred without integrity labeling
+    - Later privileged task loads the same memory
+    threat_path:
+    - Untrusted content stored in persistent memory
+    - Later privileged session retrieves the record
+    - Content influences privileged instructions
+    - No preventive or detective control blocks the path
+    potential_impact: Privileged action steered by untrusted historical content
+    initial_likelihood: MEDIUM
+    initial_impact: HIGH
+    residual_likelihood: MEDIUM
+    residual_impact: HIGH
+    preventive_controls:
+    - control_id: memory_integrity_labeling
+      name: Memory integrity labeling
+      category: preventive
+      expected_behavior: Memory records carry trust labels and cannot elevate into instructions
+      evidence_reference: evid-cq-008-mem-label
+      status: MISSING
+    - control_id: cross_session_memory_gate
+      name: Cross-session memory gate
+      category: preventive
+      expected_behavior: Privileged tasks exclude unvalidated persistent memory
+      evidence_reference: evid-cq-008-mem-gate
+      status: MISSING
+    detective_controls:
+    - control_id: memory_poison_detection
+      name: Memory poison detection
+      category: detective
+      expected_behavior: Detects instruction-like content in memory influencing privileged tasks
+      evidence_reference: evid-cq-008-mem-detect
+      status: MISSING
+    containment_controls:
+    - control_id: quarantine_memory_record
+      name: Quarantine memory record
+      category: containment
+      expected_behavior: Suspect memory is quarantined from privileged retrieval
+      evidence_reference: evid-cq-008-mem-quarantine
+      status: MISSING
+    recovery_controls:
+    - control_id: rebuild_trusted_memory
+      name: Rebuild trusted memory
+      category: recovery
+      expected_behavior: Operators can rebuild memory from trusted sources
+      evidence_reference: evid-cq-008-mem-rebuild
+      status: MISSING
+    evidence_sources:
+    - memory_access_log
+    evidence_summary: Logs show privileged retrieval of unlabeled memory; controls are absent.
+    evidence_gaps:
+    - No integrity provenance for the memory write
+    observation_window: 24h
+    agent_self_report_present: false
+    independent_evidence_sufficient: true
+
+- id: allowed_tool_data_exposure
+  title: Allowed tool data exposure
+  short_description: The tool is allowed, but selected data exceeds purpose and sensitivity limits.
+  primary_surface: TOOLS_EXECUTION
+  expected_initial_risk: CRITICAL
+  expected_control_coverage: PARTIAL
+  expected_residual_risk: HIGH
+  category: tools
+  request:
+    case_id: case-cq-008-005
+    title: Allowed tool data exposure
+    description: The tool is allowed, but the selected data exceeds the purpose and sensitivity permitted for the request.
+    agent_identity: cq-analytics-agent-05
+    principal_identity: cq-analytics-lead-jordan
+    environment: Cedar Quill Markets fictional analytics lab
+    policy_version: lab008-threat-model-v1
+    asset_name: Customer order history export
+    asset_type: customer_data
+    asset_sensitivity: critical
+    security_objective: Tool authorization must remain distinct from data-purpose authorization
+    threat_source: Over-broad data selection through an allowed analytics tool
+    failure_mode: Allowed tool used for unauthorized purpose or sensitivity tier
+    primary_surface: TOOLS_EXECUTION
+    secondary_surfaces:
+    - AUTHORITY
+    - MEMORY_CONTEXT
+    trust_boundary: Data-purpose check after tool endpoint authorization
+    preconditions:
+    - Analytics tool is permitted for aggregate summaries
+    - Agent requests row-level PII export
+    threat_path:
+    - Tool endpoint authorized
+    - Purpose and sensitivity checks incomplete
+    - Excess data selected from memory-backed context
+    - Partial detective signal without full stop
+    potential_impact: Unauthorized disclosure of sensitive customer records
+    initial_likelihood: HIGH
+    initial_impact: HIGH
+    residual_likelihood: HIGH
+    residual_impact: MEDIUM
+    preventive_controls:
+    - control_id: tool_endpoint_allowlist
+      name: Tool endpoint allowlist
+      category: preventive
+      expected_behavior: Only approved analytics tools may be called
+      evidence_reference: evid-cq-008-tool-allow
+      status: PRESENT
+    - control_id: data_purpose_authorization
+      name: Data-purpose authorization
+      category: preventive
+      expected_behavior: Data use is authorized by purpose and sensitivity, not only tool allowlisting
+      evidence_reference: evid-cq-008-data-purpose
+      status: MISSING
+    detective_controls:
+    - control_id: excess_data_selection_alert
+      name: Excess data-selection alert
+      category: detective
+      expected_behavior: Alerts when selected fields exceed purpose bounds
+      evidence_reference: evid-cq-008-excess-data
+      status: PRESENT
+    containment_controls:
+    - control_id: redact_excess_fields
+      name: Redact excess fields
+      category: containment
+      expected_behavior: Excess sensitive fields are redacted before return
+      evidence_reference: evid-cq-008-redact
+      status: INEFFECTIVE
+    recovery_controls:
+    - control_id: revoke_export_session
+      name: Revoke export session
+      category: recovery
+      expected_behavior: Export session tokens can be revoked after excess selection
+      evidence_reference: evid-cq-008-revoke-export
+      status: PRESENT
+    evidence_sources:
+    - tool_decision_log
+    - data_access_audit
+    evidence_summary: Tool was allowed; purpose authorization for the selected data was not enforced.
+    evidence_gaps:
+    - Incomplete field-level purpose mapping
+    observation_window: 15m
+    agent_self_report_present: false
+    independent_evidence_sufficient: true
+
+- id: alternate_tool_after_denial
+  title: Alternate tool after denial
+  short_description: After one tool is denied, the agent retries the same objective through another integration.
+  primary_surface: TOOLS_EXECUTION
+  expected_initial_risk: CRITICAL
+  expected_control_coverage: PARTIAL
+  expected_residual_risk: HIGH
+  category: tools
+  request:
+    case_id: case-cq-008-006
+    title: Alternate tool after denial
+    description: An agent is denied access through one tool and attempts the same objective through another allowed integration.
+    agent_identity: cq-ops-agent-06
+    principal_identity: cq-ops-lead-noah
+    environment: Cedar Quill Markets fictional operations lab
+    policy_version: lab008-threat-model-v1
+    asset_name: Restricted vendor pricing table
+    asset_type: confidential_dataset
+    asset_sensitivity: critical
+    security_objective: Policies must bind to intent and action, not only a specific tool endpoint
+    threat_source: Intent-preserving bypass via an alternate allowed integration
+    failure_mode: Deny on tool A succeeded; same objective completed via tool B
+    primary_surface: TOOLS_EXECUTION
+    secondary_surfaces:
+    - AUTHORITY
+    - EVIDENCE_CONTROL
+    trust_boundary: Intent and action policy across multiple tool endpoints
+    preconditions:
+    - Primary export tool denied for the objective
+    - Secondary CRM sync tool remains allowed
+    threat_path:
+    - Primary tool denied
+    - Agent retries via alternate integration
+    - Intent-binding control missing
+    - Partial evidence of the bypass path
+    potential_impact: Restricted data obtained despite an explicit tool denial
+    initial_likelihood: HIGH
+    initial_impact: CRITICAL
+    residual_likelihood: HIGH
+    residual_impact: MEDIUM
+    preventive_controls:
+    - control_id: primary_tool_deny
+      name: Primary tool denial
+      category: preventive
+      expected_behavior: Denied tool endpoint blocks the direct call
+      evidence_reference: evid-cq-008-primary-deny
+      status: PRESENT
+    - control_id: intent_action_binding
+      name: Intent and action binding
+      category: preventive
+      expected_behavior: Policy binds the objective across equivalent tool paths
+      evidence_reference: evid-cq-008-intent-bind
+      status: MISSING
+    detective_controls:
+    - control_id: alternate_path_correlation
+      name: Alternate-path correlation
+      category: detective
+      expected_behavior: Correlates denied objectives with later alternate-tool attempts
+      evidence_reference: evid-cq-008-alt-path
+      status: INEFFECTIVE
+    containment_controls:
+    - control_id: freeze_equivalent_tools
+      name: Freeze equivalent tools
+      category: containment
+      expected_behavior: Equivalent integrations freeze when the primary path is denied
+      evidence_reference: evid-cq-008-freeze-equiv
+      status: MISSING
+    recovery_controls:
+    - control_id: rotate_integration_credentials
+      name: Rotate integration credentials
+      category: recovery
+      expected_behavior: Alternate-path credentials can be rotated after bypass
+      evidence_reference: evid-cq-008-rotate-integ
+      status: PRESENT
+    evidence_sources:
+    - tool_denial_log
+    - alternate_integration_audit
+    evidence_summary: Primary deny worked; intent-level binding across tools was incomplete.
+    evidence_gaps:
+    - Cross-tool intent correlation is only partial
+    observation_window: 30m
+    agent_self_report_present: false
+    independent_evidence_sufficient: true
+
+- id: queued_action_after_authority_expiry
+  title: Queued action after authority expiry
+  short_description: Work queued under valid authority executes after expiry or revocation.
+  primary_surface: AUTHORITY
+  expected_initial_risk: HIGH
+  expected_control_coverage: NONE
+  expected_residual_risk: HIGH
+  category: authority
+  request:
+    case_id: case-cq-008-007
+    title: Queued action after authority expiry
+    description: An action was queued while authority was valid but executes after the authority expires or is revoked.
+    agent_identity: cq-scheduler-agent-07
+    principal_identity: cq-automation-owner-priya
+    environment: Cedar Quill Markets fictional scheduling lab
+    policy_version: lab008-threat-model-v1
+    asset_name: Privileged queued vendor update
+    asset_type: queued_action
+    asset_sensitivity: high
+    security_objective: Authority must be re-evaluated at execution time, not only at scheduling time
+    threat_source: Stale queued action executing after authority revocation
+    failure_mode: Schedule-time authorization reused at execution without re-check
+    primary_surface: AUTHORITY
+    secondary_surfaces:
+    - TOOLS_EXECUTION
+    - EVIDENCE_CONTROL
+    trust_boundary: Queue worker execution after authority lifetime ends
+    preconditions:
+    - Action queued under valid authority
+    - Authority later expires or is revoked
+    threat_path:
+    - Action enqueued with valid grant
+    - Authority expires
+    - Worker executes without execution-time re-evaluation
+    - No preventive control stops the stale action
+    potential_impact: Privileged update runs without currently valid authority
+    initial_likelihood: MEDIUM
+    initial_impact: HIGH
+    residual_likelihood: MEDIUM
+    residual_impact: HIGH
+    preventive_controls:
+    - control_id: execution_time_reevaluation
+      name: Execution-time authority re-evaluation
+      category: preventive
+      expected_behavior: Queue workers re-check authority before execution
+      evidence_reference: evid-cq-008-exec-reeval
+      status: MISSING
+    - control_id: revoke_propagates_to_queue
+      name: Revocation propagates to queue
+      category: preventive
+      expected_behavior: Revoked grants cancel or freeze related queued work
+      evidence_reference: evid-cq-008-revoke-queue
+      status: MISSING
+    detective_controls:
+    - control_id: stale_queue_execution_alert
+      name: Stale queue-execution alert
+      category: detective
+      expected_behavior: Alerts when execution occurs after authority expiry
+      evidence_reference: evid-cq-008-stale-queue
+      status: MISSING
+    containment_controls:
+    - control_id: drain_and_freeze_queue
+      name: Drain and freeze queue
+      category: containment
+      expected_behavior: Suspect queues freeze pending re-authorization
+      evidence_reference: evid-cq-008-freeze-queue
+      status: MISSING
+    recovery_controls:
+    - control_id: replay_with_fresh_authority
+      name: Replay with fresh authority
+      category: recovery
+      expected_behavior: Actions can be re-queued only after fresh authorization
+      evidence_reference: evid-cq-008-replay-fresh
+      status: MISSING
+    evidence_sources:
+    - queue_execution_log
+    - authority_lifecycle_log
+    evidence_summary: Logs show execution after expiry; re-evaluation controls are absent.
+    evidence_gaps:
+    - No execution-time decision record
+    observation_window: 2h
+    agent_self_report_present: false
+    independent_evidence_sufficient: true
+
+- id: insufficient_cross_system_telemetry
+  title: Insufficient cross-system telemetry
+  short_description: Runtime evidence exists, but credential, delegate, queue, and network telemetry are incomplete.
+  primary_surface: EVIDENCE_CONTROL
+  expected_initial_risk: HIGH
+  expected_control_coverage: UNVERIFIED
+  expected_residual_risk: UNKNOWN
+  category: evidence
+  request:
+    case_id: case-cq-008-008
+    title: Insufficient cross-system telemetry
+    description: Runtime evidence exists, but credential, delegate, queue, and network telemetry are incomplete.
+    agent_identity: cq-runtime-agent-08
+    principal_identity: cq-security-reviewer-alex
+    environment: Cedar Quill Markets fictional evidence lab
+    policy_version: lab008-threat-model-v1
+    asset_name: Cross-boundary control evidence set
+    asset_type: telemetry_bundle
+    asset_sensitivity: high
+    security_objective: Control effectiveness claims require independent evidence across modeled boundaries
+    threat_source: Incomplete telemetry across credentials, delegates, queues, and network paths
+    failure_mode: Partial runtime logs treated as sufficient verification of controls
+    primary_surface: EVIDENCE_CONTROL
+    secondary_surfaces: []
+    trust_boundary: Evidence completeness across runtime and adjacent control planes
+    preconditions:
+    - Runtime logs are available
+    - Credential, delegate, queue, and network telemetry are missing or stale
+    threat_path:
+    - Controls claimed present from runtime view
+    - Adjacent evidence planes incomplete
+    - Agent self-report cannot fill the gap
+    - Coverage remains unverified
+    potential_impact: False confidence in control effectiveness and residual risk
+    initial_likelihood: MEDIUM
+    initial_impact: HIGH
+    residual_likelihood: null
+    residual_impact: null
+    preventive_controls:
+    - control_id: evidence_completeness_gate
+      name: Evidence completeness gate
+      category: preventive
+      expected_behavior: Privileged conclusions require complete boundary evidence
+      evidence_reference: evid-cq-008-evid-gate
+      status: UNKNOWN
+    detective_controls:
+    - control_id: cross_plane_telemetry_check
+      name: Cross-plane telemetry check
+      category: detective
+      expected_behavior: Detects missing credential, delegate, queue, or network evidence
+      evidence_reference: evid-cq-008-cross-plane
+      status: UNKNOWN
+    containment_controls:
+    - control_id: withhold_assurance_on_gaps
+      name: Withhold assurance on gaps
+      category: containment
+      expected_behavior: Assurance conclusions are withheld when evidence is incomplete
+      evidence_reference: evid-cq-008-withhold
+      status: UNKNOWN
+    recovery_controls:
+    - control_id: collect_missing_telemetry
+      name: Collect missing telemetry
+      category: recovery
+      expected_behavior: Operators can request missing evidence planes before reassessing
+      evidence_reference: evid-cq-008-collect-telem
+      status: UNKNOWN
+    evidence_sources:
+    - runtime_log_excerpt
+    - agent_self_report
+    evidence_summary: Runtime evidence exists, but adjacent planes are incomplete; self-report is not independent verification.
+    evidence_gaps:
+    - Missing credential telemetry
+    - Missing delegate telemetry
+    - Missing queue telemetry
+    - Missing network telemetry
+    observation_window: 15m
+    agent_self_report_present: true
+    independent_evidence_sufficient: false

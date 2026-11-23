@@ -89,6 +89,7 @@ def test_required_routes_registered_once_in_safe_order():
         "lab005-static": ("/static/labs/005", []),
         "lab006-static": ("/static/labs/006", []),
         "lab007-static": ("/static/labs/007", []),
+        "lab008-static": ("/static/labs/008", []),
         "static": ("/static", []),
     }
     for name, (path, methods) in required.items():
@@ -99,7 +100,7 @@ def test_required_routes_registered_once_in_safe_order():
 
     # Exactly one of each critical path.
     paths = [row["path"] for row in table]
-    for path in ("/", "/labs", "/labs/{slug}", "/health", "/api/evaluate", "/api/labs/002/evaluate", "/api/labs/003/evaluate", "/api/labs/004/evaluate", "/api/labs/005/generate", "/api/labs/006/evaluate", "/api/labs/007/evaluate"):
+    for path in ("/", "/labs", "/labs/{slug}", "/health", "/api/evaluate", "/api/labs/002/evaluate", "/api/labs/003/evaluate", "/api/labs/004/evaluate", "/api/labs/005/generate", "/api/labs/006/evaluate", "/api/labs/007/evaluate", "/api/labs/008/evaluate"):
         assert paths.count(path) == 1, path
 
     home_idx = next(i for i, row in enumerate(table) if row["name"] == "home")
@@ -112,10 +113,11 @@ def test_required_routes_registered_once_in_safe_order():
     lab005_static_idx = next(i for i, row in enumerate(table) if row["name"] == "lab005-static")
     lab006_static_idx = next(i for i, row in enumerate(table) if row["name"] == "lab006-static")
     lab007_static_idx = next(i for i, row in enumerate(table) if row["name"] == "lab007-static")
+    lab008_static_idx = next(i for i, row in enumerate(table) if row["name"] == "lab008-static")
     static_idx = next(i for i, row in enumerate(table) if row["name"] == "static")
     health_idx = next(i for i, row in enumerate(table) if row["name"] == "health")
 
-    assert health_idx < home_idx < labs_idx < lab_idx < lab_static_idx < lab002_static_idx < lab003_static_idx < lab004_static_idx < lab005_static_idx < lab006_static_idx < lab007_static_idx < static_idx
+    assert health_idx < home_idx < labs_idx < lab_idx < lab_static_idx < lab002_static_idx < lab003_static_idx < lab004_static_idx < lab005_static_idx < lab006_static_idx < lab007_static_idx < lab008_static_idx < static_idx
 
     # Page routes must not be Mount objects; static mounts must not precede pages.
     for route in app.routes:

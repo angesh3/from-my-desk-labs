@@ -59,6 +59,9 @@ def test_non_editable_install_resolves_explicit_paths(tmp_path):
     env["LAB007_DATA_DIR"] = str(REPO_ROOT / "labs" / "007-containment-assurance" / "examples")
     env["LAB007_POLICY_DIR"] = str(REPO_ROOT / "labs" / "007-containment-assurance" / "policies")
     env["LAB007_STATIC_DIR"] = str(REPO_ROOT / "labs" / "007-containment-assurance" / "static")
+    env["LAB008_DATA_DIR"] = str(REPO_ROOT / "labs" / "008-agent-threat-model" / "examples")
+    env["LAB008_POLICY_DIR"] = str(REPO_ROOT / "labs" / "008-agent-threat-model" / "policies")
+    env["LAB008_STATIC_DIR"] = str(REPO_ROOT / "labs" / "008-agent-threat-model" / "static")
     env["POSTHOG_ENABLED"] = "false"
     env["PYTHONDONTWRITEBYTECODE"] = "1"
 
@@ -92,6 +95,7 @@ assert client.get('/labs/agent-escalation-boundary').status_code == 200
 assert client.get('/labs/verifiable-action-receipts').status_code == 200
 assert client.get('/labs/agent-containment-boundary').status_code == 200
 assert client.get('/labs/containment-assurance').status_code == 200
+assert client.get('/labs/agent-threat-model').status_code == 200
 assert client.get('/static/labs/002/system-architecture.svg').status_code == 200
 assert client.get('/static/labs/002/delegated-authority-workflow.svg').status_code == 200
 assert client.get('/static/labs/002/evaluation-flow.svg').status_code == 200
@@ -120,6 +124,12 @@ assert lab007['execution'] == 'not_performed'
 assert lab007['assurance_status'] == 'CONFIRMED'
 assert client.get('/static/labs/007/assurance-boundary.svg').status_code == 200
 assert client.get('/static/labs/007/lab.js').status_code == 200
+lab008 = client.post('/api/labs/008/evaluate-preset/retrieved_prompt_injection_blocked').json()
+assert lab008['execution'] == 'not_performed'
+assert lab008['control_coverage'] == 'COMPLETE'
+assert lab008['residual_risk'] == 'LOW'
+assert client.get('/static/labs/008/agent-threat-model.svg').status_code == 200
+assert client.get('/static/labs/008/lab.js').status_code == 200
 css = client.get('/static/css/styles.css')
 assert css.status_code == 200
 assert '--navy:' in css.text

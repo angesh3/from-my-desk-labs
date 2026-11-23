@@ -189,6 +189,27 @@ def _default_lab007_static_dir() -> Path:
     return Path("/srv/labs/007-containment-assurance/static")
 
 
+def _default_lab008_data_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "008-agent-threat-model" / "examples"
+    return Path("/srv/labs/008-agent-threat-model/examples")
+
+
+def _default_lab008_policy_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "008-agent-threat-model" / "policies"
+    return Path("/srv/labs/008-agent-threat-model/policies")
+
+
+def _default_lab008_static_dir() -> Path:
+    root = _source_repo_root()
+    if root is not None:
+        return root / "labs" / "008-agent-threat-model" / "static"
+    return Path("/srv/labs/008-agent-threat-model/static")
+
+
 class Settings:
     def __init__(self) -> None:
         self.app_version = APP_VERSION
@@ -261,6 +282,15 @@ class Settings:
         self.lab007_static_dir = Path(
             os.environ.get("LAB007_STATIC_DIR") or _default_lab007_static_dir()
         )
+        self.lab008_data_dir = Path(
+            os.environ.get("LAB008_DATA_DIR") or _default_lab008_data_dir()
+        )
+        self.lab008_policy_dir = Path(
+            os.environ.get("LAB008_POLICY_DIR") or _default_lab008_policy_dir()
+        )
+        self.lab008_static_dir = Path(
+            os.environ.get("LAB008_STATIC_DIR") or _default_lab008_static_dir()
+        )
         self.port = int(os.environ.get("PORT", "8080"))
         self.registry_mode = os.environ.get("REGISTRY_PUBLIC", "sanitized").strip().lower()
         self.github_url = os.environ.get(
@@ -295,6 +325,7 @@ REQUIRED_TEMPLATE_FILES = (
     "lab005.html",
     "lab006.html",
     "lab007.html",
+    "lab008.html",
 )
 REQUIRED_GLOBAL_STATIC_FILES = (
     "css/styles.css",
@@ -361,6 +392,12 @@ REQUIRED_LAB007_STATIC_FILES = (
     "lab.js",
     "assurance-boundary.svg",
 )
+REQUIRED_LAB008_POLICY_FILES = ("threat-model-policy.yaml",)
+REQUIRED_LAB008_DATA_FILES = ("presets.yaml",)
+REQUIRED_LAB008_STATIC_FILES = (
+    "lab.js",
+    "agent-threat-model.svg",
+)
 
 
 class ResourceConfigError(RuntimeError):
@@ -415,6 +452,11 @@ def validate_runtime_resources(settings: Settings) -> None:
         path = settings.lab007_static_dir / rel
         if not path.is_file():
             missing.append(f"lab007_static:{rel}")
+
+    for rel in REQUIRED_LAB008_STATIC_FILES:
+        path = settings.lab008_static_dir / rel
+        if not path.is_file():
+            missing.append(f"lab008_static:{rel}")
 
     if not settings.catalog_path.is_file():
         missing.append("catalog:labs.yaml")
@@ -483,6 +525,16 @@ def validate_runtime_resources(settings: Settings) -> None:
         path = settings.lab007_data_dir / name
         if not path.is_file():
             missing.append(f"lab007_data:{name}")
+
+    for name in REQUIRED_LAB008_POLICY_FILES:
+        path = settings.lab008_policy_dir / name
+        if not path.is_file():
+            missing.append(f"lab008_policy:{name}")
+
+    for name in REQUIRED_LAB008_DATA_FILES:
+        path = settings.lab008_data_dir / name
+        if not path.is_file():
+            missing.append(f"lab008_data:{name}")
 
     if missing:
         raise ResourceConfigError(
