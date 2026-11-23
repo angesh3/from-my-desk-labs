@@ -36,6 +36,10 @@ COPY labs/007-containment-assurance/src /srv/labs/007-containment-assurance/src
 COPY labs/007-containment-assurance/policies /srv/labs/007-containment-assurance/policies
 COPY labs/007-containment-assurance/examples /srv/labs/007-containment-assurance/examples
 COPY labs/007-containment-assurance/static /srv/labs/007-containment-assurance/static
+COPY labs/008-agent-threat-model/src /srv/labs/008-agent-threat-model/src
+COPY labs/008-agent-threat-model/policies /srv/labs/008-agent-threat-model/policies
+COPY labs/008-agent-threat-model/examples /srv/labs/008-agent-threat-model/examples
+COPY labs/008-agent-threat-model/static /srv/labs/008-agent-threat-model/static
 
 RUN pip install --no-cache-dir .
 
@@ -62,6 +66,9 @@ ENV LAB006_POLICY_DIR=/srv/labs/006-agent-containment-boundary/policies
 ENV LAB007_STATIC_DIR=/srv/labs/007-containment-assurance/static
 ENV LAB007_DATA_DIR=/srv/labs/007-containment-assurance/examples
 ENV LAB007_POLICY_DIR=/srv/labs/007-containment-assurance/policies
+ENV LAB008_STATIC_DIR=/srv/labs/008-agent-threat-model/static
+ENV LAB008_DATA_DIR=/srv/labs/008-agent-threat-model/examples
+ENV LAB008_POLICY_DIR=/srv/labs/008-agent-threat-model/policies
 ENV APP_VERSION=0.4.0
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1

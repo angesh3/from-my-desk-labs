@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="title desc">
+  <title id="title">Agent threat model flow</title>
+  <desc id="desc">Protected asset flows through threat source, trust boundary, controls, evidence, and residual risk, with seven threat surfaces shown beside the path.</desc>
+  <rect width="960" height="620" fill="#F7F3EA"/>
+  <text x="36" y="42" fill="#1B2A4A" font-family="Georgia, serif" font-size="22" font-weight="700">Agent threat model</text>
+  <text x="36" y="68" fill="#5C6B7A" font-family="Helvetica, Arial, sans-serif" font-size="13">Assets, trust boundaries, controls, evidence, and residual risk</text>
+
+  <!-- Main flow -->
+  <g font-family="Helvetica, Arial, sans-serif">
+    <rect x="280" y="96" width="280" height="44" rx="4" fill="#1B2A4A"/>
+    <text x="420" y="123" text-anchor="middle" fill="#F7F3EA" font-size="15" font-weight="700">Protected Asset</text>
+
+    <path d="M420 140 v18" stroke="#C4A35A" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+    <rect x="280" y="168" width="280" height="44" rx="4" fill="#FFFFFF" stroke="#1B2A4A" stroke-width="1.5"/>
+    <text x="420" y="195" text-anchor="middle" fill="#1B2A4A" font-size="15" font-weight="700">Threat Source</text>
+
+    <path d="M420 212 v18" stroke="#C4A35A" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+    <rect x="250" y="240" width="340" height="52" rx="4" fill="#FFFFFF" stroke="#C4A35A" stroke-width="2"/>
+    <text x="420" y="262" text-anchor="middle" fill="#1B2A4A" font-size="14" font-weight="700">Trust Boundary / Threat Path</text>
+    <text x="420" y="280" text-anchor="middle" fill="#5C6B7A" font-size="12">Where authority, data, and tools meet</text>
+
+    <path d="M420 292 v18" stroke="#C4A35A" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+    <rect x="220" y="320" width="180" height="52" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5"/>
+    <text x="310" y="342" text-anchor="middle" fill="#1B2A4A" font-size="13" font-weight="700">Preventive</text>
+    <text x="310" y="360" text-anchor="middle" fill="#2E7D32" font-size="12">+ Detective</text>
+    <rect x="440" y="320" width="180" height="52" rx="4" fill="#FFF8E1" stroke="#F9A825" stroke-width="1.5"/>
+    <text x="530" y="342" text-anchor="middle" fill="#1B2A4A" font-size="13" font-weight="700">Containment</text>
+    <text x="530" y="360" text-anchor="middle" fill="#F9A825" font-size="12">+ Recovery</text>
+
+    <path d="M420 372 v18" stroke="#C4A35A" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+    <rect x="280" y="400" width="280" height="44" rx="4" fill="#FFFFFF" stroke="#5C6B7A" stroke-width="1.5"/>
+    <text x="420" y="427" text-anchor="middle" fill="#1B2A4A" font-size="15" font-weight="700">Evidence</text>
+
+    <path d="M420 444 v18" stroke="#C4A35A" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+    <rect x="280" y="472" width="280" height="52" rx="4" fill="#FFEBEE" stroke="#C62828" stroke-width="1.5"/>
+    <text x="420" y="494" text-anchor="middle" fill="#1B2A4A" font-size="15" font-weight="700">Residual Risk</text>
+    <text x="420" y="512" text-anchor="middle" fill="#C62828" font-size="12">COMPLETE is not zero risk</text>
+  </g>
+
+  <!-- Seven surfaces -->
+  <g font-family="Helvetica, Arial, sans-serif" font-size="12">
+    <text x="36" y="110" fill="#1B2A4A" font-size="14" font-weight="700">Seven threat surfaces</text>
+    <rect x="36" y="124" width="190" height="28" rx="3" fill="#FFFFFF" stroke="#1B2A4A"/>
+    <text x="48" y="142" fill="#1B2A4A">Identity</text>
+    <rect x="36" y="160" width="190" height="28" rx="3" fill="#FFFFFF" stroke="#1B2A4A"/>
+    <text x="48" y="178" fill="#1B2A4A">Authority</text>
+    <rect x="36" y="196" width="190" height="28" rx="3" fill="#FFFFFF" stroke="#1B2A4A"/>
+    <text x="48" y="214" fill="#1B2A4A">Instructions and intent</text>
+    <rect x="36" y="232" width="190" height="28" rx="3" fill="#FFFFFF" stroke="#1B2A4A"/>
+    <text x="48" y="250" fill="#1B2A4A">Memory and context</text>
+    <rect x="36" y="268" width="190" height="28" rx="3" fill="#FFFFFF" stroke="#1B2A4A"/>
+    <text x="48" y="286" fill="#1B2A4A">Tools and execution</text>
+    <rect x="36" y="304" width="190" height="28" rx="3" fill="#FFFFFF" stroke="#1B2A4A"/>
+    <text x="48" y="322" fill="#1B2A4A">Delegation and coordination</text>
+    <rect x="36" y="340" width="190" height="28" rx="3" fill="#FFFFFF" stroke="#1B2A4A"/>
+    <text x="48" y="358" fill="#1B2A4A">Evidence and control</text>
+  </g>
+
+  <g font-family="Helvetica, Arial, sans-serif" font-size="12">
+    <text x="690" y="110" fill="#1B2A4A" font-size="14" font-weight="700">Teaching points</text>
+    <text x="690" y="136" fill="#5C6B7A">The model is one component.</text>
+    <text x="690" y="158" fill="#5C6B7A">Start with assets and boundaries.</text>
+    <text x="690" y="180" fill="#5C6B7A">Tool allow != data purpose.</text>
+    <text x="690" y="202" fill="#5C6B7A">Memory is a trust boundary.</text>
+    <text x="690" y="224" fill="#5C6B7A">Delegation can expand risk.</text>
+    <text x="690" y="246" fill="#5C6B7A">Controls need independent evidence.</text>
+    <text x="690" y="268" fill="#5C6B7A">Educational prototype only.</text>
+  </g>
+
+  <text x="36" y="590" fill="#5C6B7A" font-family="Helvetica, Arial, sans-serif" font-size="12">Lab 008  -  Cedar Quill Markets fictional scenarios  -  execution: not_performed</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#C4A35A"/>
+    </marker>
+  </defs>
+</svg>

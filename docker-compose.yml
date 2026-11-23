@@ -29,6 +29,9 @@ services:
       LAB007_STATIC_DIR: /srv/labs/007-containment-assurance/static
       LAB007_DATA_DIR: /srv/labs/007-containment-assurance/examples
       LAB007_POLICY_DIR: /srv/labs/007-containment-assurance/policies
+      LAB008_STATIC_DIR: /srv/labs/008-agent-threat-model/static
+      LAB008_DATA_DIR: /srv/labs/008-agent-threat-model/examples
+      LAB008_POLICY_DIR: /srv/labs/008-agent-threat-model/policies
       PORT: "8080"
       POSTHOG_ENABLED: "false"
       POSTHOG_KEY: ""
