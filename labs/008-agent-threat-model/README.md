@@ -26,6 +26,16 @@ This Lab helps readers construct and inspect a structured fictional threat case.
 
 A threat case has one primary surface and may include secondary surfaces.
 
+## Reference architecture and data flow
+
+The Lab includes three complementary diagrams:
+
+1. `agent-system-architecture.svg` — high-level components, reachable systems, and the independent evidence/control plane.
+2. `agent-data-flow.svg` — numbered request, authority, context, tool, delegation, data, result, and telemetry flows across explicit trust boundaries.
+3. `agent-threat-model.svg` — the threat-case assessment flow from protected asset to residual risk.
+
+These are illustrative Cedar Quill Markets reference views, not a production architecture certification.
+
 ## Threat-case schema
 
 Each case includes context, protected asset, threat path, categorical risk inputs, preventive/detective/containment/recovery controls, evidence, and assessment outputs.
