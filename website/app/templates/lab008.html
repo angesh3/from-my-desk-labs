@@ -41,6 +41,25 @@
   </div>
 </section>
 
+
+<section class="wrap" aria-labelledby="architecture-heading">
+  <h2 id="architecture-heading">Example agent-system architecture</h2>
+  <p>A useful threat model starts with the whole operating system around the model: the principal, identity and authority plane, runtime, instructions, memory, tools, delegates, queues, protected data, and independent controls.</p>
+  <figure class="lab008-diagram">
+    <img src="/static/labs/008/agent-system-architecture.svg" width="1200" height="760" alt="High-level agent-system architecture showing a principal governed by identity and authority controls, an agent orchestrator connected to a model, instructions, memory, tools, delegates, queues and protected data, with an independent evidence and control plane.">
+    <figcaption>The model is one component inside a larger agentic system. Each connection creates an asset, trust boundary, or potential threat path.</figcaption>
+  </figure>
+</section>
+
+<section class="wrap" aria-labelledby="data-flow-heading">
+  <h2 id="data-flow-heading">Data-flow diagram and trust boundaries</h2>
+  <p>The numbered flows make authority, context, tool calls, protected data, delegated work, results, and independent evidence visible across system boundaries.</p>
+  <figure class="lab008-diagram">
+    <img src="/static/labs/008/agent-data-flow.svg" width="1200" height="820" alt="Numbered agent data-flow diagram showing requests crossing from a principal through identity and authority controls into an agent runtime, model, retrieval and memory, tool gateway, delegated worker and protected systems, with telemetry sent to an independent evidence and control plane.">
+    <figcaption>Follow both the operational flow and the evidence flow. A threat model is incomplete when either path disappears at a boundary.</figcaption>
+  </figure>
+</section>
+
 <section class="wrap" aria-labelledby="surfaces-heading">
   <h2 id="surfaces-heading">Seven threat surfaces</h2>
   <p>A threat case has one primary surface and may include secondary surfaces.</p>
