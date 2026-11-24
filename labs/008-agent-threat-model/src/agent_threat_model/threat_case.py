@@ -9,10 +9,13 @@ from .models import (
     ControlCoverage,
     ControlItem,
     ControlStatus,
+    CrossCuttingDimension,
     EvaluateRequest,
     EvaluateResponse,
+    ExposureLevel,
     Impact,
     Likelihood,
+    OrganizationalExposure,
     RiskLevel,
     ThreatSurface,
 )
@@ -28,6 +31,13 @@ _SURFACE_CODES = {
     ThreatSurface.tools_execution: "surface.tools_execution",
     ThreatSurface.delegation: "surface.delegation",
     ThreatSurface.evidence_control: "surface.evidence_control",
+}
+
+_DIMENSION_CODES = {
+    CrossCuttingDimension.behavior_usage_drift: "dimension.behavior_usage_drift",
+    CrossCuttingDimension.learning_memory_drift: "dimension.learning_memory_drift",
+    CrossCuttingDimension.external_model_exposure: "dimension.external_model_exposure",
+    CrossCuttingDimension.network_resource_impact: "dimension.network_resource_impact",
 }
 
 
@@ -92,7 +102,6 @@ def _coverage(
         codes.append("assessment.none")
         return ControlCoverage.none, codes
 
-    statuses = {c.status for c in controls}
     present = [c for c in controls if c.status == ControlStatus.present]
     gaps = [
         c
@@ -102,13 +111,16 @@ def _coverage(
     ]
 
     if present and not gaps:
-        codes.append("control.preventive.present" if any(c.category.value == "preventive" for c in present) else "assessment.complete")
+        codes.append(
+            "control.preventive.present"
+            if any(c.category.value == "preventive" for c in present)
+            else "assessment.complete"
+        )
         codes.append("evidence.independent_present")
         codes.append("assessment.complete")
         return ControlCoverage.complete, codes
 
     if not present and gaps:
-        # All missing/ineffective/unknown with no present controls
         if all(c.status == ControlStatus.unknown for c in gaps) and not evidence_gaps:
             codes.append("assessment.unverified")
             return ControlCoverage.unverified, codes
@@ -146,18 +158,15 @@ def _residual(
             codes,
         )
 
-    # Prefer explicit residual fields from the request when provided (preset-driven).
     likelihood = request.residual_likelihood
     impact = request.residual_impact
 
     if likelihood is None or impact is None:
-        # Derive a conservative residual from coverage.
         if coverage == ControlCoverage.complete:
             likelihood = Likelihood.low
             impact = (
                 Impact.medium
-                if request.initial_impact
-                in {Impact.high, Impact.critical}
+                if request.initial_impact in {Impact.high, Impact.critical}
                 else request.initial_impact
             )
             if impact == Impact.critical:
@@ -171,7 +180,7 @@ def _residual(
             if likelihood == Likelihood.low:
                 likelihood = Likelihood.medium
             impact = request.initial_impact
-        else:  # NONE
+        else:
             likelihood = request.initial_likelihood
             impact = request.initial_impact
 
@@ -191,17 +200,109 @@ def _residual(
     return likelihood, impact, residual, explanation, codes
 
 
+def _default_exposure(
+    request: EvaluateRequest, coverage: ControlCoverage
+) -> OrganizationalExposure:
+    if request.organizational_exposure is not None:
+        return request.organizational_exposure
+
+    dims = set(request.cross_cutting_dimensions)
+    high = ExposureLevel.high
+    medium = ExposureLevel.medium
+    low = ExposureLevel.low
+    none = ExposureLevel.none
+    unknown = ExposureLevel.unknown
+
+    sensitive = high if CrossCuttingDimension.external_model_exposure in dims else medium
+    public_model = (
+        high
+        if CrossCuttingDimension.external_model_exposure in dims
+        else none
+    )
+    credential = (
+        high
+        if CrossCuttingDimension.network_resource_impact in dims
+        else medium
+    )
+    network = (
+        high
+        if CrossCuttingDimension.network_resource_impact in dims
+        else low
+    )
+    compute = (
+        high
+        if CrossCuttingDimension.network_resource_impact in dims
+        else medium
+    )
+    queued = (
+        high
+        if CrossCuttingDimension.network_resource_impact in dims
+        or ThreatSurface.tools_execution
+        in ([request.primary_surface] + list(request.secondary_surfaces))
+        else low
+    )
+    memory = (
+        high
+        if CrossCuttingDimension.learning_memory_drift in dims
+        or ThreatSurface.memory_context
+        in ([request.primary_surface] + list(request.secondary_surfaces))
+        else low
+    )
+    children = (
+        high
+        if ThreatSurface.delegation
+        in ([request.primary_surface] + list(request.secondary_surfaces))
+        else low
+    )
+    if coverage == ControlCoverage.complete:
+        recoverability = low
+        telemetry = high
+    elif coverage == ControlCoverage.partial:
+        recoverability = medium
+        telemetry = medium
+    elif coverage == ControlCoverage.none:
+        recoverability = high
+        telemetry = low
+    else:
+        recoverability = unknown
+        telemetry = unknown
+
+    parts = []
+    if public_model != none:
+        parts.append("public-model transmission")
+    if CrossCuttingDimension.behavior_usage_drift in dims:
+        parts.append("usage drift beyond approved purpose")
+    if CrossCuttingDimension.learning_memory_drift in dims:
+        parts.append("learning or memory influencing later privileged work")
+    if CrossCuttingDimension.network_resource_impact in dims:
+        parts.append("internal network and resource consumption")
+    summary = (
+        "Organizational exposure includes "
+        + (", ".join(parts) if parts else "the modeled surfaces and evidence gaps")
+        + " for this fictional Cedar Quill Markets case."
+    )
+    return OrganizationalExposure(
+        sensitive_data=sensitive,
+        public_model_transmission=public_model,
+        credential_reach=credential,
+        internal_network_reach=network,
+        compute_token_cost=compute,
+        queued_work=queued,
+        persistent_memory=memory,
+        child_agents=children,
+        recoverability=recoverability,
+        independent_telemetry=telemetry,
+        summary=summary,
+    )
+
+
 def evaluate(request: EvaluateRequest) -> EvaluateResponse:
     """Evaluate a fictional agent threat case deterministically."""
     reasons: List[str] = [_SURFACE_CODES[request.primary_surface]]
     for surface in request.secondary_surfaces:
-        if isinstance(surface, ThreatSurface):
-            reasons.append(_SURFACE_CODES[surface])
-        else:
-            try:
-                reasons.append(_SURFACE_CODES[ThreatSurface(surface)])
-            except ValueError:
-                pass
+        reasons.append(_SURFACE_CODES[surface])
+    for dimension in request.cross_cutting_dimensions:
+        reasons.append(_DIMENSION_CODES[dimension])
 
     initial_risk = classify_risk(request.initial_likelihood, request.initial_impact)
     reasons.append(f"risk.initial_{initial_risk.value.lower()}")
@@ -217,7 +318,6 @@ def evaluate(request: EvaluateRequest) -> EvaluateResponse:
         else:
             reasons.append(f"control.{item.category.value}.unknown")
 
-    # Agent self-report alone never counts as independent verification.
     independent_sources = [
         s
         for s in request.evidence_sources
@@ -230,7 +330,6 @@ def evaluate(request: EvaluateRequest) -> EvaluateResponse:
         and not agent_self_report_only
         and bool(independent_sources or not request.agent_self_report_present)
     )
-    # If explicit flag says insufficient, honor it.
     if not request.independent_evidence_sufficient:
         independent_ok = False
 
@@ -259,6 +358,9 @@ def evaluate(request: EvaluateRequest) -> EvaluateResponse:
             gaps.append(f"evidence:{gap}")
 
     recommendations: List[str] = []
+    recommended_controls: List[str] = []
+    recommended_evidence: List[str] = []
+
     if coverage == ControlCoverage.none:
         recommendations.append(
             "Introduce preventive controls on the primary trust boundary before privileged execution."
@@ -288,23 +390,69 @@ def evaluate(request: EvaluateRequest) -> EvaluateResponse:
             "Re-evaluate residual risk when authority, memory, tools, or delegation change."
         )
 
-    if ThreatSurface.delegation in (
-        [request.primary_surface] + list(request.secondary_surfaces)
-    ):
+    surfaces = [request.primary_surface] + list(request.secondary_surfaces)
+    if ThreatSurface.delegation in surfaces:
         recommendations.append(
             "Ensure delegated authority narrows at every handoff and cannot expand."
         )
-    if ThreatSurface.memory_context in (
-        [request.primary_surface] + list(request.secondary_surfaces)
-    ):
+        recommended_controls.append("Delegation narrowing and revoke-on-expansion")
+    if ThreatSurface.memory_context in surfaces:
         recommendations.append(
             "Treat persistent memory and retrieved content as untrusted data until validated."
         )
+        recommended_controls.append("Memory integrity labeling and privileged-task gates")
+
+    dims = set(request.cross_cutting_dimensions)
+    if CrossCuttingDimension.behavior_usage_drift in dims:
+        recommended_controls.append("Purpose-bound authorization and usage-drift detection")
+        recommended_evidence.append("Purpose-vs-activity correlation across sessions")
+        recommendations.append(
+            "Detect gradual usage drift that exceeds the approved business purpose."
+        )
+    if CrossCuttingDimension.learning_memory_drift in dims:
+        recommended_controls.append("Reviewed learning promotion and memory lifetime limits")
+        recommended_evidence.append("Cross-session memory provenance for privileged tasks")
+        recommendations.append(
+            "Separate behavioral/memory drift from model-weight drift; require review before learning becomes instruction."
+        )
+    if CrossCuttingDimension.external_model_exposure in dims:
+        recommended_controls.append("Approved-model allowlist and sensitive-context egress controls")
+        recommended_evidence.append("Public-model call logs with payload classification")
+        recommendations.append(
+            "Block unapproved public-model endpoints and classify data before external inference."
+        )
+    if CrossCuttingDimension.network_resource_impact in dims:
+        recommended_controls.append("Network egress, credential blast-radius, and resource budgets")
+        recommended_evidence.append("API, token, compute, queue, and lateral-movement telemetry")
+        recommendations.append(
+            "Bound agent credential reach, internal network expansion, and cost amplification."
+        )
+
+    recommended_controls.append("Independent evidence collection outside the agent runtime")
+    recommended_evidence.append("Independent control-plane and telemetry evidence")
+    if not recommended_evidence:
+        recommended_evidence.append("Runtime, credential, queue, and network evidence planes")
+
+    blast = list(request.organizational_blast_radius)
+    if not blast:
+        if CrossCuttingDimension.external_model_exposure in dims:
+            blast.append("Sensitive context may leave organizational control via public models")
+        if CrossCuttingDimension.network_resource_impact in dims:
+            blast.append("Internal services, credentials, queues, and compute budgets")
+        if CrossCuttingDimension.learning_memory_drift in dims:
+            blast.append("Later privileged tasks influenced by earlier unreviewed learning")
+        if CrossCuttingDimension.behavior_usage_drift in dims:
+            blast.append("Approved capability reused for unapproved business purpose")
+        if not blast:
+            blast.append("Modeled trust boundaries for the selected threat surfaces")
+
+    exposure = _default_exposure(request, coverage)
 
     assumptions = [
         "The scenario uses fictional Cedar Quill Markets identities, assets, and evidence.",
         "Control statuses and evidence references are supplied as educational inputs.",
         "Risk categories are illustrative and are not a production risk certification.",
+        "Behavioral drift is distinct from model-weight drift; memory updates are not retraining.",
     ]
     limitations = [
         "This Lab is an educational prototype, not a production threat-modeling or scanning system.",
@@ -312,6 +460,7 @@ def evaluate(request: EvaluateRequest) -> EvaluateResponse:
         "Agent self-report is preserved but never counts as independent verification by itself.",
         "No real tool, credential, runtime, or network path is evaluated or modified.",
         "Every evaluation returns execution: not_performed.",
+        "Availability impact and security compromise are related but not identical.",
     ]
 
     summary = (
@@ -320,8 +469,8 @@ def evaluate(request: EvaluateRequest) -> EvaluateResponse:
     )
     explanation = (
         "An autonomous agent is not only a model. This fictional evaluation maps assets, "
-        "trust boundaries, threat paths, controls, and independent evidence across identity, "
-        "authority, instructions, memory, tools, delegation, and control. "
+        "trust boundaries, threat paths, controls, cross-cutting dimensions, and independent "
+        "evidence across identity, authority, instructions, memory, tools, delegation, and control. "
         f"{residual_explain} Real execution is not_performed."
     )
 
@@ -332,6 +481,7 @@ def evaluate(request: EvaluateRequest) -> EvaluateResponse:
         title=request.title,
         primary_surface=request.primary_surface,
         secondary_surfaces=list(request.secondary_surfaces),
+        cross_cutting_dimensions=list(request.cross_cutting_dimensions),
         initial_likelihood=request.initial_likelihood,
         initial_impact=request.initial_impact,
         initial_risk=initial_risk,
@@ -341,7 +491,11 @@ def evaluate(request: EvaluateRequest) -> EvaluateResponse:
         residual_risk=residual_risk,
         residual_risk_explanation=residual_explain,
         material_gaps=_uniq(gaps),
+        organizational_blast_radius=_uniq(blast),
+        organizational_exposure=exposure,
         recommended_actions=_uniq(recommendations),
+        recommended_controls=_uniq(recommended_controls),
+        recommended_evidence=_uniq(recommended_evidence),
         assumptions=assumptions,
         limitations=limitations,
         reason_codes=_uniq(reasons),

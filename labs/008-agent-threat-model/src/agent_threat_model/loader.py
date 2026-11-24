@@ -12,9 +12,12 @@ from .models import (
     ControlCoverage,
     ControlItem,
     ControlStatus,
+    CrossCuttingDimension,
     EvaluateRequest,
+    ExposureLevel,
     Impact,
     Likelihood,
+    OrganizationalExposure,
     PresetDetail,
     PresetMeta,
     RiskLevel,
@@ -46,9 +49,41 @@ def _control(raw: dict) -> ControlItem:
     )
 
 
+def _exposure(raw: Optional[dict]) -> Optional[OrganizationalExposure]:
+    if not isinstance(raw, dict):
+        return None
+    return OrganizationalExposure(
+        sensitive_data=_enum(ExposureLevel, raw.get("sensitive_data") or "UNKNOWN"),
+        public_model_transmission=_enum(
+            ExposureLevel, raw.get("public_model_transmission") or "UNKNOWN"
+        ),
+        credential_reach=_enum(ExposureLevel, raw.get("credential_reach") or "UNKNOWN"),
+        internal_network_reach=_enum(
+            ExposureLevel, raw.get("internal_network_reach") or "UNKNOWN"
+        ),
+        compute_token_cost=_enum(
+            ExposureLevel, raw.get("compute_token_cost") or "UNKNOWN"
+        ),
+        queued_work=_enum(ExposureLevel, raw.get("queued_work") or "UNKNOWN"),
+        persistent_memory=_enum(
+            ExposureLevel, raw.get("persistent_memory") or "UNKNOWN"
+        ),
+        child_agents=_enum(ExposureLevel, raw.get("child_agents") or "UNKNOWN"),
+        recoverability=_enum(ExposureLevel, raw.get("recoverability") or "UNKNOWN"),
+        independent_telemetry=_enum(
+            ExposureLevel, raw.get("independent_telemetry") or "UNKNOWN"
+        ),
+        summary=str(raw.get("summary") or ""),
+    )
+
+
 def _request_from_dict(raw: dict, preset_id: Optional[str] = None) -> EvaluateRequest:
     secondary = [
         _enum(ThreatSurface, item) for item in (raw.get("secondary_surfaces") or [])
+    ]
+    dimensions = [
+        _enum(CrossCuttingDimension, item)
+        for item in (raw.get("cross_cutting_dimensions") or [])
     ]
     return EvaluateRequest(
         case_id=str(raw["case_id"]),
@@ -66,10 +101,13 @@ def _request_from_dict(raw: dict, preset_id: Optional[str] = None) -> EvaluateRe
         failure_mode=str(raw["failure_mode"]),
         primary_surface=_enum(ThreatSurface, raw["primary_surface"]),
         secondary_surfaces=secondary,
+        cross_cutting_dimensions=dimensions,
         trust_boundary=str(raw["trust_boundary"]),
         preconditions=list(raw.get("preconditions") or []),
         threat_path=list(raw.get("threat_path") or []),
         potential_impact=str(raw["potential_impact"]),
+        organizational_blast_radius=list(raw.get("organizational_blast_radius") or []),
+        organizational_exposure=_exposure(raw.get("organizational_exposure")),
         initial_likelihood=_enum(Likelihood, raw["initial_likelihood"]),
         initial_impact=_enum(Impact, raw["initial_impact"]),
         preventive_controls=[
@@ -114,6 +152,7 @@ class Lab008Bundle:
                 title=item.title,
                 short_description=item.short_description,
                 primary_surface=item.primary_surface,
+                cross_cutting_dimensions=list(item.cross_cutting_dimensions),
                 expected_initial_risk=item.expected_initial_risk,
                 expected_control_coverage=item.expected_control_coverage,
                 expected_residual_risk=item.expected_residual_risk,
@@ -149,6 +188,7 @@ def load_bundle(data_dir: Path, policy_dir: Path) -> Lab008Bundle:
             title=str(item["title"]),
             short_description=str(item["short_description"]),
             primary_surface=request.primary_surface,
+            cross_cutting_dimensions=list(request.cross_cutting_dimensions),
             expected_initial_risk=_enum(RiskLevel, item["expected_initial_risk"]),
             expected_control_coverage=_enum(
                 ControlCoverage, item["expected_control_coverage"]
@@ -157,6 +197,6 @@ def load_bundle(data_dir: Path, policy_dir: Path) -> Lab008Bundle:
             category=str(item.get("category") or "general"),
             request=request,
         )
-    if len(presets) < 8:
-        raise Lab008ConfigError("Lab 008 requires at least eight presets.")
+    if len(presets) < 12:
+        raise Lab008ConfigError("Lab 008 requires at least twelve presets.")
     return Lab008Bundle(presets=presets, policy_version=version)

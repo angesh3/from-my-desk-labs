@@ -3,6 +3,9 @@ description: >
   Educational agent threat-model policy for Cedar Quill Markets.
   Risk is categorical (not a production score). COMPLETE coverage does not mean zero risk.
   Agent self-report is never independent verification.
+  Cross-cutting dimensions (behavior/usage drift, learning/memory drift, external-model
+  exposure, network/resource impact) annotate scenarios without replacing the seven
+  primary threat surfaces.
 risk_matrix:
   LOW:
     LOW: LOW
@@ -24,3 +27,14 @@ control_coverage:
   PARTIAL: Some controls are present, but material gaps remain.
   NONE: No effective controls cover the modeled path.
   UNVERIFIED: Independent evidence is insufficient to support a conclusion.
+cross_cutting_dimensions:
+  BEHAVIOR_USAGE_DRIFT: Objective drift, scope creep, retries, and unapproved purpose use.
+  LEARNING_MEMORY_DRIFT: Poisoned memory, unsafe adaptation, stale context, unreviewed learning.
+  EXTERNAL_MODEL_EXPOSURE: Public-model calls, unapproved endpoints, retention and supply-chain risk.
+  NETWORK_RESOURCE_IMPACT: Lateral movement, egress, cost amplification, queues, and credential reach.
+distinctions:
+  behavioral_vs_weight_drift: Behavioral and usage drift are not the same as model-weight drift.
+  memory_vs_retraining: Memory or context updates are not model retraining.
+  approved_vs_public_models: Approved external-model use differs from uncontrolled public-model exposure.
+  availability_vs_compromise: Availability or cost impact is related to, but distinct from, security compromise.
+  attempted_vs_verified_control: Attempted control is not independently verified control.

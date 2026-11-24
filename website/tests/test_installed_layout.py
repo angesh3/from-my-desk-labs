@@ -129,6 +129,8 @@ assert lab008['execution'] == 'not_performed'
 assert lab008['control_coverage'] == 'COMPLETE'
 assert lab008['residual_risk'] == 'LOW'
 assert client.get('/static/labs/008/agent-threat-model.svg').status_code == 200
+assert client.get('/static/labs/008/agent-system-architecture.svg').status_code == 200
+assert client.get('/static/labs/008/agent-data-flow.svg').status_code == 200
 assert client.get('/static/labs/008/lab.js').status_code == 200
 css = client.get('/static/css/styles.css')
 assert css.status_code == 200

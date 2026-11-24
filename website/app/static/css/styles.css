@@ -1559,17 +1559,40 @@ pre {
 }
 .lab008-diagram { margin: 1rem 0 0; }
 .lab008-diagram img {
+  display: block;
   width: 100%;
   height: auto;
   max-width: 960px;
-  aspect-ratio: 960 / 620;
   background: var(--ivory);
   border: 1px solid var(--line);
+}
+.lab008-diagram-wide img {
+  max-width: 1200px;
+}
+.lab008-diagram-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  border: 1px solid var(--line);
+  background: var(--ivory);
+}
+.lab008-diagram-scroll:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+.lab008-diagram-scroll img {
+  width: auto;
+  min-width: 720px;
+  max-width: none;
+  border: 0;
 }
 .lab008-diagram figcaption {
   margin-top: 0.5rem;
   color: var(--muted);
   font-size: 0.95rem;
+}
+.lab008-diagram-scroll::after {
+  content: none;
 }
 .lab008-footer-note {
   display: block;
@@ -1578,6 +1601,61 @@ pre {
 .lab008-footer-actions {
   margin-top: 0;
   flex-wrap: wrap;
+}
+.lab008-storyline-list,
+.lab008-lifecycle-list,
+.lab008-dimension-list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+.lab008-storyline-list {
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+.lab008-lifecycle-list {
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+.lab008-dimension-grid,
+.lab008-dimension-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.lab008-storyline-title {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+}
+.lab008-storyline-title a { color: var(--navy); }
+.lab008-storyline-question {
+  margin: 0;
+  color: var(--ink);
+}
+.lab008-storyline-close,
+.lab008-transition-copy,
+.lab008-next-question p {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  background: var(--paper);
+  border-left: 3px solid var(--gold);
+}
+.lab008-lifecycle-detail {
+  margin: 0.6rem 0 0;
+  display: grid;
+  gap: 0.35rem;
+}
+.lab008-lifecycle-detail dt {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+.lab008-lifecycle-detail dd {
+  margin: 0 0 0.35rem;
+}
+.lab008-storyline-current {
+  border-color: var(--gold);
 }
 
 @media (max-width: 768px) {
@@ -1597,7 +1675,10 @@ pre {
   .lab008-question-grid,
   .lab008-grid,
   .lab008-result-grid,
-  .lab008-control-row {
+  .lab008-control-row,
+  .lab008-storyline-list,
+  .lab008-lifecycle-list,
+  .lab008-dimension-grid {
     grid-template-columns: 1fr;
   }
   .lab005-intro .lab005-hero-title,
@@ -1613,6 +1694,16 @@ pre {
   .lab008-footer-actions .button {
     width: 100%;
     text-align: center;
+  }
+  .lab008-diagram-scroll {
+    margin: 0 -0.25rem;
+  }
+  .lab008-diagram-scroll img {
+    min-width: 880px;
+  }
+  .lab008-diagram figcaption::before {
+    content: "Scroll sideways to read the full diagram. ";
+    color: var(--muted);
   }
 }
 

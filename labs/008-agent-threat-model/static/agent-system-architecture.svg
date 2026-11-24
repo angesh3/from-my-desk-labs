@@ -1,77 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="920" viewBox="0 0 1200 920" role="img" aria-labelledby="title desc">
   <title id="title">High-level agent-system threat-model architecture</title>
-  <desc id="desc">A principal and identity and authority plane govern an agent orchestrator connected to a model, instructions, memory, tools, data, queues, and delegated agents. An independent evidence and control plane observes and constrains the system.</desc>
+  <desc id="desc">A principal and identity and authority plane govern an agent orchestrator connected to approved models, instructions, memory, tools, data, queues, network resources, public-model boundaries, and delegated agents. An independent evidence store and external containment control plane observe and constrain the system. Cross-cutting dimensions span behavior, learning, external exposure, and network impact.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#10213d"/></marker>
     <marker id="gold-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#b98b3e"/></marker>
+    <marker id="red-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#c62828"/></marker>
     <style>
-      .bg{fill:#f7f2e8}.zone{fill:#fff;stroke:#cfc5b4;stroke-width:2}.core{fill:#10213d;stroke:#10213d}.control{fill:#edf6f0;stroke:#2d7a54;stroke-width:2}.external{fill:#fff7df;stroke:#b98b3e;stroke-width:2}.node{fill:#fff;stroke:#10213d;stroke-width:2}.title{font:700 30px Georgia,serif;fill:#10213d}.label{font:700 19px Georgia,serif;fill:#10213d}.light{fill:#fff}.small{font:15px Arial,sans-serif;fill:#5e5a52}.small.light{fill:#fff}.line{fill:none;stroke:#10213d;stroke-width:2;marker-end:url(#arrow)}.dashed{fill:none;stroke:#b98b3e;stroke-width:2;stroke-dasharray:8 7;marker-end:url(#gold-arrow)}.boundary{fill:none;stroke:#8d877c;stroke-width:2;stroke-dasharray:10 8}.boundaryText{font:700 14px Arial,sans-serif;fill:#6f695f;letter-spacing:1px}
+      .bg{fill:#f7f2e8}.zone{fill:#fff;stroke:#cfc5b4;stroke-width:2}.core{fill:#10213d;stroke:#10213d}.control{fill:#edf6f0;stroke:#2d7a54;stroke-width:2}.external{fill:#fff7df;stroke:#b98b3e;stroke-width:2}.public{fill:#ffecec;stroke:#c62828;stroke-width:2}.node{fill:#fff;stroke:#10213d;stroke-width:2}.title{font:700 30px Georgia,serif;fill:#10213d}.label{font:700 18px Georgia,serif;fill:#10213d}.light{fill:#fff}.small{font:14px Arial,sans-serif;fill:#5e5a52}.small.light{fill:#fff}.line{fill:none;stroke:#10213d;stroke-width:2;marker-end:url(#arrow)}.dashed{fill:none;stroke:#b98b3e;stroke-width:2;stroke-dasharray:8 7;marker-end:url(#gold-arrow)}.risk{fill:none;stroke:#c62828;stroke-width:2;stroke-dasharray:6 5;marker-end:url(#red-arrow)}.boundary{fill:none;stroke:#8d877c;stroke-width:2;stroke-dasharray:10 8}.boundaryText{font:700 14px Arial,sans-serif;fill:#6f695f;letter-spacing:1px}.dim{fill:#fff;stroke:#10213d;stroke-width:1.5}
     </style>
   </defs>
-  <rect class="bg" width="1200" height="760"/>
-  <text class="title" x="60" y="62">Example agent-system architecture</text>
-  <text class="small" x="60" y="91">Threat-model the complete system—not only the model.</text>
+  <rect class="bg" width="1200" height="920"/>
+  <text class="title" x="60" y="52">Example agent-system architecture</text>
+  <text class="small" x="60" y="78">Threat-model the complete system—not only the model. Cross-cutting risks span surfaces over time.</text>
 
-  <rect class="boundary" x="35" y="120" width="1130" height="500" rx="18"/>
-  <text class="boundaryText" x="55" y="146">AGENT SYSTEM TRUST BOUNDARY</text>
+  <rect class="boundary" x="35" y="100" width="1130" height="520" rx="18"/>
+  <text class="boundaryText" x="55" y="126">AGENT SYSTEM TRUST BOUNDARY</text>
 
-  <rect class="external" x="60" y="190" width="190" height="92" rx="12"/>
-  <text class="label" x="155" y="225" text-anchor="middle">Principal</text>
-  <text class="small" x="155" y="252" text-anchor="middle">Human or service intent</text>
+  <rect class="external" x="60" y="160" width="190" height="92" rx="12"/>
+  <text class="label" x="155" y="195" text-anchor="middle">Principal</text>
+  <text class="small" x="155" y="222" text-anchor="middle">Human or service intent</text>
 
-  <rect class="control" x="330" y="160" width="270" height="122" rx="12"/>
-  <text class="label" x="465" y="198" text-anchor="middle">Identity &amp; Authority</text>
-  <text class="small" x="465" y="225" text-anchor="middle">Authentication · delegation</text>
-  <text class="small" x="465" y="247" text-anchor="middle">approval · policy · expiry</text>
+  <rect class="control" x="310" y="140" width="250" height="112" rx="12"/>
+  <text class="label" x="435" y="175" text-anchor="middle">Identity &amp; Authority</text>
+  <text class="small" x="435" y="202" text-anchor="middle">Authentication · delegation</text>
+  <text class="small" x="435" y="224" text-anchor="middle">approval · policy · expiry</text>
 
-  <rect class="core" x="690" y="180" width="250" height="122" rx="14"/>
-  <text class="label light" x="815" y="222" text-anchor="middle">Agent Orchestrator</text>
-  <text class="small light" x="815" y="250" text-anchor="middle">Plans · routes · coordinates</text>
-  <text class="small light" x="815" y="274" text-anchor="middle">selects tools and delegates</text>
+  <rect class="core" x="620" y="150" width="230" height="112" rx="14"/>
+  <text class="label light" x="735" y="188" text-anchor="middle">Agent Orchestrator</text>
+  <text class="small light" x="735" y="214" text-anchor="middle">Plans · routes · coordinates</text>
+  <text class="small light" x="735" y="236" text-anchor="middle">selects tools and delegates</text>
 
-  <rect class="node" x="990" y="170" width="145" height="100" rx="12"/>
-  <text class="label" x="1062" y="210" text-anchor="middle">Model</text>
-  <text class="small" x="1062" y="238" text-anchor="middle">Inference</text>
+  <rect class="node" x="900" y="140" width="120" height="90" rx="12"/>
+  <text class="label" x="960" y="175" text-anchor="middle">Approved</text>
+  <text class="small" x="960" y="200" text-anchor="middle">internal model</text>
 
-  <rect class="node" x="70" y="390" width="180" height="100" rx="12"/>
-  <text class="label" x="160" y="426" text-anchor="middle">Instructions</text>
-  <text class="small" x="160" y="454" text-anchor="middle">System · task · retrieved</text>
+  <rect class="public" x="1040" y="140" width="110" height="90" rx="12"/>
+  <text class="label" x="1095" y="175" text-anchor="middle">Public</text>
+  <text class="small" x="1095" y="200" text-anchor="middle">model edge</text>
 
-  <rect class="node" x="300" y="390" width="180" height="100" rx="12"/>
-  <text class="label" x="390" y="426" text-anchor="middle">Memory</text>
-  <text class="small" x="390" y="454" text-anchor="middle">Session · persistent · RAG</text>
+  <rect class="node" x="60" y="360" width="165" height="90" rx="12"/>
+  <text class="label" x="142" y="392" text-anchor="middle">Instructions</text>
+  <text class="small" x="142" y="418" text-anchor="middle">System · task · retrieved</text>
 
-  <rect class="node" x="530" y="390" width="180" height="100" rx="12"/>
-  <text class="label" x="620" y="426" text-anchor="middle">Tools &amp; APIs</text>
-  <text class="small" x="620" y="454" text-anchor="middle">Actions · credentials</text>
+  <rect class="node" x="250" y="360" width="165" height="90" rx="12"/>
+  <text class="label" x="332" y="392" text-anchor="middle">Memory</text>
+  <text class="small" x="332" y="418" text-anchor="middle">Session · persistent · RAG</text>
 
-  <rect class="node" x="760" y="390" width="180" height="100" rx="12"/>
-  <text class="label" x="850" y="426" text-anchor="middle">Delegates</text>
-  <text class="small" x="850" y="454" text-anchor="middle">Workers · child agents</text>
+  <rect class="node" x="440" y="360" width="165" height="90" rx="12"/>
+  <text class="label" x="522" y="392" text-anchor="middle">Tools &amp; APIs</text>
+  <text class="small" x="522" y="418" text-anchor="middle">Actions · credentials</text>
 
-  <rect class="node" x="990" y="390" width="145" height="100" rx="12"/>
-  <text class="label" x="1062" y="426" text-anchor="middle">Queues</text>
-  <text class="small" x="1062" y="454" text-anchor="middle">Deferred work</text>
+  <rect class="node" x="630" y="360" width="165" height="90" rx="12"/>
+  <text class="label" x="712" y="392" text-anchor="middle">Delegates</text>
+  <text class="small" x="712" y="418" text-anchor="middle">Workers · child agents</text>
 
-  <rect class="external" x="520" y="540" width="200" height="74" rx="12"/>
-  <text class="label" x="620" y="572" text-anchor="middle">Protected Data</text>
-  <text class="small" x="620" y="596" text-anchor="middle">Records · secrets · output</text>
+  <rect class="node" x="820" y="360" width="145" height="90" rx="12"/>
+  <text class="label" x="892" y="392" text-anchor="middle">Queues</text>
+  <text class="small" x="892" y="418" text-anchor="middle">Residual / bypass</text>
 
-  <path class="line" d="M250 226H330"/>
-  <path class="line" d="M600 221H690"/>
-  <path class="line" d="M940 226H990"/>
-  <path class="line" d="M815 302V350H160V390"/>
-  <path class="line" d="M815 350H390V390"/>
-  <path class="line" d="M815 350H620V390"/>
-  <path class="line" d="M815 350H850V390"/>
-  <path class="line" d="M815 350H1062V390"/>
-  <path class="line" d="M620 490V540"/>
+  <rect class="node" x="990" y="360" width="150" height="90" rx="12"/>
+  <text class="label" x="1065" y="392" text-anchor="middle">Network</text>
+  <text class="small" x="1065" y="418" text-anchor="middle">Internal cloud reach</text>
 
-  <rect class="control" x="130" y="655" width="940" height="72" rx="14"/>
-  <text class="label" x="600" y="685" text-anchor="middle">Independent Evidence &amp; Control Plane</text>
-  <text class="small" x="600" y="710" text-anchor="middle">Policy decisions · telemetry · action receipts · anomaly detection · revoke · isolate · recover</text>
-  <path class="dashed" d="M465 655V300"/>
-  <path class="dashed" d="M815 655V302"/>
-  <path class="dashed" d="M1060 655V490"/>
+  <rect class="external" x="440" y="500" width="200" height="74" rx="12"/>
+  <text class="label" x="540" y="532" text-anchor="middle">Protected Data</text>
+  <text class="small" x="540" y="556" text-anchor="middle">Records · secrets · output</text>
+
+  <path class="line" d="M250 206H310"/>
+  <path class="line" d="M560 196H620"/>
+  <path class="line" d="M850 196H900"/>
+  <path class="risk" d="M1020 185H1040"/>
+  <path class="line" d="M735 262V320H142V360"/>
+  <path class="line" d="M735 320H332V360"/>
+  <path class="line" d="M735 320H522V360"/>
+  <path class="line" d="M735 320H712V360"/>
+  <path class="line" d="M735 320H892V360"/>
+  <path class="line" d="M735 320H1065V360"/>
+  <path class="line" d="M522 450V500"/>
+
+  <rect class="control" x="60" y="655" width="520" height="72" rx="14"/>
+  <text class="label" x="320" y="685" text-anchor="middle">Independent evidence store</text>
+  <text class="small" x="320" y="710" text-anchor="middle">Telemetry · receipts · policy evidence · coverage gaps</text>
+
+  <rect class="core" x="620" y="655" width="520" height="72" rx="14"/>
+  <text class="label light" x="880" y="685" text-anchor="middle">External containment / control plane</text>
+  <text class="small light" x="880" y="710" text-anchor="middle">Owns revoke · isolate · terminate · recover</text>
+
+  <path class="dashed" d="M435 655V252"/>
+  <path class="dashed" d="M735 655V262"/>
+  <path class="dashed" d="M880 655V450"/>
+  <path class="risk" d="M1095 230V360"/>
+
+  <text class="label" x="60" y="770">Cross-cutting risk dimensions</text>
+  <rect class="dim" x="60" y="790" width="255" height="48" rx="8"/>
+  <text class="small" x="187" y="820" text-anchor="middle">Behavior and usage drift</text>
+  <rect class="dim" x="335" y="790" width="255" height="48" rx="8"/>
+  <text class="small" x="462" y="820" text-anchor="middle">Learning and memory drift</text>
+  <rect class="dim" x="610" y="790" width="255" height="48" rx="8"/>
+  <text class="small" x="737" y="820" text-anchor="middle">External model exposure</text>
+  <rect class="dim" x="885" y="790" width="255" height="48" rx="8"/>
+  <text class="small" x="1012" y="820" text-anchor="middle">Network and resource impact</text>
+
+  <text class="small" x="60" y="875">External containment is outside the agent runtime. Queues and child agents are residual or bypass paths if authority is not re-checked at execution.</text>
+  <text class="small" x="60" y="900">Lab 008 · Cedar Quill Markets fictional architecture · execution: not_performed</text>
 </svg>

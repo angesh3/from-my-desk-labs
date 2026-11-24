@@ -397,6 +397,8 @@ REQUIRED_LAB008_DATA_FILES = ("presets.yaml",)
 REQUIRED_LAB008_STATIC_FILES = (
     "lab.js",
     "agent-threat-model.svg",
+    "agent-system-architecture.svg",
+    "agent-data-flow.svg",
 )
 
 

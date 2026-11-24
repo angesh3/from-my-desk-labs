@@ -2,29 +2,36 @@
 
 ## Core thesis
 
-The model is only one component. Agent risk emerges across identity, authority, instructions, memory, tools, delegation, execution, evidence, and control.
+The model is only one component. Threat modeling must follow the full agentic system and lifecycle—even when identity, authority, and original instructions were valid.
 
-## Surfaces
+## Storyline
 
-Teach the seven surfaces with readable labels while preserving machine values in APIs and forms.
+Labs 001–007 each answered one control question. Lab 008 connects them:
 
-## Risk and coverage
+1. Who is acting?
+2. What authority was handed over, and how should it narrow?
+3. May the agent act under current policy and posture?
+4. Even if authorized, should it continue alone?
+5. Can we reconstruct and verify what it did?
+6. What happens when it refuses, ignores a stop, or evades?
+7. What evidence shows containment worked?
+8. What could go wrong across the whole system before, during, and after execution?
 
-- Use the categorical matrix in `policies/threat-model-policy.yaml`.
-- `COMPLETE` coverage does not mean zero risk.
-- Missing independent evidence yields `UNVERIFIED` and residual `UNKNOWN`.
-- Agent self-report is never independent verification by itself.
+## Surfaces and dimensions
 
-## Preset teaching points
+Keep the seven primary surfaces stable. Use cross-cutting dimensions to annotate drift, public-model exposure, and infrastructure impact.
 
-1. Retrieved content is data, not trusted authority.
-2. Authority should narrow at every delegation boundary.
-3. Approval must bind to request, action, target, scope, and time.
-4. Persistent memory creates a cross-session trust boundary.
-5. Tool authorization does not authorize every data use.
-6. Policies must bind to intent and action, not only a tool endpoint.
-7. Authority must be re-evaluated at execution time.
-8. Control effectiveness claims need evidence across modeled boundaries.
+## Distinctions to teach
+
+- Behavioral drift ≠ model-weight drift
+- Memory/context updates ≠ retraining
+- Approved external models ≠ uncontrolled public-model exposure
+- Availability/cost impact ≠ security compromise
+- Attempted control ≠ independently verified control
+
+## Evidence
+
+Agent self-report may be preserved but never counts as independent verification. Incomplete telemetry yields `UNVERIFIED` / `UNKNOWN`.
 
 ## Safety
 

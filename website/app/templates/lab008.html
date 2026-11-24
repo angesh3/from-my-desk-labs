@@ -8,7 +8,7 @@
     <span class="lab008-title-line">How Do We Threat-Model</span>
     <span class="lab008-title-line">an AI Agent?</span>
   </h1>
-  <p class="lede lab008-hero-sub">The model is only one component. Agent risk emerges across identity, authority, instructions, memory, tools, delegation, execution, evidence, and control.</p>
+  <p class="lede lab008-hero-sub">The model is only one component. Agent risk emerges across identity, authority, instructions, memory, tools, delegation, execution, evidence, and control — and it keeps changing through drift, public-model exposure, infrastructure reach, and the evidence we can actually verify.</p>
   <p class="disclaimer" role="note">{{ lab.disclaimer or disclaimer }}</p>
   <p class="hint" role="note">Educational prototype with fictional Cedar Quill Markets data. Not a production threat-modeling system, scanner, or compliance tool. Real execution is always <code>not_performed</code>.</p>
   <p class="actions">
@@ -41,22 +41,152 @@
   </div>
 </section>
 
+<section class="wrap lab008-storyline" aria-labelledby="storyline-heading">
+  <h2 id="storyline-heading">From knowing the agent to modeling the system</h2>
+  <p>Each earlier Lab isolated one control question. A system-level threat model asks all of them together.</p>
+  <ol class="lab008-storyline-list" aria-label="Lab storyline from Lab 001 to Lab 008">
+    <li class="lab008-storyline-item lab008-surface-card">
+      <h3 class="lab008-storyline-title"><a href="/labs/know-your-agent">Lab 001 — Know Your Agent</a></h3>
+      <p class="lab008-storyline-question">Who is acting?</p>
+    </li>
+    <li class="lab008-storyline-item lab008-surface-card">
+      <h3 class="lab008-storyline-title"><a href="/labs/delegated-authority">Lab 002 — Delegated Authority</a></h3>
+      <p class="lab008-storyline-question">What authority was handed to the agent, and how should it narrow?</p>
+    </li>
+    <li class="lab008-storyline-item lab008-surface-card">
+      <h3 class="lab008-storyline-title"><a href="/labs/agent-access-control">Lab 003 — Agent Access Control</a></h3>
+      <p class="lab008-storyline-question">May the agent perform the requested action?</p>
+    </li>
+    <li class="lab008-storyline-item lab008-surface-card">
+      <h3 class="lab008-storyline-title"><a href="/labs/agent-escalation-boundary">Lab 004 — The Agent Escalation Boundary</a></h3>
+      <p class="lab008-storyline-question">Even if authorized, should the agent continue alone?</p>
+    </li>
+    <li class="lab008-storyline-item lab008-surface-card">
+      <h3 class="lab008-storyline-title"><a href="/labs/verifiable-action-receipts">Lab 005 — Verifiable Action Receipts</a></h3>
+      <p class="lab008-storyline-question">Can we reconstruct and verify what the agent actually did?</p>
+    </li>
+    <li class="lab008-storyline-item lab008-surface-card">
+      <h3 class="lab008-storyline-title"><a href="/labs/agent-containment-boundary">Lab 006 — The Agent Containment Boundary</a></h3>
+      <p class="lab008-storyline-question">What happens when the agent ignores a valid stop or attempts to evade control?</p>
+    </li>
+    <li class="lab008-storyline-item lab008-surface-card">
+      <h3 class="lab008-storyline-title"><a href="/labs/containment-assurance">Lab 007 — Containment Assurance</a></h3>
+      <p class="lab008-storyline-question">What independent evidence shows containment actually worked?</p>
+    </li>
+    <li class="lab008-storyline-item lab008-surface-card lab008-storyline-current" aria-current="page">
+      <h3 class="lab008-storyline-title"><span>Lab 008 — Agent Threat Model</span></h3>
+      <p class="lab008-storyline-question">What could go wrong across the complete agent system and lifecycle?</p>
+    </li>
+  </ol>
+  <p class="lab008-storyline-close">Labs 001–007 addressed individual control questions. Lab 008 connects them into a system-level threat model.</p>
+</section>
+
+<section class="wrap lab008-lifecycle" aria-labelledby="lifecycle-heading">
+  <h2 id="lifecycle-heading">Threats change across the agent lifecycle</h2>
+  <p>The same agent presents different assets, trust boundaries, and failure modes at each stage. Controls and evidence have to follow it.</p>
+  <ol class="lab008-lifecycle-list" aria-label="Eight agent lifecycle stages">
+    <li class="lab008-lifecycle-stage lab008-surface-card">
+      <h3>1. Registration and identity</h3>
+      <dl class="lab008-lifecycle-detail">
+        <dt>Assets</dt><dd>Agent identity record, credentials, owner and principal binding.</dd>
+        <dt>Trust boundaries</dt><dd>Enrollment process to identity provider; agent to session.</dd>
+        <dt>Failure modes</dt><dd>Impersonation, unmanaged or shadow agents, stale or shared credentials.</dd>
+        <dt>Controls</dt><dd>Managed registration, credential binding, owner attestation.</dd>
+        <dt>Evidence</dt><dd>Registry entries, issuance logs, session-binding records.</dd>
+      </dl>
+    </li>
+    <li class="lab008-lifecycle-stage lab008-surface-card">
+      <h3>2. Delegation and authorization</h3>
+      <dl class="lab008-lifecycle-detail">
+        <dt>Assets</dt><dd>Grants, scopes, approvals, validity windows.</dd>
+        <dt>Trust boundaries</dt><dd>Principal to agent; agent to sub-agent or worker.</dd>
+        <dt>Failure modes</dt><dd>Excessive scope, replayed approvals, authority that outlives its purpose.</dd>
+        <dt>Controls</dt><dd>Narrowing at each handoff, purpose binding, live re-evaluation.</dd>
+        <dt>Evidence</dt><dd>Grant lineage, policy decisions, approval-to-target bindings.</dd>
+      </dl>
+    </li>
+    <li class="lab008-lifecycle-stage lab008-surface-card">
+      <h3>3. Instruction and context assembly</h3>
+      <dl class="lab008-lifecycle-detail">
+        <dt>Assets</dt><dd>Approved task, system instructions, assembled context.</dd>
+        <dt>Trust boundaries</dt><dd>Trusted instructions versus retrieved, user, or third-party content.</dd>
+        <dt>Failure modes</dt><dd>Prompt injection, instruction replacement, context poisoning.</dd>
+        <dt>Controls</dt><dd>Instruction and data separation, provenance labels, context filtering.</dd>
+        <dt>Evidence</dt><dd>Context assembly traces, retrieval source records, blocked-override logs.</dd>
+      </dl>
+    </li>
+    <li class="lab008-lifecycle-stage lab008-surface-card">
+      <h3>4. Planning and tool selection</h3>
+      <dl class="lab008-lifecycle-detail">
+        <dt>Assets</dt><dd>Plan, objective, tool catalog, data selection.</dd>
+        <dt>Trust boundaries</dt><dd>Agent reasoning to tool and data authorization.</dd>
+        <dt>Failure modes</dt><dd>Objective drift, alternate tool after denial, data beyond stated purpose.</dd>
+        <dt>Controls</dt><dd>Intent-level binding across tools, purpose and sensitivity limits, escalation triggers.</dd>
+        <dt>Evidence</dt><dd>Plan and tool-call records, denial-and-retry correlation.</dd>
+      </dl>
+    </li>
+    <li class="lab008-lifecycle-stage lab008-surface-card">
+      <h3>5. Execution and coordination</h3>
+      <dl class="lab008-lifecycle-detail">
+        <dt>Assets</dt><dd>Runtimes, queues, delegates, network paths, resource budgets.</dd>
+        <dt>Trust boundaries</dt><dd>Agent runtime to internal services, public models, and the network.</dd>
+        <dt>Failure modes</dt><dd>Queued work after expiry, fan-out, cost amplification, unapproved egress.</dd>
+        <dt>Controls</dt><dd>Egress allow-lists, per-agent budgets, queue and credential scoping.</dd>
+        <dt>Evidence</dt><dd>Network, queue, and billing telemetry from outside the agent.</dd>
+      </dl>
+    </li>
+    <li class="lab008-lifecycle-stage lab008-surface-card">
+      <h3>6. Learning, memory and adaptation</h3>
+      <dl class="lab008-lifecycle-detail">
+        <dt>Assets</dt><dd>Persistent memory, learned preferences, adapted behavior.</dd>
+        <dt>Trust boundaries</dt><dd>Session to persistent store; earlier sessions to later privileged tasks.</dd>
+        <dt>Failure modes</dt><dd>Poisoned memory, unreviewed learning, stale context steering later actions.</dd>
+        <dt>Controls</dt><dd>Memory provenance, promotion review, quarantine and expiry.</dd>
+        <dt>Evidence</dt><dd>Memory write and read logs, behavior baselines, change history.</dd>
+      </dl>
+    </li>
+    <li class="lab008-lifecycle-stage lab008-surface-card">
+      <h3>7. Monitoring and evidence</h3>
+      <dl class="lab008-lifecycle-detail">
+        <dt>Assets</dt><dd>Telemetry, receipts, audit records, detection rules.</dd>
+        <dt>Trust boundaries</dt><dd>Agent self-report versus independent observation.</dd>
+        <dt>Failure modes</dt><dd>Self-report treated as proof, gaps between systems, undetected drift.</dd>
+        <dt>Controls</dt><dd>Independent telemetry, cross-system correlation, drift detection.</dd>
+        <dt>Evidence</dt><dd>Verifiable receipts, coverage reports, documented evidence gaps.</dd>
+      </dl>
+    </li>
+    <li class="lab008-lifecycle-stage lab008-surface-card">
+      <h3>8. Revocation, containment and recovery</h3>
+      <dl class="lab008-lifecycle-detail">
+        <dt>Assets</dt><dd>Revocation channel, control plane, recovery procedures.</dd>
+        <dt>Trust boundaries</dt><dd>Enforcement outside the agent; recovery back into normal operation.</dd>
+        <dt>Failure modes</dt><dd>Stop recorded but not enforced, surviving credentials or delegates, unsafe restoration.</dd>
+        <dt>Controls</dt><dd>External containment, credential revocation, staged recovery.</dd>
+        <dt>Evidence</dt><dd>Independent confirmation that each path is closed and state is clean.</dd>
+      </dl>
+    </li>
+  </ol>
+</section>
 
 <section class="wrap" aria-labelledby="architecture-heading">
   <h2 id="architecture-heading">Example agent-system architecture</h2>
-  <p>A useful threat model starts with the whole operating system around the model: the principal, identity and authority plane, runtime, instructions, memory, tools, delegates, queues, protected data, and independent controls.</p>
-  <figure class="lab008-diagram">
-    <img src="/static/labs/008/agent-system-architecture.svg" width="1200" height="760" alt="High-level agent-system architecture showing a principal governed by identity and authority controls, an agent orchestrator connected to a model, instructions, memory, tools, delegates, queues and protected data, with an independent evidence and control plane.">
-    <figcaption>The model is one component inside a larger agentic system. Each connection creates an asset, trust boundary, or potential threat path.</figcaption>
+  <p>A useful threat model starts with the whole operating system around the model: the principal, identity and authority plane, runtime, instructions, memory, tools, delegates, queues, network reach, public-model boundaries, protected data, independent evidence, and external containment.</p>
+  <figure class="lab008-diagram lab008-diagram-wide">
+    <div class="lab008-diagram-scroll" tabindex="0" role="region" aria-label="Agent system architecture diagram. Scroll horizontally on smaller screens to keep labels readable.">
+      <img src="/static/labs/008/agent-system-architecture.svg" width="1200" height="920" alt="High-level agent-system architecture showing a principal governed by identity and authority controls, an agent orchestrator connected to approved and public models, instructions, memory, tools, delegates, queues, network resources and protected data, with independent evidence and an external containment control plane, plus four cross-cutting risk dimensions.">
+    </div>
+    <figcaption>The model is one component inside a larger agentic system. Each connection creates an asset, trust boundary, or potential threat path. Cross-cutting dimensions span those surfaces over time.</figcaption>
   </figure>
 </section>
 
 <section class="wrap" aria-labelledby="data-flow-heading">
   <h2 id="data-flow-heading">Data-flow diagram and trust boundaries</h2>
-  <p>The numbered flows make authority, context, tool calls, protected data, delegated work, results, and independent evidence visible across system boundaries.</p>
-  <figure class="lab008-diagram">
-    <img src="/static/labs/008/agent-data-flow.svg" width="1200" height="820" alt="Numbered agent data-flow diagram showing requests crossing from a principal through identity and authority controls into an agent runtime, model, retrieval and memory, tool gateway, delegated worker and protected systems, with telemetry sent to an independent evidence and control plane.">
-    <figcaption>Follow both the operational flow and the evidence flow. A threat model is incomplete when either path disappears at a boundary.</figcaption>
+  <p>The numbered flows make authority, context, tool calls, protected data, delegated work, results, public-model egress, residual queue paths, and independent evidence visible across system boundaries.</p>
+  <figure class="lab008-diagram lab008-diagram-wide">
+    <div class="lab008-diagram-scroll" tabindex="0" role="region" aria-label="Agent data-flow diagram. Scroll horizontally on smaller screens to keep labels readable.">
+      <img src="/static/labs/008/agent-data-flow.svg" width="1200" height="940" alt="Numbered agent data-flow diagram showing requests crossing from a principal through identity and authority into an agent runtime, approved model, retrieval and memory, tool gateway, delegated worker, queues, network resources and protected systems, with public-model calls, residual bypass paths, and telemetry into an independent evidence and external containment plane.">
+    </div>
+    <figcaption>Follow the operational flow, the evidence flow, and the residual or public egress paths. A threat model is incomplete when any of those disappears at a boundary.</figcaption>
   </figure>
 </section>
 
@@ -67,39 +197,66 @@
     <article class="lab008-surface-card">
       <h3>Identity</h3>
       <p>Agent and principal identity, session binding, and impersonation paths.</p>
-      <p class="lab008-mono">IDENTITY</p>
     </article>
     <article class="lab008-surface-card">
       <h3>Authority</h3>
       <p>Delegated grants, approvals, scope, and validity windows.</p>
-      <p class="lab008-mono">AUTHORITY</p>
     </article>
     <article class="lab008-surface-card">
       <h3>Instructions and intent</h3>
       <p>Approved task definitions versus untrusted instruction channels.</p>
-      <p class="lab008-mono">INSTRUCTIONS</p>
     </article>
     <article class="lab008-surface-card">
       <h3>Memory and context</h3>
       <p>Retrieved content and persistent memory across sessions.</p>
-      <p class="lab008-mono">MEMORY_CONTEXT</p>
     </article>
     <article class="lab008-surface-card">
       <h3>Tools and execution</h3>
       <p>Tool endpoints, data purpose, queues, and runtime paths.</p>
-      <p class="lab008-mono">TOOLS_EXECUTION</p>
     </article>
     <article class="lab008-surface-card">
       <h3>Delegation and coordination</h3>
       <p>Workers, child agents, and handoff boundaries.</p>
-      <p class="lab008-mono">DELEGATION</p>
     </article>
     <article class="lab008-surface-card">
       <h3>Evidence and control</h3>
       <p>Independent telemetry, recovery, and residual-risk confidence.</p>
-      <p class="lab008-mono">EVIDENCE_CONTROL</p>
     </article>
   </div>
+</section>
+
+<section class="wrap lab008-dimensions" aria-labelledby="dimensions-heading">
+  <h2 id="dimensions-heading">Four cross-cutting risk dimensions</h2>
+  <p>Surfaces say where a threat sits. Dimensions describe risks that cut across several surfaces and change over time. A case can carry any number of them.</p>
+  <div class="lab008-surface-grid lab008-dimension-grid">
+    <article class="lab008-surface-card lab008-dimension-card">
+      <h3>Behavior and usage drift</h3>
+      <p>Objective drift, scope creep, retries, and use of valid authority for unapproved purposes. This is not the same as model-weight drift.</p>
+    </article>
+    <article class="lab008-surface-card lab008-dimension-card">
+      <h3>Learning and memory drift</h3>
+      <p>Poisoned memory, unsafe adaptation, stale context, and unreviewed learning. Memory or context updates are not model retraining.</p>
+    </article>
+    <article class="lab008-surface-card lab008-dimension-card">
+      <h3>External model exposure</h3>
+      <p>Public-model calls, unapproved endpoints, retention, training reuse, and model or provider supply-chain exposure. Approved governed endpoints differ from uncontrolled public-model use.</p>
+    </article>
+    <article class="lab008-surface-card lab008-dimension-card">
+      <h3>Network and resource impact</h3>
+      <p>Lateral movement, egress, cost amplification, queues, and credential reach. Availability or cost impact is related to, but distinct from, security compromise.</p>
+    </article>
+  </div>
+</section>
+
+<section class="wrap" aria-labelledby="distinctions-heading">
+  <h2 id="distinctions-heading">Keep these distinctions visible</h2>
+  <ul class="lab008-bullets">
+    <li><strong>Behavioral drift is not model-weight drift.</strong> An agent can keep the same model weights and still drift by changing how it uses approved authority, tools, or objectives.</li>
+    <li><strong>Memory or context updates are not model retraining.</strong> Writing to persistent memory, retrieval stores, or preference history can change later privileged behavior without any weight update.</li>
+    <li><strong>Approved external-model use is not uncontrolled public-model exposure.</strong> A contracted, governed endpoint with known retention differs from sending sensitive context to an unapproved public model or provider.</li>
+    <li><strong>Model and provider supply-chain exposure matters.</strong> Where prompts and data go—training reuse, retention, subprocessors, and endpoint provenance—is part of the threat model, not an afterthought.</li>
+    <li><strong>Attempted control is not independently verified control.</strong> A stop, revoke, or filter claim needs evidence outside the agent’s self-report.</li>
+  </ul>
 </section>
 
 <section class="wrap" aria-labelledby="presets-heading">
@@ -154,11 +311,36 @@
       <span>Runtime logs exist; adjacent evidence is incomplete.</span>
       <em>Evidence · Initial HIGH · Coverage UNVERIFIED</em>
     </button>
+    <button type="button" class="preset-card" data-preset="usage_drift_after_approval" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Usage drift after approval</strong>
+      <span>Valid authority remains, but repeated actions exceed the approved purpose.</span>
+      <em>Instructions · Initial HIGH · Coverage PARTIAL</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="public_model_sensitive_context_exposure" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Public-model sensitive context exposure</strong>
+      <span>Internal context is sent to an unapproved public-model endpoint.</span>
+      <em>Tools · Initial CRITICAL · Coverage PARTIAL</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="learning_changes_future_behavior" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Learning changes future behavior</strong>
+      <span>Earlier learning later changes how a privileged task is interpreted.</span>
+      <em>Memory · Initial HIGH · Coverage PARTIAL</em>
+    </button>
+    <button type="button" class="preset-card" data-preset="agent_resource_and_network_expansion" aria-pressed="false">
+      <span class="preset-selected-label" hidden>Selected</span>
+      <strong>Agent resource and network expansion</strong>
+      <span>Valid credentials fan out across services, queues, and budgets.</span>
+      <em>Tools · Initial CRITICAL · Coverage PARTIAL</em>
+    </button>
   </div>
 </section>
 
-<section class="wrap" aria-labelledby="builder-heading">
+<section class="wrap lab008-transition" aria-labelledby="builder-heading">
   <h2 id="builder-heading">Threat-case builder</h2>
+  <p class="lab008-transition-copy">Identity is not enough. Authority is not enough. A safe initial instruction is not enough. An agent can drift as it learns, reaches new tools, calls public models, delegates work, consumes resources or crosses network boundaries. Threat modeling must follow the full system and the full lifecycle.</p>
   <p>Inspect or adjust the fictional threat case. Machine values stay intact in the API; labels stay readable in the UI.</p>
   <form id="lab008-form" class="lab008-form" aria-label="Agent threat-case builder">
     <fieldset class="lab008-fieldset">
@@ -211,8 +393,31 @@
       </div>
     </fieldset>
 
+    <fieldset class="lab008-fieldset" aria-describedby="dimensions-hint">
+      <legend>4. Cross-cutting risk dimensions</legend>
+      <p id="dimensions-hint" class="hint">Select every dimension that applies. Machine values are shown beside each label.</p>
+      <div class="lab008-grid">
+        <label class="lab008-check" for="dim_behavior_usage_drift">
+          <input id="dim_behavior_usage_drift" name="dim_behavior_usage_drift" type="checkbox" value="BEHAVIOR_USAGE_DRIFT">
+          <span>Behavior and usage drift</span>
+        </label>
+        <label class="lab008-check" for="dim_learning_memory_drift">
+          <input id="dim_learning_memory_drift" name="dim_learning_memory_drift" type="checkbox" value="LEARNING_MEMORY_DRIFT">
+          <span>Learning and memory drift</span>
+        </label>
+        <label class="lab008-check" for="dim_external_model_exposure">
+          <input id="dim_external_model_exposure" name="dim_external_model_exposure" type="checkbox" value="EXTERNAL_MODEL_EXPOSURE">
+          <span>External model exposure</span>
+        </label>
+        <label class="lab008-check" for="dim_network_resource_impact">
+          <input id="dim_network_resource_impact" name="dim_network_resource_impact" type="checkbox" value="NETWORK_RESOURCE_IMPACT">
+          <span>Network and resource impact</span>
+        </label>
+      </div>
+    </fieldset>
+
     <fieldset class="lab008-fieldset">
-      <legend>4. Initial likelihood and impact</legend>
+      <legend>5. Initial likelihood and impact</legend>
       <div class="lab008-grid">
         <label for="initial_likelihood">Initial likelihood
           <select id="initial_likelihood" name="initial_likelihood" required>
@@ -251,23 +456,23 @@
     </fieldset>
 
     <fieldset class="lab008-fieldset">
-      <legend>5. Preventive and detective controls</legend>
-      <h3 class="lab008-inspector-heading">Preventive</h3>
-      <div id="preventive_controls_editor" class="lab008-control-editor" aria-label="Preventive controls"></div>
-      <h3 class="lab008-inspector-heading">Detective</h3>
-      <div id="detective_controls_editor" class="lab008-control-editor" aria-label="Detective controls"></div>
+      <legend>6. Preventive and detective controls</legend>
+      <h3 class="lab008-inspector-heading" id="preventive-controls-heading">Preventive</h3>
+      <div id="preventive_controls_editor" class="lab008-control-editor" role="group" aria-labelledby="preventive-controls-heading"></div>
+      <h3 class="lab008-inspector-heading" id="detective-controls-heading">Detective</h3>
+      <div id="detective_controls_editor" class="lab008-control-editor" role="group" aria-labelledby="detective-controls-heading"></div>
     </fieldset>
 
     <fieldset class="lab008-fieldset">
-      <legend>6. Containment and recovery controls</legend>
-      <h3 class="lab008-inspector-heading">Containment</h3>
-      <div id="containment_controls_editor" class="lab008-control-editor" aria-label="Containment controls"></div>
-      <h3 class="lab008-inspector-heading">Recovery</h3>
-      <div id="recovery_controls_editor" class="lab008-control-editor" aria-label="Recovery controls"></div>
+      <legend>7. Containment and recovery controls</legend>
+      <h3 class="lab008-inspector-heading" id="containment-controls-heading">Containment</h3>
+      <div id="containment_controls_editor" class="lab008-control-editor" role="group" aria-labelledby="containment-controls-heading"></div>
+      <h3 class="lab008-inspector-heading" id="recovery-controls-heading">Recovery</h3>
+      <div id="recovery_controls_editor" class="lab008-control-editor" role="group" aria-labelledby="recovery-controls-heading"></div>
     </fieldset>
 
     <fieldset class="lab008-fieldset">
-      <legend>7. Evidence and gaps</legend>
+      <legend>8. Evidence and gaps</legend>
       <div class="lab008-grid">
         <label class="lab008-span-2" for="evidence_sources">Evidence sources (one per line)<textarea id="evidence_sources" name="evidence_sources" rows="3"></textarea></label>
         <label class="lab008-span-2" for="evidence_summary">Evidence summary<textarea id="evidence_summary" name="evidence_summary" rows="2"></textarea></label>
@@ -283,6 +488,15 @@
       </div>
     </fieldset>
 
+    <fieldset class="lab008-fieldset">
+      <legend>9. Organizational blast radius</legend>
+      <div class="lab008-grid">
+        <label class="lab008-span-2" for="organizational_blast_radius">Organizational blast radius (one per line; leave empty to derive from selected dimensions)
+          <textarea id="organizational_blast_radius" name="organizational_blast_radius" rows="3" placeholder="Internal services, credentials, queues, and compute budgets"></textarea>
+        </label>
+      </div>
+    </fieldset>
+
     <p class="actions">
       <button type="submit" class="button">Evaluate threat case</button>
     </p>
@@ -291,10 +505,12 @@
 </section>
 
 <section class="wrap" aria-labelledby="diagram-heading">
-  <h2 id="diagram-heading">Threat-model flow</h2>
+  <h2 id="diagram-heading">Threat-case assessment flow</h2>
   <figure class="lab008-diagram">
-    <img src="/static/labs/008/agent-threat-model.svg" width="960" height="620" alt="Flow from protected asset through threat source, trust boundary, controls, evidence, and residual risk, with seven threat surfaces listed beside the path.">
-    <figcaption>Protected asset, threat source, trust boundary, controls, evidence, and residual risk—with seven surfaces beside the path.</figcaption>
+    <div class="lab008-diagram-scroll" tabindex="0" role="region" aria-label="Threat-case assessment flow diagram.">
+      <img src="/static/labs/008/agent-threat-model.svg" width="960" height="620" alt="Flow from protected asset through threat source, trust boundary, controls, evidence, and residual risk, with seven threat surfaces listed beside the path.">
+    </div>
+    <figcaption>Residual-risk summary flow: protected asset, threat source, trust boundary, controls, evidence, and residual risk—with seven surfaces beside the path.</figcaption>
   </figure>
 </section>
 
@@ -302,14 +518,23 @@
   <h2 id="teaching-heading">Teaching notes</h2>
   <ul class="lab008-bullets">
     <li>The model is only one part of the agentic system.</li>
-    <li>Threat modeling begins with assets and trust boundaries.</li>
+    <li>Threat modeling begins with assets and trust boundaries, and it must be repeated across the agent lifecycle.</li>
     <li>Tool permission does not equal authorization for every purpose or data set.</li>
     <li>Retrieved content and persistent memory are separate trust boundaries.</li>
     <li>Delegation can expand the threat surface.</li>
-    <li>Controls require independent evidence.</li>
+    <li><strong>Drift is not a policy violation at any single moment.</strong> Behavior and usage drift happens inside valid identity and authority, so it needs purpose binding and trend detection, not only allow or deny checks. That is distinct from model-weight drift.</li>
+    <li><strong>Learning and memory drift is not usage drift, and it is not retraining.</strong> Usage drift reuses authority for a new purpose; learning drift changes what the agent believes or prefers through memory or context updates, and can influence later tasks even when each action looks permitted.</li>
+    <li><strong>Approved external-model use is not public-model exposure.</strong> A contracted, governed endpoint with known retention differs from sending sensitive context to an uncontrolled public model, including retention, training reuse, and supply-chain exposure at the provider.</li>
+    <li><strong>Network and resource impact is a separate question from data exposure.</strong> Valid credentials can still cause lateral movement, queue growth, and cost amplification without a single sensitive record leaving.</li>
+    <li>Controls require independent evidence; an agent self-report is not verification.</li>
     <li>Complete control coverage does not mean zero risk.</li>
     <li>This prototype does not replace a production security review.</li>
   </ul>
+</section>
+
+<section class="wrap lab008-next-question" aria-labelledby="next-question-heading">
+  <h2 id="next-question-heading">The next control question</h2>
+  <p>A threat model tells us what could go wrong. The next challenge is determining how continuously we can detect when the system begins to move away from its approved identity, authority, purpose, behavior and operating boundary.</p>
 </section>
 
 <section class="wrap" aria-labelledby="continue-heading">
