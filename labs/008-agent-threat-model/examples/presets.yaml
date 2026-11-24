@@ -666,3 +666,408 @@ presets:
     observation_window: 15m
     agent_self_report_present: true
     independent_evidence_sufficient: false
+
+- id: usage_drift_after_approval
+  title: Usage drift after approval
+  short_description: Valid authority remains, but repeated actions exceed the approved business purpose.
+  primary_surface: INSTRUCTIONS
+  expected_initial_risk: HIGH
+  expected_control_coverage: PARTIAL
+  expected_residual_risk: HIGH
+  category: drift
+  request:
+    case_id: case-cq-008-009
+    title: Usage drift after approval
+    description: Original task and authority are valid, but repeated actions gradually exceed the approved business purpose.
+    agent_identity: cq-ops-assistant-09
+    principal_identity: cq-ops-owner-helen
+    environment: Cedar Quill Markets fictional operations lab
+    policy_version: lab008-threat-model-v1
+    asset_name: Approved vendor-status update purpose
+    asset_type: business_purpose
+    asset_sensitivity: high
+    security_objective: Keep authorized capability bound to the approved purpose over time
+    threat_source: Gradual objective and usage drift after a valid approval
+    failure_mode: Approved capability reused for unapproved adjacent purposes
+    primary_surface: INSTRUCTIONS
+    secondary_surfaces: []
+    cross_cutting_dimensions:
+    - BEHAVIOR_USAGE_DRIFT
+    trust_boundary: Purpose-bound authorization across repeated sessions
+    preconditions:
+    - Initial approval is valid for vendor-status updates
+    - Agent retains the same identity and grant
+    threat_path:
+    - Approved task begins correctly
+    - Repeated retries expand into inventory and pricing changes
+    - Purpose-bound authorization is incomplete
+    - Drift detection alerts but does not stop the path
+    potential_impact: Unauthorized business-purpose expansion under a still-valid grant
+    organizational_blast_radius:
+    - Approved capability reused beyond original business purpose
+    - Adjacent inventory and pricing systems reached without new approval
+    organizational_exposure:
+      sensitive_data: MEDIUM
+      public_model_transmission: NONE
+      credential_reach: MEDIUM
+      internal_network_reach: MEDIUM
+      compute_token_cost: MEDIUM
+      queued_work: LOW
+      persistent_memory: LOW
+      child_agents: NONE
+      recoverability: MEDIUM
+      independent_telemetry: MEDIUM
+      summary: Usage drifts beyond the approved purpose while identity and authority remain valid.
+    initial_likelihood: MEDIUM
+    initial_impact: HIGH
+    residual_likelihood: MEDIUM
+    residual_impact: HIGH
+    preventive_controls:
+    - control_id: purpose_bound_authorization
+      name: Purpose-bound authorization
+      category: preventive
+      expected_behavior: Each action remains bound to the approved business purpose
+      evidence_reference: evid-cq-008-purpose-bind
+      status: INEFFECTIVE
+    - control_id: scope_creep_stop
+      name: Scope-creep stop
+      category: preventive
+      expected_behavior: Adjacent objectives require a fresh approval
+      evidence_reference: evid-cq-008-scope-stop
+      status: MISSING
+    detective_controls:
+    - control_id: usage_drift_detection
+      name: Usage-drift detection
+      category: detective
+      expected_behavior: Detects material departure from the approved purpose
+      evidence_reference: evid-cq-008-usage-drift
+      status: PRESENT
+    containment_controls:
+    - control_id: freeze_on_purpose_drift
+      name: Freeze on purpose drift
+      category: containment
+      expected_behavior: Privileged tools freeze when drift is confirmed
+      evidence_reference: evid-cq-008-freeze-drift
+      status: MISSING
+    recovery_controls:
+    - control_id: reapprove_purpose
+      name: Reapprove purpose
+      category: recovery
+      expected_behavior: Operators can issue a new purpose-bound approval
+      evidence_reference: evid-cq-008-reapprove
+      status: PRESENT
+    evidence_sources:
+    - purpose_audit_log
+    - action_sequence_trace
+    evidence_summary: Drift detection fired; purpose-bound authorization did not fully stop expansion.
+    evidence_gaps:
+    - Incomplete purpose-to-action mapping for retries
+    observation_window: 2h
+    agent_self_report_present: false
+    independent_evidence_sufficient: true
+
+- id: public_model_sensitive_context_exposure
+  title: Public-model sensitive context exposure
+  short_description: Internal context is sent to an unapproved public-model endpoint.
+  primary_surface: TOOLS_EXECUTION
+  expected_initial_risk: CRITICAL
+  expected_control_coverage: PARTIAL
+  expected_residual_risk: HIGH
+  category: external
+  request:
+    case_id: case-cq-008-010
+    title: Public-model sensitive context exposure
+    description: An agent sends internal context or sensitive business data to an unapproved public-model endpoint.
+    agent_identity: cq-knowledge-agent-10
+    principal_identity: cq-knowledge-lead-omar
+    environment: Cedar Quill Markets fictional knowledge lab
+    policy_version: lab008-threat-model-v1
+    asset_name: Internal supplier negotiation notes
+    asset_type: sensitive_business_data
+    asset_sensitivity: critical
+    security_objective: Keep sensitive context inside approved model and retention boundaries
+    threat_source: Unapproved public-model endpoint used for summarization
+    failure_mode: Sensitive context leaves organizational control through public inference
+    primary_surface: TOOLS_EXECUTION
+    secondary_surfaces:
+    - MEMORY_CONTEXT
+    - EVIDENCE_CONTROL
+    cross_cutting_dimensions:
+    - EXTERNAL_MODEL_EXPOSURE
+    trust_boundary: Internal-to-public-model boundary
+    preconditions:
+    - Agent may call approved internal models
+    - Public endpoint is reachable through an alternate tool integration
+    threat_path:
+    - Sensitive notes loaded from memory
+    - Alternate summarization tool selected
+    - Data sent to unapproved public model
+    - Retention and deletion evidence incomplete
+    potential_impact: Loss of control over sensitive data retention, training, and deletion
+    organizational_blast_radius:
+    - Sensitive supplier notes transmitted outside Cedar Quill Markets
+    - External retention and training risk
+    - Incomplete evidence of deletion
+    organizational_exposure:
+      sensitive_data: CRITICAL
+      public_model_transmission: CRITICAL
+      credential_reach: LOW
+      internal_network_reach: LOW
+      compute_token_cost: MEDIUM
+      queued_work: NONE
+      persistent_memory: HIGH
+      child_agents: NONE
+      recoverability: HIGH
+      independent_telemetry: MEDIUM
+      summary: Sensitive context crossed the public-model boundary with incomplete deletion evidence.
+    initial_likelihood: HIGH
+    initial_impact: CRITICAL
+    residual_likelihood: HIGH
+    residual_impact: MEDIUM
+    preventive_controls:
+    - control_id: approved_model_allowlist
+      name: Approved-model allowlist
+      category: preventive
+      expected_behavior: Only approved internal or contracted models may receive context
+      evidence_reference: evid-cq-008-model-allow
+      status: INEFFECTIVE
+    - control_id: sensitive_context_egress_filter
+      name: Sensitive-context egress filter
+      category: preventive
+      expected_behavior: Classified sensitive fields are blocked from public-model calls
+      evidence_reference: evid-cq-008-egress-filter
+      status: MISSING
+    detective_controls:
+    - control_id: public_model_call_detection
+      name: Public-model call detection
+      category: detective
+      expected_behavior: Detects calls to unapproved model endpoints
+      evidence_reference: evid-cq-008-public-detect
+      status: PRESENT
+    containment_controls:
+    - control_id: revoke_external_model_credentials
+      name: Revoke external-model credentials
+      category: containment
+      expected_behavior: Unapproved endpoint credentials are revoked on detection
+      evidence_reference: evid-cq-008-revoke-ext
+      status: MISSING
+    recovery_controls:
+    - control_id: request_external_deletion
+      name: Request external deletion
+      category: recovery
+      expected_behavior: Operators can request deletion and retain proof of request
+      evidence_reference: evid-cq-008-ext-delete
+      status: PRESENT
+    evidence_sources:
+    - tool_gateway_log
+    - model_endpoint_audit
+    evidence_summary: Public-model call detected; egress filtering and deletion assurance remain incomplete.
+    evidence_gaps:
+    - No independent deletion confirmation from the external provider
+    observation_window: 30m
+    agent_self_report_present: false
+    independent_evidence_sufficient: true
+
+- id: learning_changes_future_behavior
+  title: Learning changes future behavior
+  short_description: Earlier learning or memory later changes how a privileged task is interpreted.
+  primary_surface: MEMORY_CONTEXT
+  expected_initial_risk: HIGH
+  expected_control_coverage: PARTIAL
+  expected_residual_risk: HIGH
+  category: learning
+  request:
+    case_id: case-cq-008-011
+    title: Learning changes future behavior
+    description: Persistent learning or memory from an earlier task changes how a later privileged task is interpreted.
+    agent_identity: cq-planner-agent-11
+    principal_identity: cq-planner-lead-nina
+    environment: Cedar Quill Markets fictional planning lab
+    policy_version: lab008-threat-model-v1
+    asset_name: Cross-session planning memory
+    asset_type: learned_preference
+    asset_sensitivity: high
+    security_objective: Prevent unreviewed learning from becoming future privileged instruction
+    threat_source: Unreviewed adaptation retained as durable guidance
+    failure_mode: Earlier low-privilege learning elevates into later privileged interpretation
+    primary_surface: MEMORY_CONTEXT
+    secondary_surfaces:
+    - INSTRUCTIONS
+    cross_cutting_dimensions:
+    - LEARNING_MEMORY_DRIFT
+    trust_boundary: Learning and memory promotion into privileged task interpretation
+    preconditions:
+    - Earlier session wrote durable preferences
+    - Later privileged refund task loads those preferences
+    threat_path:
+    - Low-privilege preference stored
+    - Preference reused without review
+    - Privileged task interpretation changes
+    - Detection notes the change after influence begins
+    potential_impact: Privileged decisions steered by unreviewed accumulated learning
+    organizational_blast_radius:
+    - Later privileged refund decisions influenced by earlier unreviewed learning
+    - Persistent memory lifetime exceeds approved purpose
+    organizational_exposure:
+      sensitive_data: MEDIUM
+      public_model_transmission: NONE
+      credential_reach: LOW
+      internal_network_reach: LOW
+      compute_token_cost: LOW
+      queued_work: NONE
+      persistent_memory: CRITICAL
+      child_agents: NONE
+      recoverability: MEDIUM
+      independent_telemetry: MEDIUM
+      summary: Unreviewed learning became durable guidance for a later privileged task.
+    initial_likelihood: MEDIUM
+    initial_impact: HIGH
+    residual_likelihood: MEDIUM
+    residual_impact: HIGH
+    preventive_controls:
+    - control_id: learning_promotion_review
+      name: Learning promotion review
+      category: preventive
+      expected_behavior: Learning cannot become instruction without human review
+      evidence_reference: evid-cq-008-learn-review
+      status: MISSING
+    - control_id: memory_lifetime_limit
+      name: Memory lifetime limit
+      category: preventive
+      expected_behavior: Memory expires beyond its approved purpose window
+      evidence_reference: evid-cq-008-mem-ttl
+      status: INEFFECTIVE
+    detective_controls:
+    - control_id: preference_influence_detection
+      name: Preference-influence detection
+      category: detective
+      expected_behavior: Detects when prior learning changes privileged interpretations
+      evidence_reference: evid-cq-008-pref-detect
+      status: PRESENT
+    containment_controls:
+    - control_id: quarantine_unreviewed_learning
+      name: Quarantine unreviewed learning
+      category: containment
+      expected_behavior: Suspect learning is excluded from privileged retrieval
+      evidence_reference: evid-cq-008-learn-quarantine
+      status: MISSING
+    recovery_controls:
+    - control_id: rebuild_reviewed_memory
+      name: Rebuild reviewed memory
+      category: recovery
+      expected_behavior: Operators can rebuild memory from reviewed sources
+      evidence_reference: evid-cq-008-rebuild-learn
+      status: PRESENT
+    evidence_sources:
+    - memory_provenance_log
+    - privileged_task_trace
+    evidence_summary: Influence was detected; promotion review and quarantine remain incomplete.
+    evidence_gaps:
+    - No reviewed promotion record for the durable preference
+    observation_window: 24h
+    agent_self_report_present: false
+    independent_evidence_sufficient: true
+
+- id: agent_resource_and_network_expansion
+  title: Agent resource and network expansion
+  short_description: Valid credentials fan out across services, queues, and resource budgets.
+  primary_surface: TOOLS_EXECUTION
+  expected_initial_risk: CRITICAL
+  expected_control_coverage: PARTIAL
+  expected_residual_risk: HIGH
+  category: infrastructure
+  request:
+    case_id: case-cq-008-012
+    title: Agent resource and network expansion
+    description: An agent uses valid credentials to fan out across internal services, create queued work and consume excessive API, compute or storage capacity.
+    agent_identity: cq-integration-agent-12
+    principal_identity: cq-platform-owner-dev
+    environment: Cedar Quill Markets fictional platform lab
+    policy_version: lab008-threat-model-v1
+    asset_name: Internal service credentials and resource budgets
+    asset_type: infrastructure_capacity
+    asset_sensitivity: critical
+    security_objective: Bound credential reach, network expansion, queued work, and cost amplification
+    threat_source: Valid credentials used for lateral expansion and resource amplification
+    failure_mode: Authorized identity fans out across services and queues beyond intended scope
+    primary_surface: TOOLS_EXECUTION
+    secondary_surfaces:
+    - AUTHORITY
+    - DELEGATION
+    - EVIDENCE_CONTROL
+    cross_cutting_dimensions:
+    - NETWORK_RESOURCE_IMPACT
+    trust_boundary: Agent-to-network and credential blast-radius boundary
+    preconditions:
+    - Agent holds valid service credentials
+    - Resource budgets and queue controls are incomplete
+    threat_path:
+    - Valid credential retrieved
+    - Fan-out across internal APIs
+    - Child workers and queued jobs created
+    - Compute and storage consumption spikes
+    potential_impact: Lateral movement, cost amplification, and residual queued work
+    organizational_blast_radius:
+    - Internal APIs and data stores reached with shared credentials
+    - Queued jobs and child workers continue after the parent objective
+    - API, token, compute, and storage budgets exceeded
+    organizational_exposure:
+      sensitive_data: HIGH
+      public_model_transmission: NONE
+      credential_reach: CRITICAL
+      internal_network_reach: CRITICAL
+      compute_token_cost: CRITICAL
+      queued_work: CRITICAL
+      persistent_memory: LOW
+      child_agents: HIGH
+      recoverability: HIGH
+      independent_telemetry: MEDIUM
+      summary: Valid credentials enabled network fan-out, queued work, and resource amplification.
+    initial_likelihood: HIGH
+    initial_impact: CRITICAL
+    residual_likelihood: HIGH
+    residual_impact: MEDIUM
+    preventive_controls:
+    - control_id: credential_blast_radius_limit
+      name: Credential blast-radius limit
+      category: preventive
+      expected_behavior: Credentials are scoped to least necessary services
+      evidence_reference: evid-cq-008-cred-radius
+      status: INEFFECTIVE
+    - control_id: resource_budget_enforcement
+      name: Resource-budget enforcement
+      category: preventive
+      expected_behavior: API, token, compute, and storage budgets stop expansion
+      evidence_reference: evid-cq-008-budget
+      status: MISSING
+    detective_controls:
+    - control_id: lateral_and_cost_spike_detection
+      name: Lateral and cost-spike detection
+      category: detective
+      expected_behavior: Detects fan-out and unusual resource consumption
+      evidence_reference: evid-cq-008-cost-detect
+      status: PRESENT
+    containment_controls:
+    - control_id: freeze_queues_and_child_workers
+      name: Freeze queues and child workers
+      category: containment
+      expected_behavior: Queues and child agents freeze on expansion signal
+      evidence_reference: evid-cq-008-freeze-queue-child
+      status: MISSING
+    recovery_controls:
+    - control_id: rotate_and_reissue_narrow_credentials
+      name: Rotate and reissue narrow credentials
+      category: recovery
+      expected_behavior: Operators can rotate credentials and reissue narrower grants
+      evidence_reference: evid-cq-008-rotate-narrow
+      status: PRESENT
+    evidence_sources:
+    - network_access_log
+    - queue_metrics
+    - cost_and_token_meter
+    evidence_summary: Fan-out and cost spikes were observed; budget and queue freeze controls remain incomplete.
+    evidence_gaps:
+    - Incomplete child-agent telemetry after queue creation
+    observation_window: 1h
+    agent_self_report_present: false
+    independent_evidence_sufficient: true

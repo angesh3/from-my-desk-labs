@@ -605,14 +605,37 @@ def test_lab008_page_basics():
     assert "an AI Agent?" in html
     assert 'class="lab008-hero-title"' in html
     assert "The model is not the whole system" in html
+    assert "From knowing the agent to modeling the system" in html
+    assert "Threats change across the agent lifecycle" in html
     assert "Seven threat surfaces" in html
     assert "Example agent-system architecture" in html
     assert "Data-flow diagram and trust boundaries" in html
     assert "/static/labs/008/agent-system-architecture.svg" in html
     assert "/static/labs/008/agent-data-flow.svg" in html
+    assert "Behavior and usage drift" in html
+    assert "Keep these distinctions visible" in html
+    assert "model-weight drift" in html
+    assert "not model retraining" in html
+    assert "supply-chain" in html
+    assert 'href="/labs/know-your-agent"' in html
+    assert 'href="/labs/delegated-authority"' in html
+    assert 'href="/labs/agent-access-control"' in html
+    assert 'href="/labs/agent-escalation-boundary"' in html
+    assert 'href="/labs/verifiable-action-receipts"' in html
+    assert 'href="/labs/agent-containment-boundary"' in html
+    assert 'href="/labs/containment-assurance"' in html
+    assert "Who is acting?" in html
+    assert "Labs 001–007 addressed individual control questions" in html
+    assert "The next control question" in html
     assert 'data-preset="retrieved_prompt_injection_blocked"' in html
     assert 'data-preset="insufficient_cross_system_telemetry"' in html
+    assert 'data-preset="usage_drift_after_approval"' in html
+    assert 'data-preset="public_model_sensitive_context_exposure"' in html
+    assert 'data-preset="learning_changes_future_behavior"' in html
+    assert 'data-preset="agent_resource_and_network_expansion"' in html
     assert "/static/labs/008/agent-threat-model.svg" in html
+    assert "/static/labs/008/agent-system-architecture.svg" in html
+    assert "/static/labs/008/agent-data-flow.svg" in html
     assert "/static/labs/008/lab.js" in html
     assert "EDITION_8_NEWSLETTER_URL" not in html
     assert "[EDITION_8_NEWSLETTER_URL]" not in html
@@ -629,6 +652,9 @@ def test_lab008_controls_preserve_machine_values():
     html = client.get("/labs/agent-threat-model").text
     assert 'value="IDENTITY"' in html
     assert 'value="MEMORY_CONTEXT"' in html
+    assert 'value="BEHAVIOR_USAGE_DRIFT"' in html
+    assert 'value="EXTERNAL_MODEL_EXPOSURE"' in html
+    assert 'value="NETWORK_RESOURCE_IMPACT"' in html
     assert "IDENTITY" in html
     assert "Instructions and intent" in html
     js = client.get("/static/labs/008/lab.js").text
@@ -636,12 +662,14 @@ def test_lab008_controls_preserve_machine_values():
     assert "Identity" in js
     assert "MEMORY_CONTEXT" in js
     assert "Memory and context" in js
+    assert "BEHAVIOR_USAGE_DRIFT" in js
     assert "COMPLETE" in js
     assert "not_performed" in js
     css = client.get("/static/css/styles.css").text
     assert ".lab008-result" in css
     assert ".lab008-hero-title" in css
     assert ".lab008-footer-actions" in css
+    assert ".lab008-storyline-list" in css
 
 
 def test_lab008_newsletter_button_when_published(monkeypatch, tmp_path):
@@ -1030,11 +1058,15 @@ def test_lab008_diagram_url_from_rendered_html():
 
 
 def test_lab008_source_svg_is_valid_utf8_xml():
-    path = LAB008_STATIC / "agent-threat-model.svg"
-    data = path.read_bytes()
-    data.decode("utf-8")
-    ET.parse(path)
-    assert b"<title" in data
-    assert b"<desc" in data
-    assert b"Protected Asset" in data
-    assert b"Residual Risk" in data
+    for name, needle in (
+        ("agent-threat-model.svg", b"Protected Asset"),
+        ("agent-system-architecture.svg", b"External containment"),
+        ("agent-data-flow.svg", b"Public-model calls"),
+    ):
+        path = LAB008_STATIC / name
+        data = path.read_bytes()
+        data.decode("utf-8")
+        ET.parse(path)
+        assert b"<title" in data
+        assert b"<desc" in data
+        assert needle in data

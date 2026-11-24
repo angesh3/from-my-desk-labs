@@ -5,6 +5,13 @@
   var selectedPreset = "";
   var lastResponse = null;
 
+  var DIMENSION_IDS = [
+    "dim_behavior_usage_drift",
+    "dim_learning_memory_drift",
+    "dim_external_model_exposure",
+    "dim_network_resource_impact"
+  ];
+
   var SURFACE_LABELS = {
     IDENTITY: "Identity",
     AUTHORITY: "Authority",
@@ -13,6 +20,13 @@
     TOOLS_EXECUTION: "Tools and execution",
     DELEGATION: "Delegation and coordination",
     EVIDENCE_CONTROL: "Evidence and control"
+  };
+
+  var DIMENSION_LABELS = {
+    BEHAVIOR_USAGE_DRIFT: "Behavior and usage drift",
+    LEARNING_MEMORY_DRIFT: "Learning and memory drift",
+    EXTERNAL_MODEL_EXPOSURE: "External model exposure",
+    NETWORK_RESOURCE_IMPACT: "Network and resource impact"
   };
 
   var COVERAGE_LABELS = {
@@ -43,20 +57,24 @@
       preventive: "Preventive",
       detective: "Detective",
       containment: "Containment",
-      recovery: "Recovery"
+      recovery: "Recovery",
+      sensitive_data: "Sensitive data",
+      public_model_transmission: "Public-model transmission",
+      credential_reach: "Credential reach",
+      internal_network_reach: "Internal network reach",
+      compute_token_cost: "Compute / token cost",
+      queued_work: "Queued work",
+      persistent_memory: "Persistent memory",
+      child_agents: "Child agents",
+      recoverability: "Recoverability",
+      independent_telemetry: "Independent telemetry"
     },
     SURFACE_LABELS,
+    DIMENSION_LABELS,
     COVERAGE_LABELS,
     RISK_LABELS,
     STATUS_LABELS
   );
-
-  var CONTROL_GROUPS = [
-    "preventive_controls",
-    "detective_controls",
-    "containment_controls",
-    "recovery_controls"
-  ];
 
   function $(id) {
     return document.getElementById(id);
@@ -127,6 +145,26 @@
     if (coverage === "PARTIAL") return "!";
     if (coverage === "NONE") return "×";
     return "?";
+  }
+
+  function collectDimensions() {
+    return DIMENSION_IDS.map(function (id) {
+      var el = $(id);
+      if (el && el.checked) return el.value;
+      return null;
+    }).filter(Boolean);
+  }
+
+  function applyDimensions(values) {
+    var selected = {};
+    (values || []).forEach(function (item) {
+      selected[String(item)] = true;
+    });
+    DIMENSION_IDS.forEach(function (id) {
+      var el = $(id);
+      if (!el) return;
+      el.checked = Boolean(selected[el.value]);
+    });
   }
 
   function renderControlEditor(group, items) {
@@ -210,10 +248,12 @@
       failure_mode: getValue("failure_mode"),
       primary_surface: getValue("primary_surface"),
       secondary_surfaces: linesToList(getValue("secondary_surfaces")),
+      cross_cutting_dimensions: collectDimensions(),
       trust_boundary: getValue("trust_boundary"),
       preconditions: linesToList(getValue("preconditions")),
       threat_path: linesToList(getValue("threat_path")),
       potential_impact: getValue("potential_impact"),
+      organizational_blast_radius: linesToList(getValue("organizational_blast_radius")),
       initial_likelihood: getValue("initial_likelihood"),
       initial_impact: getValue("initial_impact"),
       preventive_controls: collectControls("preventive_controls", "preventive"),
@@ -251,10 +291,15 @@
     setValue("failure_mode", request.failure_mode);
     setValue("primary_surface", request.primary_surface);
     setValue("secondary_surfaces", listToLines(request.secondary_surfaces || []));
+    applyDimensions(request.cross_cutting_dimensions || []);
     setValue("trust_boundary", request.trust_boundary);
     setValue("preconditions", listToLines(request.preconditions || []));
     setValue("threat_path", listToLines(request.threat_path || []));
     setValue("potential_impact", request.potential_impact);
+    setValue(
+      "organizational_blast_radius",
+      listToLines(request.organizational_blast_radius || [])
+    );
     setValue("initial_likelihood", request.initial_likelihood);
     setValue("initial_impact", request.initial_impact);
     setValue("evidence_sources", listToLines(request.evidence_sources || []));
@@ -287,6 +332,42 @@
     );
   }
 
+  function renderExposure(exposure) {
+    if (!exposure) return "<p class=\"hint\">Not assessed.</p>";
+    var keys = [
+      "sensitive_data",
+      "public_model_transmission",
+      "credential_reach",
+      "internal_network_reach",
+      "compute_token_cost",
+      "queued_work",
+      "persistent_memory",
+      "child_agents",
+      "recoverability",
+      "independent_telemetry"
+    ];
+    var rows = keys
+      .map(function (key) {
+        return (
+          "<div><dt>" +
+          escapeHtml(humanLabel(key)) +
+          "</dt><dd>" +
+          escapeHtml(humanLabel(exposure[key])) +
+          " <span class=\"lab008-mono\">(" +
+          escapeHtml(exposure[key] || "UNKNOWN") +
+          ")</span></dd></div>"
+        );
+      })
+      .join("");
+    return (
+      '<p>' +
+      escapeHtml(exposure.summary || "") +
+      '</p><dl class="lab008-result-grid">' +
+      rows +
+      "</dl>"
+    );
+  }
+
   function renderResult(data) {
     var host = $("lab008-result");
     if (!host) return;
@@ -294,6 +375,12 @@
     var tone = coverageTone(data.control_coverage);
     var secondary =
       (data.secondary_surfaces || [])
+        .map(function (item) {
+          return humanLabel(item);
+        })
+        .join(", ") || "None";
+    var dimensions =
+      (data.cross_cutting_dimensions || [])
         .map(function (item) {
           return humanLabel(item);
         })
@@ -317,6 +404,9 @@
       "<div><dt>Secondary surfaces</dt><dd>" +
       escapeHtml(secondary) +
       "</dd></div>" +
+      "<div><dt>Cross-cutting dimensions</dt><dd>" +
+      escapeHtml(dimensions) +
+      "</dd></div>" +
       "<div><dt>Initial risk</dt><dd>" +
       escapeHtml(humanLabel(data.initial_risk)) +
       " <span class=\"lab008-mono\">(" +
@@ -331,8 +421,16 @@
       "<p>" +
       escapeHtml(data.residual_risk_explanation || "") +
       "</p>" +
+      "<h4>Organizational blast radius</h4>" +
+      renderList(data.organizational_blast_radius) +
+      "<h4>Organizational exposure</h4>" +
+      renderExposure(data.organizational_exposure) +
       "<h4>Material gaps</h4>" +
       renderList(data.material_gaps) +
+      "<h4>Recommended controls</h4>" +
+      renderList(data.recommended_controls) +
+      "<h4>Recommended evidence</h4>" +
+      renderList(data.recommended_evidence) +
       "<h4>Recommended actions</h4>" +
       renderList(data.recommended_actions) +
       "<h4>Assumptions</h4>" +

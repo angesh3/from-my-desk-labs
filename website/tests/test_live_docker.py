@@ -175,12 +175,17 @@ def test_live_pages_and_assets():
     assert code == 200
     assert "javascript" in headers.get("Content-Type", "")
 
-    code, headers, body = _get("/static/labs/008/agent-threat-model.svg")
-    assert code == 200
-    assert "image/svg+xml" in headers.get("Content-Type", "")
-    body.decode("utf-8")
-    assert b"<svg" in body
-    assert b"Protected Asset" in body
+    for name, needle in (
+        ("agent-threat-model.svg", b"Protected Asset"),
+        ("agent-system-architecture.svg", b"External containment"),
+        ("agent-data-flow.svg", b"Public-model calls"),
+    ):
+        code, headers, body = _get(f"/static/labs/008/{name}")
+        assert code == 200, name
+        assert "image/svg+xml" in headers.get("Content-Type", ""), name
+        body.decode("utf-8")
+        assert b"<svg" in body
+        assert needle in body
 
     code, headers, body = _get("/static/labs/008/lab.js")
     assert code == 200

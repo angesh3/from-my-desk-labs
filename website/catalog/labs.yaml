@@ -172,8 +172,8 @@ labs:
     edition_number: 8
     slug: agent-threat-model
     title: "Agent Threat Model"
-    subtitle: "The model is only one component. Agent risk emerges across identity, authority, instructions, memory, tools, delegation, execution, evidence, and control."
-    summary: "Map assets, trust boundaries, threat paths, controls, evidence, and residual risk across the complete agentic system—not only the model."
+    subtitle: "The model is only one component. Agent risk emerges across identity, authority, intent, learning, tools, delegation, public-model exposure, infrastructure, evidence, and control."
+    summary: "Map assets, trust boundaries, threat paths, controls, evidence, and residual risk across the complete agentic lifecycle—including drift, public-model exposure, and resource impact."
     status: published
     tags:
       - Agent Governance
@@ -190,6 +190,6 @@ labs:
     disclaimer: "This Lab is an educational agent threat-modeling prototype using fictional Cedar Quill Markets data. It is not a production threat-modeling system, security scanner, penetration-testing tool, or compliance-certification tool. It never executes tools, scans systems, or changes security configuration. Every evaluation returns execution: not_performed."
     reader_title: "Agent Threat Model"
     homepage_lead: "How do we threat-model the complete agentic system—not only the model?"
-    homepage_detail: "Map assets, trust boundaries, threat paths, controls, evidence, and residual risk across identity, authority, instructions, memory, tools, delegation, and control."
+    homepage_detail: "Connect Labs 001–007 into one system-level threat model covering lifecycle stages, drift, public-model exposure, infrastructure impact, controls, and residual risk."
     homepage_safety: "The scenarios are fictional, and the Lab never scans, executes, or modifies a real system."
-    homepage_earlier_description: "Threat modeling the agent means mapping the whole system—not only the model."
+    homepage_earlier_description: "Threat modeling the agent means mapping the whole system and lifecycle—not only the model."

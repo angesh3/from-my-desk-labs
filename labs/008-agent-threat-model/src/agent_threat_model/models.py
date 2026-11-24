@@ -18,6 +18,13 @@ class ThreatSurface(str, Enum):
     evidence_control = "EVIDENCE_CONTROL"
 
 
+class CrossCuttingDimension(str, Enum):
+    behavior_usage_drift = "BEHAVIOR_USAGE_DRIFT"
+    learning_memory_drift = "LEARNING_MEMORY_DRIFT"
+    external_model_exposure = "EXTERNAL_MODEL_EXPOSURE"
+    network_resource_impact = "NETWORK_RESOURCE_IMPACT"
+
+
 class Likelihood(str, Enum):
     low = "LOW"
     medium = "MEDIUM"
@@ -60,6 +67,15 @@ class ControlCategory(str, Enum):
     recovery = "recovery"
 
 
+class ExposureLevel(str, Enum):
+    none = "NONE"
+    low = "LOW"
+    medium = "MEDIUM"
+    high = "HIGH"
+    critical = "CRITICAL"
+    unknown = "UNKNOWN"
+
+
 MAX_ID = 120
 MAX_TEXT = 800
 MAX_LIST = 30
@@ -72,6 +88,20 @@ class ControlItem(BaseModel):
     expected_behavior: str = Field(min_length=1, max_length=MAX_TEXT)
     evidence_reference: Optional[str] = Field(default=None, max_length=MAX_ID)
     status: ControlStatus = ControlStatus.unknown
+
+
+class OrganizationalExposure(BaseModel):
+    sensitive_data: ExposureLevel = ExposureLevel.unknown
+    public_model_transmission: ExposureLevel = ExposureLevel.unknown
+    credential_reach: ExposureLevel = ExposureLevel.unknown
+    internal_network_reach: ExposureLevel = ExposureLevel.unknown
+    compute_token_cost: ExposureLevel = ExposureLevel.unknown
+    queued_work: ExposureLevel = ExposureLevel.unknown
+    persistent_memory: ExposureLevel = ExposureLevel.unknown
+    child_agents: ExposureLevel = ExposureLevel.unknown
+    recoverability: ExposureLevel = ExposureLevel.unknown
+    independent_telemetry: ExposureLevel = ExposureLevel.unknown
+    summary: str = Field(default="", max_length=MAX_TEXT)
 
 
 class EvaluateRequest(BaseModel):
@@ -92,10 +122,17 @@ class EvaluateRequest(BaseModel):
     failure_mode: str = Field(min_length=1, max_length=MAX_TEXT)
     primary_surface: ThreatSurface
     secondary_surfaces: List[ThreatSurface] = Field(default_factory=list, max_length=MAX_LIST)
+    cross_cutting_dimensions: List[CrossCuttingDimension] = Field(
+        default_factory=list, max_length=MAX_LIST
+    )
     trust_boundary: str = Field(min_length=1, max_length=MAX_TEXT)
     preconditions: List[str] = Field(default_factory=list, max_length=MAX_LIST)
     threat_path: List[str] = Field(default_factory=list, max_length=MAX_LIST)
     potential_impact: str = Field(min_length=1, max_length=MAX_TEXT)
+    organizational_blast_radius: List[str] = Field(
+        default_factory=list, max_length=MAX_LIST
+    )
+    organizational_exposure: Optional[OrganizationalExposure] = None
 
     initial_likelihood: Likelihood
     initial_impact: Impact
@@ -129,11 +166,25 @@ class EvaluateRequest(BaseModel):
                 break
         return cleaned
 
+    @field_validator("cross_cutting_dimensions")
+    @classmethod
+    def _normalize_dimensions(cls, values: List) -> List[CrossCuttingDimension]:
+        cleaned: List[CrossCuttingDimension] = []
+        for item in values:
+            if isinstance(item, CrossCuttingDimension):
+                cleaned.append(item)
+            else:
+                cleaned.append(CrossCuttingDimension(str(item).strip()))
+            if len(cleaned) >= MAX_LIST:
+                break
+        return cleaned
+
     @field_validator(
         "preconditions",
         "threat_path",
         "evidence_sources",
         "evidence_gaps",
+        "organizational_blast_radius",
     )
     @classmethod
     def _trim_str_list(cls, values: List) -> List[str]:
@@ -154,6 +205,7 @@ class EvaluateResponse(BaseModel):
     title: str
     primary_surface: ThreatSurface
     secondary_surfaces: List[ThreatSurface] = Field(default_factory=list)
+    cross_cutting_dimensions: List[CrossCuttingDimension] = Field(default_factory=list)
     initial_likelihood: Likelihood
     initial_impact: Impact
     initial_risk: RiskLevel
@@ -163,7 +215,13 @@ class EvaluateResponse(BaseModel):
     residual_risk: RiskLevel
     residual_risk_explanation: str
     material_gaps: List[str] = Field(default_factory=list)
+    organizational_blast_radius: List[str] = Field(default_factory=list)
+    organizational_exposure: OrganizationalExposure = Field(
+        default_factory=OrganizationalExposure
+    )
     recommended_actions: List[str] = Field(default_factory=list)
+    recommended_controls: List[str] = Field(default_factory=list)
+    recommended_evidence: List[str] = Field(default_factory=list)
     assumptions: List[str] = Field(default_factory=list)
     limitations: List[str] = Field(default_factory=list)
     reason_codes: List[str] = Field(default_factory=list)
@@ -183,6 +241,7 @@ class PresetMeta(BaseModel):
     title: str
     short_description: str
     primary_surface: ThreatSurface
+    cross_cutting_dimensions: List[CrossCuttingDimension] = Field(default_factory=list)
     expected_initial_risk: RiskLevel
     expected_control_coverage: ControlCoverage
     expected_residual_risk: RiskLevel
